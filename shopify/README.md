@@ -12,6 +12,7 @@ il tema in produzione**.
 | Regole di sicurezza | ✅ [`SICUREZZA.md`](./SICUREZZA.md) |
 | Analisi varianti | ✅ [`ANALISI-VARIANTI.md`](./ANALISI-VARIANTI.md) |
 | Script estrazione | ✅ [`scripts/analizza-varianti.mjs`](./scripts/analizza-varianti.mjs) |
+| Snippet taglia (senza toccare i dati) | ✅ [`snippets/taglia-da-variante.liquid`](./snippets/taglia-da-variante.liquid) |
 | Sezioni Liquid | ⏳ da scrivere |
 | Metafield specifiche | ⏳ da creare |
 
@@ -23,9 +24,13 @@ non ci sono allineamenti da mantenere.
 
 ## Ordine dei lavori
 
-### 1. Varianti (bloccante)
-Le taglie oggi non esistono come opzione: vedi l'analisi. Finché non è risolto,
-selettore taglia, filtri per taglia e disponibilità per misura non funzionano.
+### 1. Taglie — si risolve nel tema, non nei dati
+Il catalogo Trek/Scott arriva da un **feed automatico**: prodotti, varianti,
+prezzi e giacenze sono suoi. Non si toccano a mano, altrimenti la
+sincronizzazione le sovrascrive.
+
+La taglia si ricava dal titolo della variante al momento di mostrare la pagina:
+snippet pronto in [`snippets/taglia-da-variante.liquid`](./snippets/taglia-da-variante.liquid).
 
 ```bash
 export SHOPIFY_STORE=ciclidalzilio.myshopify.com
@@ -33,7 +38,8 @@ export SHOPIFY_TOKEN=shpat_xxx           # token Admin API, permesso read_produc
 node shopify/scripts/analizza-varianti.mjs > varianti.csv
 ```
 
-Poi si verifica a mano la colonna `taglia_ipotizzata` e si applica **a lotti**.
+Serve a controllare la qualità dei dati, non a modificarli: la colonna `azione`
+segnala i prodotti senza taglia riconoscibile, da segnalare al fornitore del feed.
 
 ### 2. Metafield per le specifiche
 Peso, rapporti, gruppo e ruote oggi stanno dentro l'HTML della descrizione.
@@ -80,10 +86,11 @@ qualcosa è cambiato. Dettagli in [`SICUREZZA.md`](./SICUREZZA.md).
 
 - **Non pubblicare** la copia finché non è verificata: si pubblica da
   *Negozio online → Temi → Pubblica*.
-- La ristrutturazione delle varianti tocca i **prodotti reali** e si vede subito
-  sul sito pubblicato, indipendentemente dal tema. Farla a lotti.
-- Cambiando le varianti cambiano gli **ID variante**: carrelli abbandonati e
-  link diretti a una variante smettono di funzionare.
+- **Non modificare prodotti, varianti, prezzi o giacenze**: sono gestiti dal
+  feed FTP Trek/Scott. Qualsiasi modifica manuale viene sovrascritta alla
+  sincronizzazione successiva e può duplicare i prodotti.
+- Il metafield `custom.disable_price_update` esiste proprio per escludere un
+  prodotto dagli aggiornamenti di prezzo del feed: non toccarlo alla cieca.
 - Sul negozio è attiva un'app di filtri (Globo): va riconfigurata se cambiano
   le opzioni prodotto.
 - I dati di anteprima (recensioni, cambi valuta, condizioni di finanziamento)

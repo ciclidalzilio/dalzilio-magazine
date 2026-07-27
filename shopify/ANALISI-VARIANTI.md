@@ -50,24 +50,63 @@ con un solo valore `Default Title`: **il cliente non può scegliere la taglia**.
 - Il confronto tra modelli non può allineare le taglie
 - Google Shopping riceve dati incoerenti
 
-## Schema di arrivo
+## ⚠️ Correzione: NON si ristrutturano le varianti
 
-Due opzioni separate e nomi uniformi in italiano:
+I metafield del catalogo rivelano un **importatore automatico** (feed FTP
+Trek/Scott):
 
-| Opzione | Valori |
+| Metafield | Significato |
 |---|---|
-| `Taglia` | `XXS` `XS` `S` `M` `L` `XL` `XXL` oppure `47` `50` `52` … |
-| `Colore` | `Carbon Grey`, `Gelato Blue`, … (senza codici articolo) |
+| `custom.reference` | codice articolo del fornitore: è la chiave di abbinamento |
+| `custom.disable_price_update` | interruttore per non far sovrascrivere il prezzo |
+| `custom.availability_expected` | data di riassortimento dal fornitore |
+| `custom.brand`, `product_kind`, `frame_material`, `country` | campi del catalogo importato |
 
-## Come procedere
+**Il feed possiede prodotti, varianti, prezzi e giacenze.** Modificare le
+varianti a mano è controproducente:
 
-1. Estrarre l'inventario attuale con `scripts/analizza-varianti.mjs`
-2. Controllare a mano la colonna `taglia_ipotizzata` (lo script la deduce dal
-   testo, ma va confermata)
-3. Applicare le modifiche **a lotti**, partendo da una sola collezione
-4. Verificare su tema di anteprima prima di pubblicare
+- alla sincronizzazione successiva le modifiche verrebbero **sovrascritte**
+- l'abbinamento per `reference` potrebbe **duplicare** i prodotti
+- gli ID variante cambierebbero a ogni ciclo
 
-> ⚠️ La ristrutturazione delle varianti tocca i **prodotti reali**, non il tema:
-> si vede subito sul sito pubblicato. Va fatta a lotti e in orari di basso traffico.
-> Gli ID variante cambiano: eventuali carrelli abbandonati e link diretti a
-> varianti smettono di funzionare.
+## La soluzione: si adatta il tema, non i dati
+
+La taglia si ricava **al momento di mostrare la pagina**, leggendo il titolo
+della variante. Nessuna modifica al catalogo, feed FTP intatto.
+
+Snippet pronto: [`snippets/taglia-da-variante.liquid`](./snippets/taglia-da-variante.liquid)
+
+Algoritmo (verificato su titoli reali dello store, 8 casi su 8):
+
+1. se il prodotto ha già una vera opzione `Taglia`/`Size` → usa quella
+2. altrimenti scorre le parole del titolo **da destra** e prende la prima
+   taglia valida (`XXS`–`XXXL` oppure un numero da 44 a 64)
+3. `Default Title` non è una taglia → resta vuoto
+
+| Titolo variante | Taglia estratta |
+|---|---|
+| `Bike Foil RC 20 (EU) CAGR/M carbon grey M` | `M` |
+| `Bike Foil RC 20 (EU) GBCB/XXL gelato blue/carbon black XXL` | `XXL` |
+| `Deep Smoke` | *(nessuna)* |
+| `Default Title` | *(nessuna)* |
+
+### Cosa resta da sistemare alla fonte
+
+I prodotti con opzione `Title` / `Default Title` (una sola variante) **non
+contengono proprio l'informazione**: nessun trucco lato tema può inventarla.
+Sono il 6% delle bici da corsa e il 2% delle mountain bike.
+
+Vanno affrontati con il fornitore del feed, chiedendo di esportare la taglia
+come opzione separata. È l'unica correzione che vale la pena chiedere a monte.
+
+## Lo script di analisi a cosa serve adesso
+
+Non più a preparare una migrazione, ma a **controllare la qualità**: quante
+bici hanno la taglia riconoscibile, quante no, e su quali intervenire con il
+fornitore.
+
+```bash
+node shopify/scripts/analizza-varianti.mjs > varianti.csv
+```
+
+La colonna `azione` segnala `MANCA_TAGLIA` per i prodotti da segnalare al feed.
