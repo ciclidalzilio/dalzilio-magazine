@@ -1,0 +1,65 @@
+{%- comment -%}
+  dz-correlati.liquid — altri modelli della stessa collezione.
+{%- endcomment -%}
+
+{%- liquid
+  assign fonte = product.collections | first
+  assign quanti = section.settings.quanti | default: 4
+-%}
+
+{%- if fonte != blank -%}
+<section class="dzs dzs-rel">
+  <div class="dzs-in">
+    <div class="dzs-relhead">
+      <div>
+        <p class="dzs-k">{{ section.settings.occhiello }}</p>
+        <h2 class="dzs-h2 dzs-h2s">{{ section.settings.titolo }}</h2>
+      </div>
+      <a class="dzs-more" href="{{ fonte.url }}">Vedi {{ fonte.title | downcase }}</a>
+    </div>
+
+    <div class="dzs-relgrid">
+      {%- assign mostrati = 0 -%}
+      {%- for p in fonte.products -%}
+        {%- if p.handle == product.handle -%}{%- continue -%}{%- endif -%}
+        {%- if mostrati >= quanti -%}{%- break -%}{%- endif -%}
+        {%- assign mostrati = mostrati | plus: 1 -%}
+        <a class="dzs-card" href="{{ p.url }}">
+          <div class="dzs-cimg">
+            {%- if p.featured_image -%}
+              <img src="{{ p.featured_image | image_url: width: 600 }}" alt="{{ p.title | escape }}" loading="lazy">
+            {%- endif -%}
+            {%- if p.compare_at_price > p.price -%}
+              {%- assign d = p.compare_at_price | minus: p.price | times: 100.0 | divided_by: p.compare_at_price | round -%}
+              <span class="dzs-off">-{{ d }}%</span>
+            {%- endif -%}
+          </div>
+          <div class="dzs-cbody">
+            <span class="dzs-brand">{{ p.vendor }}</span>
+            <b>{{ p.title }}</b>
+            <div class="dzs-cprice">
+              {%- if p.compare_at_price > p.price -%}<s>{{ p.compare_at_price | money }}</s>{%- endif -%}
+              <span>{{ p.price | money }}</span>
+            </div>
+          </div>
+        </a>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+{%- endif -%}
+
+{{ 'dz-sezioni.css' | asset_url | stylesheet_tag }}
+
+{% schema %}
+{
+  "name": "DZ · Modelli correlati",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "occhiello", "label": "Occhiello", "default": "Ti potrebbero piacere" },
+    { "type": "text", "id": "titolo", "label": "Titolo", "default": "Modelli correlati" },
+    { "type": "range", "id": "quanti", "label": "Quanti modelli", "min": 2, "max": 8, "step": 1, "default": 4 }
+  ],
+  "presets": [{ "name": "DZ · Modelli correlati" }]
+}
+{% endschema %}

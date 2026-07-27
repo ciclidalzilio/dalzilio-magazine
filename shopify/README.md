@@ -14,7 +14,10 @@ il tema in produzione**.
 | Script estrazione | ✅ [`scripts/analizza-varianti.mjs`](./scripts/analizza-varianti.mjs) |
 | Snippet taglia (senza toccare i dati) | ✅ [`snippets/taglia-da-variante.liquid`](./snippets/taglia-da-variante.liquid) |
 | Sezione scheda prodotto | ✅ [`sections/dz-scheda-prodotto.liquid`](./sections/dz-scheda-prodotto.liquid) |
-| Altre sezioni Liquid | ⏳ da scrivere |
+| Sezione perche da noi | ✅ [`sections/dz-perche-noi.liquid`](./sections/dz-perche-noi.liquid) |
+| Sezione usato e permuta | ✅ [`sections/dz-permuta.liquid`](./sections/dz-permuta.liquid) |
+| Sezione modelli correlati | ✅ [`sections/dz-correlati.liquid`](./sections/dz-correlati.liquid) |
+| Confronto modelli | ⏳ da scrivere (serve pagina catalogo) |
 | Metafield specifiche | ⏳ da creare |
 
 ## Principio di fondo
