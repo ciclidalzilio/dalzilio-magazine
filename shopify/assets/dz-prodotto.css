@@ -124,3 +124,20 @@
   .dz-main img,.dz-thumb{transition:none}
   .dz-main:hover img{transform:none}
 }
+
+/* --- correzioni mobile --- */
+.dz-opt-top{gap:10px}
+.dz-opt-top span:last-child{text-align:right;overflow:hidden;text-overflow:ellipsis;
+  white-space:nowrap;max-width:60%;flex-shrink:1}
+@media (max-width:560px){
+  .dz-opt-top{flex-wrap:wrap}
+  .dz-opt-top span:last-child{max-width:100%;white-space:normal;text-align:left;font-size:11px}
+  /* quantità e acquisto su righe separate: il testo del pulsante non si spezza */
+  .dz-buy{flex-wrap:wrap}
+  .dz-qty{width:100%;justify-content:space-between}
+  .dz-qty input{flex:1}
+  .dz-primary{width:100%;flex:1 0 100%;font-size:15px;padding:15px 18px}
+  .dz-title{font-size:1.6rem}
+  .dz-price>b{font-size:1.7rem}
+  .dz-figs{gap:18px}
+}
