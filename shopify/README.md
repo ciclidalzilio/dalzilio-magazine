@@ -9,6 +9,7 @@ il tema in produzione**.
 |---|---|
 | Tema pubblicato | `Copia aggiornata di Trade` (Trade, a pagamento) — **intatto** |
 | Copia di lavoro | `DZ 2026 — copia di lavoro` (non pubblicata) ✅ creata |
+| Regole di sicurezza | ✅ [`SICUREZZA.md`](./SICUREZZA.md) |
 | Analisi varianti | ✅ [`ANALISI-VARIANTI.md`](./ANALISI-VARIANTI.md) |
 | Script estrazione | ✅ [`scripts/analizza-varianti.mjs`](./scripts/analizza-varianti.mjs) |
 | Sezioni Liquid | ⏳ da scrivere |
@@ -64,6 +65,16 @@ Da portare in Liquid sulla copia di lavoro:
 | Paese, lingua, valuta | **Shopify Markets** (nativo) |
 | Recensioni | Judge.me oppure Loox |
 | Feed Instagram | Instafeed |
+
+## Verifica che la produzione sia intatta
+
+```bash
+node shopify/scripts/verifica-produzione.mjs
+```
+
+Controlla che il tema pubblicato sia ancora quello giusto e non modificato, e
+che la copia di lavoro non sia stata pubblicata per errore. Esce con errore se
+qualcosa è cambiato. Dettagli in [`SICUREZZA.md`](./SICUREZZA.md).
 
 ## Avvertenze
 

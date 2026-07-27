@@ -19,6 +19,15 @@ if (!STORE || !TOKEN) {
   process.exit(1);
 }
 
+/* Guardia: questo script deve restare in sola lettura.
+   Se qualcuno introduce una mutation, l'esecuzione si ferma. */
+function assicuratiSolaLettura(query) {
+  if (/\bmutation\b/i.test(query)) {
+    console.error("BLOCCATO: questo script non deve eseguire mutation. Nessun dato modificato.");
+    process.exit(2);
+  }
+}
+
 /** Collezioni bici da analizzare (handle Shopify). */
 const COLLEZIONI = ["bici-da-strada", "ebikes", "gravel", "mountain-bike", "urban", "usato-1"];
 
@@ -58,6 +67,7 @@ function pulisciColore(titolo, nomeProdotto = "") {
 }
 
 async function gql(query, variables = {}) {
+  assicuratiSolaLettura(query);
   const res = await fetch(`https://${STORE}/admin/api/${API}/graphql.json`, {
     method: "POST",
     headers: { "Content-Type": "application/json", "X-Shopify-Access-Token": TOKEN },
