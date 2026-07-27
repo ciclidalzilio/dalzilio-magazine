@@ -1,0 +1,126 @@
+/* dz-prodotto.css — Cicli Dal Zilio · scheda prodotto */
+
+.dz{--dz-ink:#111319;--dz-muted:#5c6070;--dz-muted2:#8b8fa2;--dz-line:rgba(18,20,42,.10);
+  --dz-line2:rgba(18,20,42,.18);--dz-surf:#fff;--dz-canvas:#f3f4f7;--dz-ok:#12b981;
+  --dz-grad:linear-gradient(100deg,#FF7A00,#FF2E63 58%,#8B2FE6);
+  color:var(--dz-ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  letter-spacing:-.011em}
+.dz *,.dz *::before,.dz *::after{box-sizing:border-box}
+.dz-wrap{max-width:1200px;margin:0 auto;padding:0 24px}
+
+.dz-crumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dz-muted);padding:22px 0 0}
+.dz-crumb a{color:inherit;text-decoration:none}
+.dz-crumb a:hover{color:var(--dz-ink)}
+
+.dz-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;padding-top:22px;align-items:start}
+
+/* galleria */
+.dz-gallery{display:grid;grid-template-columns:82px 1fr;gap:14px;align-items:start}
+.dz-thumbs{display:flex;flex-direction:column;gap:10px}
+.dz-thumb{width:82px;height:70px;padding:0;border-radius:12px;overflow:hidden;border:1px solid var(--dz-line);
+  background:var(--dz-surf);cursor:pointer;transition:border-color .2s,transform .2s}
+.dz-thumb:hover{transform:translateX(2px)}
+.dz-thumb.on{border-color:var(--dz-ink);box-shadow:0 0 0 2px rgba(18,20,42,.08)}
+.dz-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.dz-main{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--dz-line);
+  background:radial-gradient(120% 100% at 50% 0%,#fff 0%,#f1f2f6 55%,#e8eaf0 100%);
+  box-shadow:0 30px 70px -46px rgba(18,20,42,.5);aspect-ratio:4/3.05}
+.dz-main img{width:100%;height:100%;object-fit:contain;padding:22px;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.dz-main:hover img{transform:scale(1.35)}
+.dz-noimg{display:grid;place-items:center;height:100%;color:var(--dz-muted2);font-size:14px}
+.dz-zoom{position:absolute;right:14px;bottom:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--dz-muted);background:rgba(255,255,255,.82);border:1px solid var(--dz-line);
+  padding:6px 10px;border-radius:999px;opacity:0;transition:opacity .25s}
+.dz-main:hover .dz-zoom{opacity:1}
+
+/* colonna acquisto */
+.dz-info{position:sticky;top:24px}
+.dz-eye{margin:0;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--dz-muted)}
+.dz-title{margin:10px 0 0;font-size:clamp(1.9rem,3.6vw,2.7rem);letter-spacing:-.038em;font-weight:300;line-height:1.02}
+.dz-price{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-top:20px}
+.dz-price>b{font-size:2rem;font-weight:760;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.dz-old{text-decoration:line-through;color:var(--dz-muted2)}
+.dz-off{background:#FF2E63;color:#fff;font-weight:700;font-size:12px;padding:4px 9px;border-radius:8px}
+.dz-from{font-size:13px;color:var(--dz-muted)}
+.dz-from b{color:var(--dz-ink)}
+
+.dz-figs{display:flex;gap:26px;margin-top:18px;padding:14px 0;border-block:1px solid var(--dz-line)}
+.dz-figs b{display:block;font-size:1.12rem;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.dz-figs span{display:block;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dz-muted2);margin-top:3px}
+
+.dz-opt{margin-top:22px}
+.dz-opt-top{display:flex;justify-content:space-between;align-items:center;font-size:12px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--dz-muted);margin-bottom:9px}
+.dz-swatches{display:flex;gap:8px;flex-wrap:wrap}
+.dz-sw{padding:9px 14px;border-radius:11px;border:1px solid var(--dz-line2);background:var(--dz-surf);
+  cursor:pointer;font-size:13.5px;color:var(--dz-ink);transition:.18s}
+.dz-sw:hover{border-color:var(--dz-ink)}
+.dz-sw.on{background:var(--dz-ink);color:#fff;border-color:var(--dz-ink)}
+.dz-sizes{display:flex;gap:8px;flex-wrap:wrap}
+.dz-size{min-width:48px;padding:10px 12px;border-radius:11px;border:1px solid var(--dz-line2);
+  background:var(--dz-surf);cursor:pointer;font-size:14px;font-weight:600;color:var(--dz-ink);transition:.15s}
+.dz-size:hover{border-color:var(--dz-ink)}
+.dz-size.on{background:var(--dz-ink);color:#fff;border-color:var(--dz-ink)}
+.dz-size.off{opacity:.38;cursor:not-allowed;text-decoration:line-through;background:var(--dz-canvas)}
+
+.dz-help{border:0;background:none;color:#FF2E63;font:inherit;font-size:13px;font-weight:600;
+  cursor:pointer;padding:0;text-transform:none;letter-spacing:0}
+.dz-help:hover{text-decoration:underline}
+.dz-adv{margin:0 0 12px;padding:16px;border:1px solid var(--dz-line2);border-radius:14px;background:var(--dz-surf)}
+.dz-adv label{display:block;font-size:13.5px;font-weight:600;margin-bottom:9px}
+.dz-adv-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.dz-adv-row input{font:inherit;font-size:15px;padding:10px 12px;border-radius:10px;
+  border:1px solid var(--dz-line2);width:110px;background:var(--dz-surf);color:var(--dz-ink)}
+.dz-adv-out{margin:12px 0 0;font-size:14px;line-height:1.5}
+.dz-adv-out.warn{color:var(--dz-muted)}
+.dz-pill{display:inline-block;background:var(--dz-ink);color:#fff;font-weight:700;padding:2px 9px;border-radius:7px}
+.dz-ok{color:var(--dz-ok)}
+.dz-adv-note{margin:10px 0 0;font-size:11.5px;color:var(--dz-muted2);line-height:1.5}
+
+.dz-buy{display:flex;gap:12px;margin-top:26px;align-items:stretch}
+.dz-qty{display:flex;align-items:center;border:1px solid var(--dz-line2);border-radius:14px;overflow:hidden}
+.dz-qty button{width:44px;background:var(--dz-surf);border:0;font-size:19px;cursor:pointer;color:var(--dz-ink)}
+.dz-qty input{width:46px;text-align:center;border:0;font:inherit;font-weight:600;
+  font-variant-numeric:tabular-nums;-moz-appearance:textfield}
+.dz-qty input::-webkit-outer-spin-button,.dz-qty input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+
+.dz-btn{border:0;cursor:pointer;font:inherit;font-size:15.5px;font-weight:640;padding:14px 26px;
+  border-radius:14px;color:#fff;background:var(--dz-grad);text-decoration:none;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  box-shadow:0 14px 34px -12px rgba(255,46,99,.5)}
+.dz-btn.dz-sm{padding:10px 16px;font-size:14px;border-radius:11px}
+.dz-primary{flex:1}
+.dz-btn[disabled]{opacity:.5;cursor:not-allowed;box-shadow:none}
+.dz-wa{background:#25D366;width:100%;margin-top:10px;box-shadow:0 12px 28px -12px rgba(37,211,102,.6)}
+
+.dz-fin{margin-top:18px;border:1px solid var(--dz-line);border-radius:18px;padding:20px;
+  background:linear-gradient(150deg,rgba(255,122,0,.05),rgba(139,47,230,.06))}
+.dz-fin-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;
+  font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--dz-muted)}
+.dz-tan{background:var(--dz-surf);border:1px solid var(--dz-line2);padding:5px 10px;border-radius:999px;color:var(--dz-ink)}
+.dz-fin-amt{display:flex;align-items:baseline;gap:7px}
+.dz-fin-amt b{font-size:2.5rem;font-weight:800;letter-spacing:-.035em;line-height:1;
+  font-variant-numeric:tabular-nums;background:var(--dz-grad);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.dz-fin-sub{font-size:13px;color:var(--dz-muted);margin:6px 0 16px}
+.dz-fin input[type=range]{width:100%;accent-color:#FF2E63;cursor:pointer}
+.dz-fin-ticks{display:flex;justify-content:space-between;font-size:10px;color:var(--dz-muted2);margin-top:5px}
+.dz-fin-note{font-size:11px;color:var(--dz-muted2);line-height:1.5;margin:12px 0 0}
+
+.dz-trust{display:flex;gap:18px;flex-wrap:wrap;margin-top:24px;padding-top:22px;
+  border-top:1px solid var(--dz-line);font-size:13px;color:var(--dz-muted)}
+.dz-acc{margin-top:22px;border-top:1px solid var(--dz-line)}
+.dz-acc summary{padding:16px 0;font-weight:640;cursor:pointer;font-size:15px}
+.dz-acc-in{padding:0 0 18px;color:var(--dz-muted);font-size:14.5px;line-height:1.65}
+
+@media (max-width:960px){
+  .dz-grid{grid-template-columns:1fr;gap:28px}
+  .dz-gallery{grid-template-columns:1fr}
+  .dz-thumbs{flex-direction:row;order:2;overflow-x:auto;padding-bottom:4px}
+  .dz-thumb{flex-shrink:0}
+  .dz-info{position:static}
+}
+@media (prefers-reduced-motion:reduce){
+  .dz-main img,.dz-thumb{transition:none}
+  .dz-main:hover img{transform:none}
+}

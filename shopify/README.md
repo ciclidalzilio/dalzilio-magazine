@@ -13,7 +13,8 @@ il tema in produzione**.
 | Analisi varianti | ✅ [`ANALISI-VARIANTI.md`](./ANALISI-VARIANTI.md) |
 | Script estrazione | ✅ [`scripts/analizza-varianti.mjs`](./scripts/analizza-varianti.mjs) |
 | Snippet taglia (senza toccare i dati) | ✅ [`snippets/taglia-da-variante.liquid`](./snippets/taglia-da-variante.liquid) |
-| Sezioni Liquid | ⏳ da scrivere |
+| Sezione scheda prodotto | ✅ [`sections/dz-scheda-prodotto.liquid`](./sections/dz-scheda-prodotto.liquid) |
+| Altre sezioni Liquid | ⏳ da scrivere |
 | Metafield specifiche | ⏳ da creare |
 
 ## Principio di fondo
@@ -81,6 +82,23 @@ node shopify/scripts/verifica-produzione.mjs
 Controlla che il tema pubblicato sia ancora quello giusto e non modificato, e
 che la copia di lavoro non sia stata pubblicata per errore. Esce con errore se
 qualcosa è cambiato. Dettagli in [`SICUREZZA.md`](./SICUREZZA.md).
+
+## Caricare le sezioni sulla copia del tema
+
+I file stanno in `sections/`, `snippets/` e `assets/`. Si caricano sulla **copia
+di lavoro**, mai sul tema pubblicato:
+
+```bash
+shopify theme push --theme 199574847752 \
+  --only sections/dz-*.liquid \
+  --only snippets/taglia-da-variante.liquid \
+  --only assets/dz-prodotto.*
+```
+
+In alternativa dal pannello: *Negozio online → Temi → DZ 2026 → ⋯ → Modifica codice*.
+
+Poi nel personalizzatore, sul modello Prodotto: *Aggiungi sezione → DZ · Scheda prodotto*.
+Le impostazioni (TAN, numero WhatsApp, tabelle taglie) si cambiano da lì, senza toccare il codice.
 
 ## Avvertenze
 
