@@ -22,9 +22,48 @@
     }
   };
 
-  var VARIANTI = leggiJSON("[data-dz-varianti]", []);
+  var GREZZE = leggiJSON("[data-dz-varianti]", []);
   var TABELLE = leggiJSON("[data-dz-tabelle-taglie]", {});
-  if (!VARIANTI.length) return;
+  var NOME = leggiJSON("[data-dz-prodotto-nome]", "");
+  if (!GREZZE.length) return;
+
+  /* Taglia e colore non sempre esistono come opzioni: nel catalogo importato
+     stanno dentro il titolo della variante. Qui li ricaviamo, senza toccare i dati. */
+  var TAGLIE = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+
+  function ricavaTaglia(titolo) {
+    var parole = String(titolo).replace(/[\/(),]/g, " ").split(/\s+/).filter(Boolean);
+    for (var i = parole.length - 1; i >= 0; i--) {
+      var w = parole[i].toUpperCase();
+      if (TAGLIE.indexOf(w) !== -1) return w;
+      if (/^(4[4-9]|5[0-9]|6[0-4])$/.test(w)) return w;
+    }
+    return "";
+  }
+
+  function ricavaColore(titolo) {
+    var s = String(titolo);
+    String(NOME).split(/\s+/).forEach(function (w) {
+      if (w.length >= 2) s = s.replace(new RegExp("\\b" + w.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b", "gi"), " ");
+    });
+    return s
+      .replace(/\bbike\b/gi, " ")
+      .replace(/\((?:EU|TW|IT|DE|US|CH)\)/gi, " ")
+      .replace(/\b[A-Z]{4}\b\s*\/?/g, " ")
+      .replace(/\b(XXS|XS|S|M|L|XL|XXL|XXXL)\b/g, " ")
+      .replace(/\b(4[4-9]|5[0-9]|6[0-4])\b/g, " ")
+      .replace(/\s{2,}/g, " ")
+      .replace(/^[\s\/\-–]+|[\s\/\-–]+$/g, "")
+      .trim();
+  }
+
+  var VARIANTI = GREZZE.map(function (v) {
+    var t = v.taglia_vera || ricavaTaglia(v.titolo);
+    var c = v.colore_vero || ricavaColore(v.titolo);
+    if (c === "Default Title" || c === t) c = "";
+    return { id: v.id, taglia: t, colore: c, disponibile: v.disponibile,
+             prezzo: v.prezzo, listino: v.listino, prezzo_html: v.prezzo_html, foto: "" };
+  });
 
   var $ = function (s) { return sezione.querySelector(s); };
   var euro = function (n) {

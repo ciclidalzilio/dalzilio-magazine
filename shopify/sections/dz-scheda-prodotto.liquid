@@ -19,8 +19,6 @@
     assign sconto = diff | divided_by: p.compare_at_price | round
   endif
 
-  assign taglie_lettera = 'XXS,XS,S,M,L,XL,XXL,XXXL' | split: ','
-  assign taglie_numero = '44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64' | split: ','
 -%}
 
 <section class="dz" data-dz-prodotto>
@@ -113,6 +111,16 @@
             <div class="dz-sizes" data-dz-taglie></div>
           </div>
 
+          <noscript>
+            <select name="id" style="width:100%;padding:12px;border-radius:12px;border:1px solid rgba(18,20,42,.18);margin-bottom:12px">
+              {%- for v in p.variants -%}
+                <option value="{{ v.id }}"{% unless v.available %} disabled{% endunless %}>
+                  {{ v.title }} · {{ v.price | money }}{% unless v.available %} (non disponibile){% endunless %}
+                </option>
+              {%- endfor -%}
+            </select>
+          </noscript>
+
           <div class="dz-buy">
             <div class="dz-qty">
               <button type="button" data-dz-q="-1" aria-label="Diminuisci">−</button>
@@ -179,66 +187,42 @@
     Dati varianti per il JavaScript. La taglia è ricavata dal titolo:
     nessuna modifica al catalogo, il feed FTP resta intatto.
   {%- endcomment -%}
+  {%- comment -%}
+    Dati varianti per il JavaScript: solo campi semplici, nessuna elaborazione
+    in Liquid. Taglia e colore vengono ricavati dal titolo lato browser, dove
+    si possono usare le espressioni regolari. Nessun dato viene modificato.
+  {%- endcomment -%}
   <script type="application/json" data-dz-varianti>
-  [
+    [
     {%- for v in p.variants -%}
       {%- liquid
-        assign taglia = ''
-        assign colore = ''
-
+        assign taglia_vera = ''
+        assign colore_vero = ''
         for opzione in p.options_with_values
-          assign nome = opzione.name | downcase
-          assign i = forloop.index0
-          if nome == 'taglia' or nome == 'size'
-            assign taglia = v.options[i]
+          assign nome_opt = opzione.name | downcase
+          assign k = forloop.index0
+          if nome_opt == 'taglia' or nome_opt == 'size'
+            assign taglia_vera = v.options[k]
           endif
-          if nome == 'colore' or nome == 'color'
-            assign colore = v.options[i]
+          if nome_opt == 'colore'
+            assign colore_vero = v.options[k]
           endif
         endfor
-
-        if taglia == blank
-          assign pulito = v.title | replace: '/', ' ' | replace: '(', ' ' | replace: ')', ' ' | replace: ',', ' '
-          assign parole = pulito | split: ' '
-          assign ultimo = parole.size | minus: 1
-          for k in (0..ultimo)
-            assign idx = ultimo | minus: k
-            assign par = parole[idx] | strip | upcase
-            if taglie_lettera contains par
-              assign taglia = par
-              break
-            endif
-            if taglie_numero contains par
-              assign taglia = par
-              break
-            endif
-          endfor
-        endif
-
-        if colore == blank
-          assign colore = v.title
-        endif
-        if colore == 'Default Title'
-          assign colore = ''
-        endif
       -%}
-      {
-        "id": {{ v.id }},
-        "taglia": {{ taglia | strip | json }},
-        "colore": {{ colore | strip | json }},
-        "disponibile": {{ v.available | json }},
-        "prezzo": {{ v.price | divided_by: 100.0 }},
-        "listino": {{ v.compare_at_price | default: 0 | divided_by: 100.0 }},
-        "prezzo_html": {{ v.price | money | json }},
-        "foto": {{ v.featured_media | image_url: width: 1400 | default: '' | json }}
-      }{% unless forloop.last %},{% endunless %}
+      {"id": {{ v.id }},
+       "titolo": {{ v.title | json }},
+       "taglia_vera": {{ taglia_vera | json }},
+       "colore_vero": {{ colore_vero | json }},
+       "disponibile": {{ v.available | json }},
+       "prezzo": {{ v.price | divided_by: 100.0 }},
+       "listino": {{ v.compare_at_price | default: 0 | divided_by: 100.0 }},
+       "prezzo_html": {{ v.price | money | json }}}{% unless forloop.last %},{% endunless %}
     {%- endfor -%}
-  ]
+    ]
   </script>
 
-  <script type="application/json" data-dz-tabelle-taglie>
-    {{ section.settings.tabelle_taglie }}
-  </script>
+  <script type="application/json" data-dz-prodotto-nome>{{ p.title | json }}</script>
+  <script type="application/json" data-dz-tabelle-taglie>{{ section.settings.tabelle_taglie }}</script>
 </section>
 
 {{ 'dz-prodotto.css' | asset_url | stylesheet_tag }}
