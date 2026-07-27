@@ -20,6 +20,19 @@ Controllo automatico:
 node shopify/scripts/verifica-produzione.mjs
 ```
 
+## Il sincronizzatore
+
+Le disponibilità Trek/Scott arrivano da **`sync.ciclidalzilio.com`**, un
+servizio proprio (non un'app dello store Shopify). Il suo codice non è su
+GitHub: gira solo su quel server.
+
+È lui a scrivere su Shopify prodotti, varianti, prezzi e giacenze. Tracce del
+suo lavoro nei metafield: `custom.reference` (chiave di abbinamento),
+`custom.disable_price_update`, `custom.availability_expected`.
+
+**Non va disturbato.** Nessuno degli script di questo repository lo tocca, e il
+tema non deve scrivere sui prodotti.
+
 ## Le tre regole
 
 ### 1. Sul tema pubblicato non si scrive mai
