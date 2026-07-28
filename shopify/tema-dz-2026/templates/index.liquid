@@ -99,6 +99,10 @@
   </div>
 </section>
 
+<section class="block wrap" id="bike-finder" style="padding-top:20px;padding-bottom:20px">
+  {% render 'bike-finder-app', whatsapp: '393457815102' %}
+</section>
+
 <section class="wrap vals-mob"><div class="values">{% render 'dz-valori' %}</div></section>
 
 <section class="block wrap">
@@ -112,7 +116,22 @@
 
 {% section 'dz-permuta' %}
 
-<section class="block wrap"><div class="promo">
-  <div><p class="k">Paga a rate</p><h2>Da 6 a 60 rate, risposta in pochi minuti.</h2></div>
-  <a class="btn" href="/pages/finanziamenti-agevolati">Scopri i finanziamenti</a>
+{% section 'dz-instagram' %}
+
+<section class="block wrap"><div class="fin">
+  <div class="fin-l">
+    <p class="k">Finanziamento agevolato</p>
+    <h2>La bici subito. Il pagamento, con calma.</h2>
+    <p>Da <b>6 a 60 rate</b> con <b>TAN fisso</b> e risposta in pochi minuti. Simuli la rata direttamente sulla scheda di ogni bici. Anche sull'usato.</p>
+    <a class="btn" style="background:#fff;color:var(--ink)" href="/pages/finanziamenti-agevolati">Scopri i finanziamenti</a>
+  </div>
+  <div class="fin-r"><div class="fin-card">
+    <span class="fc-k">Esempio di rata</span>
+    <div class="fc-row"><span>Importo</span><b>€ 4.199</b></div>
+    <div class="fc-row"><span>Durata</span><b>48 mesi</b></div>
+    <div class="fc-big"><b>€ 100</b><span>/mese</span></div>
+    <div class="fc-bar"><i></i></div>
+    <div class="fc-legend"><span>6 mesi</span><span>60 mesi</span></div>
+    <p class="fc-note">Esempio con ammortamento alla francese. Il TAEG dipende da spese di istruttoria e imposte ed è indicato nel contratto. Salvo approvazione della finanziaria.</p>
+  </div></div>
 </div></section>

@@ -326,3 +326,35 @@ section.block{padding:60px 0}
 .fattivi a{font-size:12px;background:var(--surface);border:1px solid var(--line-strong);border-radius:999px;padding:5px 11px}
 .fattivi a::after{content:" ✕";color:var(--muted)}
 @media (max-width:960px){.listwrap{grid-template-columns:1fr}.filters{position:static}}
+
+
+/* --- banner finanziamento (come nell'anteprima) --- */
+.fin{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:36px;align-items:center;border-radius:28px;overflow:hidden;padding:46px 44px;background:linear-gradient(120deg,#141726,#2a1a4a 55%,#4a1d52);color:#fff;box-shadow:0 30px 80px -44px rgba(20,10,50,.7)}
+.fin::before{content:"";position:absolute;inset:0;background:radial-gradient(70% 130% at 88% 8%,rgba(255,122,0,.32),transparent 58%),radial-gradient(60% 120% at 10% 100%,rgba(139,47,230,.34),transparent 60%);pointer-events:none}
+.fin .fin-l,.fin .fin-r{position:relative;z-index:1}
+.fin .k{color:#ffb37a}
+.fin h2{font-size:clamp(1.7rem,3.4vw,2.45rem);letter-spacing:-.035em;font-weight:770;margin:0 0 0;max-width:15ch}
+.fin p{color:rgba(255,255,255,.78);margin:14px 0 26px;max-width:44ch;font-size:1.02rem}
+.fin p b{color:#fff;font-weight:650}
+.fin-card{background:rgba(255,255,255,.1);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.22);border-radius:20px;padding:24px}
+.fc-k{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.fc-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:12px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.16);font-size:14px;color:rgba(255,255,255,.85)}
+.fc-row b{color:#fff;font-weight:640}
+.fc-big{display:flex;align-items:baseline;gap:6px;margin:16px 0 6px}
+.fc-big b{font-size:2.6rem;font-weight:800;letter-spacing:-.035em;line-height:1;background:linear-gradient(100deg,#ffd07a,#ff8aa3 55%,#c4a9ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.fc-big span{font-size:13px;color:rgba(255,255,255,.7)}
+.fc-bar{height:5px;border-radius:999px;background:rgba(255,255,255,.16);overflow:hidden;margin:16px 0 9px}
+.fc-bar i{display:block;height:100%;width:66%;border-radius:999px;background:linear-gradient(90deg,#FF7A00,#FF2E63,#8B2FE6)}
+.fc-legend{display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.62)}
+.fc-note{font-size:11.5px;color:rgba(255,255,255,.6);line-height:1.5;margin:12px 0 0}
+@media (max-width:960px){.fin{grid-template-columns:1fr;gap:26px;padding:38px 30px}}
+@media (max-width:560px){.fin{padding:30px 22px}.fin-card{padding:20px}}
+
+/* --- banda instagram --- */
+.dz-ig{margin:20px 0}
+.dz-ig-band{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:62px;padding:18px 20px;
+  background:linear-gradient(135deg,#383a3c 0%,#292b2d 55%,#222426 100%);color:#fff;
+  font-weight:800;font-style:italic;font-size:clamp(17px,2.4vw,26px);letter-spacing:-.4px;text-transform:uppercase;
+  box-shadow:0 8px 18px rgba(0,0,0,.12)}
+.dz-ig-band svg{width:30px;height:30px;flex-shrink:0}
+.dz-ig-band:hover{transform:translateY(-1px)}
