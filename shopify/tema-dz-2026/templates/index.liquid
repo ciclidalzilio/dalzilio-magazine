@@ -35,6 +35,15 @@
     <circle cx="240" cy="430" r="8" fill="rgba(255,255,255,.85)"/>
     <circle cx="680" cy="430" r="8" fill="rgba(255,255,255,.85)"/>
   </svg>
+  {%- comment -%}
+    La Foil vera, sfumata nella scena scura: pozza di luce dietro, fusione
+    multiply per far sparire il fondo bianco, maschera radiale sui bordi.
+    Se la foto non carica, torna la bici disegnata.
+  {%- endcomment -%}
+  <div class="hero-foil" aria-hidden="true">
+    <img src="https://cdn.shopify.com/s/files/1/0873/6885/9912/files/4253408086.png?v=1783042506&width=1200" alt="" loading="eager"
+         onerror="var b=document.querySelector('.hero .bike');if(b)b.style.display='block';this.closest('.hero-foil').remove()">
+  </div>
   <div class="veil" aria-hidden="true"></div>
   <div class="wrap hwrap">
     <p class="kicker" style="margin:0 0 18px">Nuova collezione {{ 'now' | date: '%Y' }}</p>
@@ -60,7 +69,7 @@
     <div class="lw-cell"><img src="{{ 'trek.png' | file_url }}" alt="Trek" loading="lazy"></div>
     <div class="lw-cell"><img src="{{ 'scott.png' | file_url }}" alt="Scott" loading="lazy"></div>
     <div class="lw-cell"><img src="{{ 'cnd.png' | file_url }}" alt="Cannondale" loading="lazy"></div>
-    <div class="lw-cell"><img src="{{ 'amflow-logo.png' | file_url }}" alt="Amflow" loading="lazy"></div>
+    <div class="lw-cell"><img src="{{ 'amflow.png' | file_url }}" alt="Amflow" loading="lazy"></div>
   </div>
 </div></section>
 

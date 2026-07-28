@@ -42,3 +42,51 @@
 .dz-main::after{content:"";position:absolute;left:16%;right:16%;bottom:7%;height:24px;
   background:radial-gradient(50% 100% at 50% 50%,rgba(18,20,42,.16),transparent 72%);
   filter:blur(4px);pointer-events:none}
+
+/* hero home: la scott foil reale, sfumata e integrata nella scena scura */
+.hero .bike{display:none}
+.hero-foil{position:absolute;right:max(1vw,8px);bottom:0;width:min(54vw,760px);aspect-ratio:5/3.4;z-index:-2;
+  display:grid;place-items:center;
+  background:radial-gradient(58% 64% at 50% 48%,rgba(236,239,244,.96),rgba(236,239,244,0) 70%);
+  -webkit-mask-image:radial-gradient(75% 75% at 50% 50%,#000 46%,transparent 80%);
+  mask-image:radial-gradient(75% 75% at 50% 50%,#000 46%,transparent 80%)}
+.hero-foil img{width:88%;mix-blend-mode:multiply;filter:contrast(1.05) saturate(1.04)}
+@media (max-width:960px){
+  .hero-foil{right:50%;transform:translateX(50%);width:min(88vw,520px)}
+}
+
+/* bike finder: copertina in stile automotive (porsche/audi) */
+.bfc__card{background:radial-gradient(85% 130% at 80% 20%,#262a35 0%,#15161d 52%,#0c0d12 100%)!important;
+  border:1px solid rgba(255,255,255,.08)!important;box-shadow:0 40px 90px -50px rgba(0,0,0,.85)!important}
+.bfc__card::before{opacity:.22!important}
+.bfc__card--img{
+  background-image:
+    linear-gradient(to right,#101218 0%,rgba(16,18,24,.92) 34%,rgba(16,18,24,.25) 58%,rgba(16,18,24,0) 78%),
+    var(--bfc-img),
+    radial-gradient(48% 66% at 72% 50%,#e9ecf1,rgba(233,236,241,0) 72%)!important;
+  background-size:auto,contain,auto!important;
+  background-position:left center,right 28px center,right center!important;
+  background-repeat:no-repeat!important;
+  background-color:#0c0d12!important;
+  background-blend-mode:normal,multiply,normal!important}
+.bfc__eyebrow{color:#ffb27a!important}
+.bfc__title{color:#fff!important}
+.bfc__sub{color:rgba(255,255,255,.72)!important}
+.bfc__trust{color:rgba(255,255,255,.5)!important}
+.bfc__btn{background:#fff!important;color:#101317!important}
+@media (max-width:749px){
+  .bfc__card--img{
+    background-image:
+      linear-gradient(to top,#101218 0%,rgba(16,18,24,.92) 40%,rgba(16,18,24,.1) 66%,rgba(16,18,24,0) 80%),
+      var(--bfc-img),
+      radial-gradient(75% 45% at 50% 22%,#e9ecf1,rgba(233,236,241,0) 72%)!important;
+    background-size:auto,88% auto,auto!important;
+    background-position:bottom center,center top 16px,center top!important}
+}
+
+/* proporzioni: piu respiro dove il contenuto era schiacciato */
+@media (min-width:961px){.hero .hwrap{padding-top:88px;padding-bottom:88px}}
+.bfc__content{padding:52px 48px!important;max-width:600px!important}
+.logowall{padding:28px 22px}
+.heroStats{margin-top:38px}
+.dzs-frow{padding:44px 24px}
