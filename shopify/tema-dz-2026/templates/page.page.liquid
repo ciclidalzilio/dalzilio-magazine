@@ -1,0 +1,28 @@
+{%- comment -%}
+  Le pagine esistenti del negozio usano il suffisso "page" (impostato dal tema
+  attuale): questo template smista il contenuto giusto in base all'handle,
+  senza toccare le impostazioni delle pagine condivise col tema pubblicato.
+{%- endcomment -%}
+{%- case page.handle -%}
+
+{%- when 'chi-siamo' -%}
+  {% render 'dz-pagina-chi-siamo', page: page %}
+
+{%- when 'trova-la-tua-bici' -%}
+  <div class="wrap">
+    <nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>{{ page.title }}</b></nav>
+    <div class="ltop"><div><h1>Trova la tua bici</h1><div class="sub">Rispondi a poche domande: ti indichiamo i modelli giusti per te.</div></div></div>
+  </div>
+  <section class="block wrap" style="padding-top:8px">
+    {% render 'bike-finder-app', whatsapp: '393457815102' %}
+  </section>
+
+{%- else -%}
+  <div class="wrap" style="max-width:860px">
+    <nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>{{ page.title }}</b></nav>
+    <div class="ltop"><div><h1>{{ page.title }}</h1></div></div>
+    <div style="color:var(--ink-2);line-height:1.7;font-size:15.5px">{{ page.content }}</div>
+  </div>
+  <div style="height:40px"></div>
+
+{%- endcase -%}

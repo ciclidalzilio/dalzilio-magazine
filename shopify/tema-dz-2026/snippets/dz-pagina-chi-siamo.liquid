@@ -1,0 +1,56 @@
+{%- comment -%}
+  Contenuto della pagina Chi Siamo. Usato sia da page.chi-siamo.liquid
+  sia da page.page.liquid (le pagine del sito hanno il suffisso "page").
+{%- endcomment -%}
+<div class="wrap"><nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>{{ page.title }}</b></nav></div>
+
+<div class="sv-hero">
+  <img class="bg" src="{{ 'L1020273.jpg' | file_url }}" alt="" loading="eager">
+  <div class="sv-veil"></div>
+  <div class="wrap" style="position:relative;z-index:3;width:100%"><div class="sv-in">
+    <p class="kicker" style="color:#ffb27a;margin:0 0 12px">Chi siamo</p>
+    <h1>Due fratelli, una storia su due ruote.</h1>
+  </div></div>
+</div>
+
+<div class="wrap">
+  <section class="block" style="padding-bottom:26px">
+    <p class="cs-lede">Siamo partiti nel <b>2011</b>, due fratelli e un negozio di <b>30 metri quadri</b>. Pochi attrezzi, tanta passione e un'idea chiara: trattare ogni cliente come vorremmo essere trattati noi. Con il tempo quella stanza è diventata uno showroom, poi due sedi, e i marchi che sognavamo da ragazzi hanno iniziato a fidarsi di noi.</p>
+  </section>
+
+  <section class="block" style="padding-top:0;padding-bottom:26px">
+    <div class="head"><div><p class="k">Siamo noi</p><h2>I fratelli Dal Zilio</h2></div></div>
+    <div class="team">
+      <div class="tcard"><div class="tph"><img src="{{ 'L1030459.jpg' | file_url }}" alt="Nicolò Dal Zilio" loading="lazy"></div><div class="tin"><b>Nicolò Dal Zilio</b><span>Co-founder · dal 2011</span></div></div>
+      <div class="tcard"><div class="tph"><img src="{{ 'L1030464.jpg' | file_url }}" alt="Marco Dal Zilio" loading="lazy"></div><div class="tin"><b>Marco Dal Zilio</b><span>Co-founder · dal 2011</span></div></div>
+    </div>
+    <div class="head" style="margin-top:44px"><div><p class="k">Il team</p><h2>Chi lavora con noi</h2></div></div>
+    <div class="team wide">
+      <div class="tcard"><div class="tph"><img src="{{ 'L1030462.jpg' | file_url }}" alt="Alessandro Migliore" loading="lazy"></div><div class="tin"><b>Alessandro Migliore</b><span>Meccanico</span></div></div>
+      <div class="tcard"><div class="tph"><img src="{{ '4a2eb4ae-9d7a-43ce-b0a7-a1f4ebbef5bd.png' | file_url }}" alt="Luca Muner" loading="lazy"></div><div class="tin"><b>Luca Muner</b><span>Meccanico</span></div></div>
+      <div class="tcard"><div class="tph"><img src="{{ 'L1030452.jpg' | file_url }}" alt="Giovanni Polo" loading="lazy"></div><div class="tin"><b>Giovanni Polo</b><span>Venditore</span></div></div>
+      <div class="tcard"><div class="tph"><img src="{{ 'matteo-pegoraro.jpg' | file_url }}" alt="Matteo Pegoraro" loading="lazy" onerror="this.remove()"></div><div class="tin"><b>Matteo Pegoraro</b><span>Venditore</span></div></div>
+      <div class="tcard"><div class="tph"><img src="{{ 'Schermata_2025-11-10_alle_16.24.22.png' | file_url }}" alt="Riccardo Di Giacomo" loading="lazy"></div><div class="tin"><b>Riccardo Di Giacomo</b><span>Marketing</span></div></div>
+    </div>
+  </section>
+
+  <section class="block" style="padding-top:0"><div class="cs-tl">
+    <div class="cs-step"><span class="cs-dot"></span><div><span class="cs-anno">2011</span><b>Si parte da 30 m²</b><p>Due fratelli aprono il primo negozio: trenta metri quadri di bici, riparazioni e passaparola.</p></div></div>
+    <div class="cs-step"><span class="cs-dot"></span><div><span class="cs-anno">I primi marchi</span><b>La fiducia delle case madri</b><p>Con il tempo arrivano i primi mandati ufficiali: il negozio cresce, l'officina si specializza.</p></div></div>
+    <div class="cs-step"><span class="cs-dot"></span><div><span class="cs-anno">La crescita</span><b>Showroom e service sospensioni</b><p>Più spazio, più modelli e un service dedicato alle sospensioni RockShox, Fox e Lefty Cannondale.</p></div></div>
+    <div class="cs-step"><span class="cs-dot"></span><div><span class="cs-anno">Due sedi</span><b>Montebelluna e Quinto di Treviso</b><p>La seconda sede ci avvicina a più ciclisti, con gli stessi volti e lo stesso modo di lavorare.</p></div></div>
+    <div class="cs-step"><span class="cs-dot"></span><div><span class="cs-anno">Oggi</span><b>Rivenditori ufficiali TREK, SCOTT, Cannondale e Amflow</b><p>Centinaia di modelli a catalogo, usato garantito, finanziamenti e un'officina che è il cuore di tutto.</p></div></div>
+  </div></section>
+
+  <section class="block" style="padding-top:6px"><div class="cs-nums">
+    <div><b>2011</b><span>L'ANNO DI PARTENZA</span></div>
+    <div><b>30 m²</b><span>IL PRIMO NEGOZIO</span></div>
+    <div><b>2 sedi</b><span>MONTEBELLUNA · QUINTO</span></div>
+    <div><b>4 brand</b><span>RIVENDITORI UFFICIALI</span></div>
+  </div></section>
+
+  <section class="block" style="padding-top:0"><div class="promo">
+    <div><p class="k">Vieni a conoscerci</p><h2>Le bici si scelgono di persona.</h2></div>
+    <a class="btn" href="/pages/contact">Dove siamo →</a>
+  </div></section>
+</div>

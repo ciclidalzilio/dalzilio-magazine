@@ -1,0 +1,56 @@
+{%- comment -%}
+  dz-modello.liquid — numeri chiave e banda immagine full-width del modello,
+  come nell'anteprima. Taglie, colorazioni e rata vengono riempite da
+  dz-prodotto.js leggendo le varianti già presenti in pagina.
+{%- endcomment -%}
+
+{%- liquid
+  assign p = product
+-%}
+
+<section class="dzs dzs-figs">
+  <div class="dzs-in dzs-frow">
+    <div class="dzs-fig"><b>A vita</b><span>Garanzia sul telaio</span></div>
+    <div class="dzs-fig" data-dz-fig-colori-wrap><b data-dz-fig-colori>2 anni</b><span data-dz-fig-colori-label>Sui componenti</span></div>
+    <div class="dzs-fig"><b data-dz-fig-taglie>{{ p.variants.size }}</b><span>Taglie</span></div>
+    <div class="dzs-fig"><b><span data-dz-fig-rata>—</span><em>/mese</em></b><span>In <span data-dz-fig-mesi>48</span> rate</span></div>
+  </div>
+</section>
+
+<section class="dzs dzs-feat">
+  <div class="dzs-featimg">
+    {%- assign foto2 = p.media[1] | default: p.featured_media -%}
+    {%- if foto2 -%}
+      <img src="{{ foto2 | image_url: width: 1400 }}" alt="{{ p.title | escape }}" loading="lazy">
+    {%- endif -%}
+  </div>
+  <div class="dzs-feattxt">
+    <p class="dzs-k">{{ section.settings.occhiello }}</p>
+    <h2 class="dzs-h2f">Costruita per <b>durare oltre l'uscita di oggi.</b></h2>
+    <p>
+      {%- if p.description != blank -%}
+        {{ p.description | strip_html | truncate: 220 }}
+      {%- else -%}
+        Nuovo arrivo a catalogo: appena caricato dal feed ufficiale {{ p.vendor }}. Scrivici su WhatsApp per taglie, disponibilità e tempi di consegna.
+      {%- endif -%}
+    </p>
+    <ul class="dzs-flist">
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Montaggio e controllo pre-consegna nella nostra officina</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Regolazione di sella e posizione inclusa al ritiro</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Garanzia a vita sul telaio, 2 anni sui componenti</li>
+    </ul>
+  </div>
+</section>
+
+{{ 'dz-sezioni.css' | asset_url | stylesheet_tag }}
+
+{% schema %}
+{
+  "name": "DZ · Il modello",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "occhiello", "label": "Occhiello", "default": "Il modello" }
+  ],
+  "presets": [{ "name": "DZ · Il modello" }]
+}
+{% endschema %}

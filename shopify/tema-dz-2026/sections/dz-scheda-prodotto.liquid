@@ -22,6 +22,15 @@
 -%}
 
 <section class="dz" data-dz-prodotto>
+
+  {%- comment -%} barra che resta fissa scorrendo: modello, prezzo, aggiungi {%- endcomment -%}
+  <div class="dz-pdpbar" data-dz-pdpbar>
+    <div class="dz-pdpbin">
+      <span class="nm"><b>{{ p.title }}</b><span><span data-dz-bar-prezzo>{{ p.price | money }}</span> · da <span data-dz-bar-rata></span>/mese</span></span>
+      <button type="button" class="dz-btn dz-primary" data-dz-bar-add>Aggiungi al carrello</button>
+    </div>
+  </div>
+
   <div class="dz-wrap">
 
     <nav class="dz-crumb" aria-label="Percorso">
@@ -159,11 +168,6 @@
           </a>
         {%- endif -%}
 
-        <div class="dz-klarna" aria-label="Paga in 3 rate con Klarna">
-          <span class="dz-kb">Klarna.</span>
-          <div><b>Paga in 3 rate senza interessi</b><span class="dz-ksub">3 × {{ p.price | divided_by: 3 | money }}, senza costi aggiuntivi</span></div>
-        </div>
-
         {%- if section.settings.tan > 0 -%}
           <div class="dz-fin" data-dz-fin
                data-prezzo="{{ p.price | divided_by: 100.0 }}"
@@ -187,6 +191,11 @@
             <p class="dz-fin-note">{{ section.settings.nota_fin }}</p>
           </div>
         {%- endif -%}
+
+        <div class="dz-klarna" aria-label="Paga in 3 rate con Klarna">
+          <span class="dz-kb">Klarna.</span>
+          <div><b>Paga in 3 rate senza interessi</b><span class="dz-ksub">3 × {{ p.price | divided_by: 3 | money }}, senza costi aggiuntivi</span></div>
+        </div>
 
         {%- liquid
           assign sped = 'Spedizione gratuita in Italia'

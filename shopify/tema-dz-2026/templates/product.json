@@ -94,6 +94,10 @@
         "p3"
       ]
     },
+    "modello": {
+      "type": "dz-modello",
+      "settings": {}
+    },
     "correlati": {
       "type": "dz-correlati",
       "settings": {}
@@ -182,6 +186,7 @@
   "order": [
     "prodotto",
     "perche",
+    "modello",
     "permuta",
     "correlati",
     "faq"

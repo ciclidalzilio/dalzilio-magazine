@@ -1,7 +1,33 @@
 {%- comment -%}
   Contatti / Dove siamo — sedi reali, orari veri, modulo e mappe con indicazioni.
-  Assegnarla alla pagina "CONTATTI" da: pagina → modello → page.contact.
+  Nota: anche la pagina "Permuta il tuo usato" usa il suffisso "contact"
+  (ereditato dal tema attuale), quindi qui si smista in base all'handle.
 {%- endcomment -%}
+{%- if page.handle == 'permuta-il-tuo-usato' -%}
+<div class="wrap">
+  <nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>{{ page.title }}</b></nav>
+  <div class="ltop"><div><h1>Permuta il tuo usato</h1><div class="sub">Valutazione a distanza e ritiro a casa tua, in tutta Italia.</div></div></div>
+</div>
+
+<section class="block wrap" style="padding-top:10px">
+  <div class="values" style="grid-template-columns:repeat(3,1fr)">
+    <div class="val"><span class="ic"><b style="font-size:15px">1</b></span><div><b>Mandaci le foto</b><span>Modello, anno e stato della bici: bastano pochi minuti su WhatsApp.</span></div></div>
+    <div class="val"><span class="ic"><b style="font-size:15px">2</b></span><div><b>Ricevi la valutazione</b><span>Quotazione gratuita e senza impegno, di solito in giornata.</span></div></div>
+    <div class="val"><span class="ic"><b style="font-size:15px">3</b></span><div><b>Ritiriamo noi, a casa tua</b><span>Spedizione organizzata da noi in tutta Italia. L'importo va subito in permuta sulla nuova.</span></div></div>
+  </div>
+  <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:26px">
+    <a class="btn wa" target="_blank" rel="noopener noreferrer" href="https://wa.me/393457815102?text={{ 'Ciao! Vorrei far valutare la mia bici usata per una permuta. Vi mando le foto.' | url_encode }}">Manda le foto su WhatsApp</a>
+    <a class="btn ghost" href="/collections/usato-1">Vedi l'usato garantito</a>
+  </div>
+  <p style="color:var(--muted);font-size:13px;margin-top:18px;max-width:60ch">La permuta si applica all'acquisto di bici nuove a partire da € 2.500 e non in forte sconto. Non è disponibile su usato, accessori e ricambi.</p>
+</section>
+
+<section class="block wrap" style="padding-top:0"><div class="promo">
+  <div><p class="k">Preferisci parlarne di persona?</p><h2>Porta la tua bici in negozio.</h2></div>
+  <a class="btn" href="/pages/contact">Dove siamo →</a>
+</div></section>
+
+{%- else -%}
 <div class="wrap">
   <nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>{{ page.title }}</b></nav>
   <div class="ltop"><div><h1>Dove siamo</h1><div class="sub">Due sedi, la stessa passione dal 2011.</div></div></div>
@@ -51,3 +77,4 @@
     </div>
   </section>
 </div>
+{%- endif -%}

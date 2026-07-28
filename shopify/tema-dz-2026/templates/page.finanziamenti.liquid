@@ -1,0 +1,37 @@
+{%- comment -%}
+  Finanziamenti agevolati — la pagina esistente usa il suffisso "finanziamenti".
+{%- endcomment -%}
+<div class="wrap">
+  <nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>{{ page.title }}</b></nav>
+  <div class="ltop"><div><h1>Finanziamenti agevolati</h1><div class="sub">La bici subito, il pagamento con calma. Anche sull'usato.</div></div></div>
+</div>
+
+<section class="block wrap" style="padding-top:10px"><div class="fin">
+  <div class="fin-l">
+    <p class="k">Come funziona</p>
+    <h2>Da 6 a 60 rate, con TAN fisso.</h2>
+    <p>Scegli la bici, decidi la durata e ottieni una <b>risposta in pochi minuti</b>, direttamente in negozio o a distanza. La rata la simuli sulla scheda di ogni bici. Vale anche su <b>usato garantito</b> e accessori.</p>
+    <a class="btn wa" target="_blank" rel="noopener noreferrer" href="https://wa.me/393457815102?text={{ 'Ciao! Vorrei una simulazione di finanziamento.' | url_encode }}">Chiedi una simulazione su WhatsApp</a>
+  </div>
+  <div class="fin-r"><div class="fin-card">
+    <span class="fc-k">Esempio di rata</span>
+    <div class="fc-row"><span>Importo</span><b>€ 4.199</b></div>
+    <div class="fc-row"><span>Durata</span><b>48 mesi</b></div>
+    <div class="fc-big"><b>€ 100</b><span>/mese</span></div>
+    <div class="fc-bar"><i></i></div>
+    <div class="fc-legend"><span>6 mesi</span><span>60 mesi</span></div>
+    <p class="fc-note">Esempio con ammortamento alla francese. Il TAEG dipende da spese di istruttoria e imposte ed è indicato nel contratto. Salvo approvazione della finanziaria.</p>
+  </div></div>
+</div></section>
+
+<section class="wrap" style="padding-bottom:20px"><div class="values">
+  <div class="val"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><b>Risposta rapida</b><span>Esito in pochi minuti, in negozio o a distanza.</span></div></div>
+  <div class="val"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v10H4z"/><path d="M4 10h16"/></svg></span><div><b>Klarna in 3 rate</b><span>Sotto soglia puoi pagare in 3 rate senza interessi al check-out.</span></div></div>
+  <div class="val"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V7z"/></svg></span><div><b>Zero sorprese</b><span>TAN fisso, condizioni chiare, tutto scritto nel contratto.</span></div></div>
+  <div class="val"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12l3 3 5-6"/><circle cx="12" cy="12" r="9"/></svg></span><div><b>Anche sull'usato</b><span>Il finanziamento vale su tutto il catalogo, usato compreso.</span></div></div>
+</div></section>
+
+<section class="block wrap" style="padding-top:20px"><div class="promo">
+  <div><p class="k">Hai già scelto il modello?</p><h2>Simula la rata sulla sua scheda.</h2></div>
+  <a class="btn" href="{{ routes.all_products_collection_url }}">Vai al catalogo →</a>
+</div></section>

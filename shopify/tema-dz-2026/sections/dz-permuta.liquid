@@ -19,37 +19,42 @@
   {%- endif -%}
 {%- endif -%}
 {%- if mostra_permuta -%}
-<section class="dzs dzs-trade">
-  <div class="dzs-in dzs-trade-grid">
-    <div class="dzs-trade-txt">
-      <p class="dzs-k">{{ section.settings.occhiello }}</p>
-      <h2 class="dzs-h2">{{ section.settings.titolo }}</h2>
-      <p class="dzs-lede">{{ section.settings.testo }}</p>
+<section class="dzs dzs-feat dzs-rev">
+  <div class="dzs-featimg dzs-permvis" aria-hidden="true">
+    <div class="dzs-pvbg"></div>
+    <div class="dzs-chat">
+      <div class="dzs-pchead"><span class="dzs-pcav">DZ</span><div><b>Cicli Dal Zilio</b><span>online ora</span></div></div>
+      <div class="dzs-pcb me">Ciao! Vi mando le foto della mia bici per la permuta 📷</div>
+      <div class="dzs-pcb shop">Bella! La valutiamo <b>€ 1.850</b>: vale subito come acconto sulla nuova.</div>
+      <div class="dzs-pcb shop">La ritiriamo gratis a casa tua, in tutta Italia.</div>
+    </div>
+    <span class="dzs-pill">{{ section.settings.pill }}</span>
+  </div>
+  <div class="dzs-feattxt">
+    <p class="dzs-k">{{ section.settings.occhiello }}</p>
+    <h2 class="dzs-h2f">La tua vecchia bici <b>vale, ovunque tu sia.</b></h2>
+    <p>{{ section.settings.testo }}</p>
 
-      <div class="dzs-steps">
-        {%- for block in section.blocks -%}
-          <div class="dzs-step" {{ block.shopify_attributes }}>
-            <span class="dzs-n">{{ forloop.index }}</span>
-            <div><b>{{ block.settings.titolo }}</b><span>{{ block.settings.testo }}</span></div>
-          </div>
-        {%- endfor -%}
-      </div>
-
-      <div class="dzs-cta">
-        {%- if section.settings.whatsapp != blank -%}
-          <a class="dzs-btn dzs-wa" target="_blank" rel="noopener"
-             href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'Ciao! Vorrei far valutare la mia bici usata per una permuta. Vi mando le foto.' | url_encode }}">
-            Manda le foto su WhatsApp
-          </a>
-        {%- endif -%}
-        {%- if section.settings.collezione != blank -%}
-          <a class="dzs-btn dzs-ghost" href="{{ collections[section.settings.collezione].url }}">Vedi l'usato garantito</a>
-        {%- endif -%}
-      </div>
+    <div class="dzs-steps">
+      {%- for block in section.blocks -%}
+        <div class="dzs-step" {{ block.shopify_attributes }}>
+          <span class="dzs-n">{{ forloop.index }}</span>
+          <div><b>{{ block.settings.titolo }}</b><span>{{ block.settings.testo }}</span></div>
+        </div>
+      {%- endfor -%}
     </div>
 
-    <div class="dzs-trade-art">
-      <span class="dzs-pill">{{ section.settings.pill }}</span>
+    <div class="dzs-cta">
+      {%- if section.settings.whatsapp != blank -%}
+        <a class="dzs-btn dzs-wa" target="_blank" rel="noopener"
+           href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'Ciao! Vorrei far valutare la mia bici usata per una permuta. Vi mando le foto.' | url_encode }}">
+          Valuta la mia permuta
+        </a>
+      {%- endif -%}
+      <a class="dzs-btn dzs-ghost" href="/pages/permuta-il-tuo-usato">Come funziona</a>
+      {%- if section.settings.collezione != blank -%}
+        <a class="dzs-btn dzs-ghost" href="{{ collections[section.settings.collezione].url }}">Vedi l'usato garantito</a>
+      {%- endif -%}
     </div>
   </div>
 </section>

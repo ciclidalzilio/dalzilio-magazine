@@ -106,6 +106,8 @@
     if (prezzo) prezzo.textContent = v.prezzo_html;
     var prezzoBtn = $("[data-dz-prezzo-btn]");
     if (prezzoBtn) prezzoBtn.textContent = v.prezzo_html;
+    var prezzoBar = $("[data-dz-bar-prezzo]");
+    if (prezzoBar) prezzoBar.textContent = v.prezzo_html;
 
     var listino = $("[data-dz-listino]");
     var sconto = $("[data-dz-sconto]");
@@ -251,6 +253,12 @@
 
     var da = $("[data-dz-rata]");
     if (da) da.textContent = euro(Math.round(rata));
+    var barRata = $("[data-dz-bar-rata]");
+    if (barRata) barRata.textContent = euro(Math.round(rata));
+    var figRata = document.querySelector("[data-dz-fig-rata]");
+    if (figRata) figRata.textContent = euro(Math.round(rata));
+    var figMesi = document.querySelector("[data-dz-fig-mesi]");
+    if (figMesi) figMesi.textContent = mesi;
     if (box) {
       var r = $("[data-dz-fin-rata]");
       var m = $("[data-dz-fin-mesi]");
@@ -319,6 +327,40 @@
   /* ---------- avvio ---------- */
   disegnaColori();
   aggiorna();
+
+  /* ---------- barra fissa: compare quando la galleria esce dalla vista ---------- */
+  var barra = sezione.querySelector("[data-dz-pdpbar]");
+  var galleria = sezione.querySelector(".dz-gallery");
+  if (barra && galleria && "IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (voci) {
+      barra.classList.toggle("show", !voci[0].isIntersecting);
+    }, { rootMargin: "-140px 0px 0px 0px", threshold: 0 });
+    io.observe(galleria);
+
+    var barraAdd = barra.querySelector("[data-dz-bar-add]");
+    if (barraAdd) {
+      barraAdd.addEventListener("click", function () {
+        var principale = $("[data-dz-aggiungi]");
+        if (principale && !principale.disabled) principale.click();
+        else window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
+  }
+
+  /* ---------- numeri chiave sotto la scheda ---------- */
+  var figTaglie = document.querySelector("[data-dz-fig-taglie]");
+  if (figTaglie) {
+    var setT = {};
+    VARIANTI.forEach(function (v) { if (v.taglia) setT[v.taglia] = 1; });
+    var quante = Object.keys(setT).length;
+    if (quante) figTaglie.textContent = quante;
+  }
+  if (colori.length > 0) {
+    var figColori = document.querySelector("[data-dz-fig-colori]");
+    var figColoriLabel = document.querySelector("[data-dz-fig-colori-label]");
+    if (figColori) figColori.textContent = colori.length;
+    if (figColoriLabel) figColoriLabel.textContent = colori.length === 1 ? "Colorazione" : "Colorazioni";
+  }
 
   /* ---------- zoom foto: si apre al massimo restando tutta nello schermo ---------- */
   var zb = document.querySelector("[data-dz-zoombox]");

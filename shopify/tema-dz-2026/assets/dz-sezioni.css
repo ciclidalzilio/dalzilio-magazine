@@ -75,3 +75,49 @@
   .dzs-relgrid{grid-template-columns:repeat(2,1fr)}
   .dzs-relhead{flex-direction:column;align-items:flex-start}
 }
+
+/* --- numeri chiave (come nell'anteprima) --- */
+.dzs-figs{border-bottom:1px solid var(--l);background:linear-gradient(120deg,#faf5f7,#f6f2fb)}
+.dzs-frow{padding:52px 24px;display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.dzs-fig{display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.dzs-fig b{font-size:clamp(1.7rem,3.2vw,2.7rem);font-weight:300;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.dzs-fig b em{font-style:normal;font-size:.4em;font-weight:500;letter-spacing:-.01em;margin-left:4px;color:var(--m)}
+.dzs-fig span{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--m2);line-height:1.5}
+
+/* --- bande immagine full-width --- */
+.dzs-feat{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:0;border-bottom:1px solid var(--l);background:var(--s)}
+.dzs-feat.dzs-rev .dzs-featimg{order:2}
+.dzs-featimg{position:relative;min-height:440px;overflow:hidden;background:linear-gradient(135deg,#b45309,#f59e0b 60%,#fcd34d);display:grid;place-items:center}
+.dzs-featimg img{width:100%;height:100%;object-fit:contain;position:absolute;inset:0;mix-blend-mode:multiply;padding:6%}
+.dzs-feattxt{padding:64px 56px}
+.dzs-h2f{font-size:clamp(1.6rem,3vw,2.3rem);letter-spacing:-.035em;font-weight:400;margin:0;max-width:18ch;line-height:1.12}
+.dzs-h2f b{font-weight:740}
+.dzs-feattxt>p{color:var(--m);margin:18px 0 0;max-width:42ch;font-size:1.02rem;line-height:1.65}
+.dzs-flist{margin:22px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px}
+.dzs-flist li{display:flex;gap:10px;align-items:flex-start;font-size:14.5px;color:var(--i)}
+.dzs-flist svg{width:17px;height:17px;color:#FF2E63;flex-shrink:0;margin-top:2px}
+.dzs-feattxt .dzs-steps{margin:22px 0 0}
+.dzs-feattxt .dzs-cta{margin-top:24px}
+
+/* --- permuta: mockup chat su gradiente --- */
+.dzs-permvis{background:none}
+.dzs-pvbg{position:absolute;inset:0;background:linear-gradient(135deg,#4c1d95,#9333ea 55%,#ff2e63)}
+.dzs-pvbg::after{content:"";position:absolute;inset:0;background:radial-gradient(80% 60% at 70% 12%,rgba(255,255,255,.2),transparent 60%)}
+.dzs-chat{position:relative;z-index:2;display:flex;flex-direction:column;gap:10px;width:min(340px,84%);padding:34px 0}
+.dzs-pchead{display:flex;align-items:center;gap:11px;background:rgba(17,19,25,.35);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.25);border-radius:15px;padding:10px 14px;color:#fff;margin-bottom:4px}
+.dzs-pcav{width:34px;height:34px;border-radius:50%;background:var(--g);display:grid;place-items:center;font-size:12px;font-weight:800;flex-shrink:0;color:#fff}
+.dzs-pchead b{font-size:13.5px;display:block;letter-spacing:-.01em}
+.dzs-pchead span{font-size:10.5px;color:#7ef2a9;display:block;margin-top:1px}
+.dzs-pcb{border-radius:15px;padding:10px 13px;font-size:13px;line-height:1.45;max-width:88%;box-shadow:0 10px 26px -14px rgba(0,0,0,.5)}
+.dzs-pcb.me{align-self:flex-end;background:#d9fdd3;color:#0d1b12;border-bottom-right-radius:5px}
+.dzs-pcb.shop{align-self:flex-start;background:#fff;color:#15161a;border-bottom-left-radius:5px}
+.dzs-pcb.shop b{font-weight:760}
+.dzs-permvis .dzs-pill{position:absolute;left:22px;bottom:22px;z-index:2}
+
+@media (max-width:960px){
+  .dzs-frow{grid-template-columns:repeat(2,1fr);gap:26px 20px;padding:38px 24px}
+  .dzs-feat{grid-template-columns:1fr}
+  .dzs-feat.dzs-rev .dzs-featimg{order:0}
+  .dzs-featimg{min-height:300px}
+  .dzs-feattxt{padding:40px 26px}
+}
