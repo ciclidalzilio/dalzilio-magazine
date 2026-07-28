@@ -60,6 +60,10 @@
           {%- endfor -%}
         </div>
         <div class="dz-main">
+          {%- comment -%} nome del modello in filigrana dietro la bici (stile GT) {%- endcomment -%}
+          {%- assign ghost = p.title | remove_first: 'Scott' | remove_first: 'SCOTT' | remove_first: 'Trek' | remove_first: 'TREK' | remove_first: 'Cannondale' | remove_first: 'CANNONDALE' | remove_first: 'Amflow' | remove_first: 'AMFLOW' | remove_first: 'Bicicletta' | strip -%}
+          {%- if ghost == blank -%}{%- assign ghost = p.title -%}{%- endif -%}
+          <span class="dz-ghost" aria-hidden="true">{{ ghost | escape | upcase }}</span>
           {%- if p.featured_media -%}
             <img id="dz-foto" src="{{ p.featured_media | image_url: width: 1400 }}"
                  alt="{{ p.featured_media.alt | escape }}" width="1400" height="1050">

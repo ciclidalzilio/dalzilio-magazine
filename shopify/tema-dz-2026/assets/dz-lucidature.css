@@ -192,3 +192,41 @@
 .dzs-cimg{background:#fff}
 .dzs-cimg img{padding:0!important;transform:scale(1.22);transition:transform .35s}
 .dzs-card:hover .dzs-cimg img{transform:scale(1.28)}
+
+/* --- scheda prodotto: innesto GT (mix col concept porsche) --- */
+:root{--gt-rosso:#d5001c}
+
+/* la scena: studio argento, bici in fusione, nome in filigrana dietro */
+.dz-main{background:radial-gradient(90% 75% at 50% 30%,#ffffff 0%,#edeff2 55%,#d9dce2 100%)!important;
+  border-radius:6px!important}
+.dz-main img{mix-blend-mode:multiply;position:relative;z-index:1}
+.dz-ghost{position:absolute;top:5%;left:50%;transform:translateX(-50%);z-index:0;white-space:nowrap;
+  max-width:96%;overflow:hidden;font-size:clamp(30px,6vw,86px);font-weight:800;font-style:italic;
+  letter-spacing:-.03em;line-height:1;color:transparent;-webkit-text-stroke:1.3px rgba(17,18,20,.13);
+  pointer-events:none;user-select:none}
+
+/* taglie da cockpit: fila unita, selezione nera con riga rossa */
+.dz-sizes{gap:0!important;border:1px solid rgba(17,18,20,.16);border-radius:3px;width:max-content;max-width:100%;overflow-x:auto}
+.dz-size{border:0!important;border-left:1px solid rgba(17,18,20,.16)!important;border-radius:0!important;
+  min-width:52px!important;padding:13px 16px!important;position:relative;background:transparent!important}
+.dz-size:first-child{border-left:0!important}
+.dz-size:hover{background:rgba(17,18,20,.05)!important}
+.dz-size.on{background:#111214!important;color:#fff!important}
+.dz-size.on::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--gt-rosso)}
+.dz-size.off{opacity:.32!important}
+
+/* pulsante d'ordine nero col filo rosso, come sul concept */
+.dz-primary{background:#111214!important;border-radius:4px!important;box-shadow:0 18px 40px -22px rgba(10,10,15,.55)!important}
+.dz-primary::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gt-rosso);z-index:2}
+.dz-primary:hover{background:#000!important}
+
+/* numeri chiave in veste GT: nero, pesi leggeri, lineetta rossa */
+.dzs-figs{background:#0a0a0c!important;border-bottom:0!important}
+.dzs-fig b{color:#fff;font-weight:200!important}
+.dzs-fig b em{color:rgba(255,255,255,.45)!important}
+.dzs-fig span{color:rgba(255,255,255,.4)!important}
+.dzs-fig::after{content:"";width:44px;height:2px;background:var(--gt-rosso);display:block;margin-top:2px}
+
+/* etichette mono più tirate */
+.dz-eye{letter-spacing:.26em!important;font-size:10px!important}
+@media (max-width:560px){.dz-ghost{top:8%}}
