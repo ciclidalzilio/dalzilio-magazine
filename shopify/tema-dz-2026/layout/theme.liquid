@@ -94,6 +94,15 @@
 
 <main>{{ content_for_layout }}</main>
 
+{%- comment -%}
+  Banda + feed Instagram (blocco app Instafeed): vive in un gruppo di sezioni
+  perché i blocchi delle app non sono ammessi nelle sezioni statiche.
+  Appare solo in home, sopra il footer.
+{%- endcomment -%}
+{%- if template == 'index' -%}
+  {% sections 'gruppo-instagram' %}
+{%- endif -%}
+
 <footer>
   <div class="wrap">
     <div class="fgrid">
