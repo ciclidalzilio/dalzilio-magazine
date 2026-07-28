@@ -325,8 +325,8 @@
   var mainImg = document.getElementById("dz-foto");
   if (zb && mainImg) {
     var zi = zb.querySelector("img");
-    var apri = function () { zi.src = mainImg.src; zb.classList.add("open"); document.body.style.overflow = "hidden"; };
-    var chiudi = function () { zb.classList.remove("open"); document.body.style.overflow = ""; };
+    var apri = function () { zi.src = mainImg.src; zb.classList.add("open"); };
+    var chiudi = function () { zb.classList.remove("open"); };
     mainImg.addEventListener("click", apri);
     zb.addEventListener("click", chiudi);
     window.addEventListener("keydown", function (e) { if (e.key === "Escape") chiudi(); });

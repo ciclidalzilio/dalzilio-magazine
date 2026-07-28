@@ -1,6 +1,7 @@
 {%- comment -%}
-  Collezione DZ 2026 — griglia con le card nuove, ordinamento e paginazione.
-  I filtri avanzati restano all'app Globo già installata sul negozio.
+  Collezione DZ 2026 — colonna filtri (nativi Shopify: si configurano
+  nell'app gratuita "Search & Discovery"), griglia con le card nuove,
+  ordinamento e paginazione.
 {%- endcomment -%}
 <div class="wrap">
   <nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>{{ collection.title }}</b></nav>
@@ -16,25 +17,77 @@
     </select>
   </div>
 
-  {%- paginate collection.products by 24 -%}
-    <div class="listgrid">
-      {%- for p in collection.products -%}
-        {% render 'dz-card', product: p %}
-      {%- else -%}
-        <p style="grid-column:1/-1;color:var(--muted);padding:40px 0">Nessun prodotto in questa collezione.</p>
+  {%- comment -%} filtri attivi, rimovibili con un tocco {%- endcomment -%}
+  {%- assign attivi = 0 -%}
+  {%- for filter in collection.filters -%}
+    {%- assign attivi = attivi | plus: filter.active_values.size -%}
+    {%- if filter.type == 'price_range' and filter.min_value.value != blank -%}{%- assign attivi = attivi | plus: 1 -%}{%- endif -%}
+  {%- endfor -%}
+  {%- if attivi > 0 -%}
+    <div class="fattivi">
+      {%- for filter in collection.filters -%}
+        {%- for v in filter.active_values -%}<a href="{{ v.url_to_remove }}">{{ v.label }}</a>{%- endfor -%}
+        {%- if filter.type == 'price_range' and filter.min_value.value != blank or filter.max_value.value != blank -%}
+          <a href="{{ filter.url_to_remove }}">Prezzo</a>
+        {%- endif -%}
       {%- endfor -%}
     </div>
-    {%- if paginate.pages > 1 -%}
-      <nav class="pagin" aria-label="Pagine">
-        {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">←</a>{%- endif -%}
-        {%- for part in paginate.parts -%}
-          {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>
-          {%- elsif part.title == paginate.current_page -%}<span class="cur">{{ part.title }}</span>
-          {%- else -%}<span>{{ part.title }}</span>{%- endif -%}
+  {%- endif -%}
+
+  <div class="listwrap{% if collection.filters == blank or collection.filters.size == 0 %} nofiltri{% endif %}">
+    {%- if collection.filters.size > 0 -%}
+      <form class="filters" method="get">
+        {%- if collection.sort_by != blank -%}<input type="hidden" name="sort_by" value="{{ collection.sort_by }}">{%- endif -%}
+        <h4>Filtri</h4>
+        {%- for filter in collection.filters -%}
+          <details {% if filter.active_values.size > 0 or forloop.first %}open{% endif %}>
+            <summary>{{ filter.label }}</summary>
+            {%- case filter.type -%}
+              {%- when 'price_range' -%}
+                <div class="fprice">
+                  <input type="number" name="{{ filter.min_value.param_name }}" placeholder="Da €"
+                         {% if filter.min_value.value %}value="{{ filter.min_value.value | money_without_currency | replace: ',', '.' }}"{% endif %} min="0">
+                  <input type="number" name="{{ filter.max_value.param_name }}" placeholder="A €"
+                         {% if filter.max_value.value %}value="{{ filter.max_value.value | money_without_currency | replace: ',', '.' }}"{% endif %} min="0">
+                </div>
+              {%- else -%}
+                {%- for v in filter.values limit: 14 -%}
+                  <label class="fopt">
+                    <input type="checkbox" name="{{ v.param_name }}" value="{{ v.value }}"
+                           {% if v.active %}checked{% endif %} {% if v.count == 0 and v.active == false %}disabled{% endif %}>
+                    {{ v.label }}<span class="n">{{ v.count }}</span>
+                  </label>
+                {%- endfor -%}
+            {%- endcase -%}
+          </details>
         {%- endfor -%}
-        {%- if paginate.next -%}<a href="{{ paginate.next.url }}">→</a>{%- endif -%}
-      </nav>
+        <button class="btn sm block" type="submit" style="margin-top:14px">Applica filtri</button>
+        {%- if attivi > 0 -%}<a class="btn ghost sm block" style="margin-top:8px" href="{{ collection.url }}">Azzera</a>{%- endif -%}
+      </form>
     {%- endif -%}
-  {%- endpaginate -%}
+
+    <div>
+      {%- paginate collection.products by 24 -%}
+        <div class="listgrid">
+          {%- for p in collection.products -%}
+            {% render 'dz-card', product: p %}
+          {%- else -%}
+            <p style="grid-column:1/-1;color:var(--muted);padding:40px 0">Nessun prodotto con questi filtri. <a href="{{ collection.url }}" style="text-decoration:underline">Azzera i filtri</a></p>
+          {%- endfor -%}
+        </div>
+        {%- if paginate.pages > 1 -%}
+          <nav class="pagin" aria-label="Pagine">
+            {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">←</a>{%- endif -%}
+            {%- for part in paginate.parts -%}
+              {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>
+              {%- elsif part.title == paginate.current_page -%}<span class="cur">{{ part.title }}</span>
+              {%- else -%}<span>{{ part.title }}</span>{%- endif -%}
+            {%- endfor -%}
+            {%- if paginate.next -%}<a href="{{ paginate.next.url }}">→</a>{%- endif -%}
+          </nav>
+        {%- endif -%}
+      {%- endpaginate -%}
+    </div>
+  </div>
 </div>
 <div style="height:40px"></div>

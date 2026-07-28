@@ -12,7 +12,7 @@
 .dz-crumb a{color:inherit;text-decoration:none}
 .dz-crumb a:hover{color:var(--dz-ink)}
 
-.dz-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:44px;padding-top:22px;align-items:start}
+.dz-grid{display:grid;grid-template-columns:1.3fr .82fr;gap:48px;padding-top:22px;align-items:start}
 
 /* galleria */
 .dz-gallery{display:grid;grid-template-columns:82px 1fr;gap:14px;align-items:start}
@@ -22,11 +22,9 @@
 .dz-thumb:hover{transform:translateX(2px)}
 .dz-thumb.on{border-color:var(--dz-ink);box-shadow:0 0 0 2px rgba(18,20,42,.08)}
 .dz-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-.dz-main{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--dz-line);
-  background:radial-gradient(120% 100% at 50% 0%,#fff 0%,#f1f2f6 55%,#e8eaf0 100%);
-  box-shadow:0 30px 70px -46px rgba(18,20,42,.5);aspect-ratio:4/3.05}
-.dz-main img{width:100%;height:100%;object-fit:contain;padding:22px;transition:transform .45s cubic-bezier(.2,.8,.2,1)}
-.dz-main:hover img{transform:scale(1.35)}
+.dz-main{position:relative;border-radius:16px;overflow:hidden;background:#fff;aspect-ratio:4/3.5}
+.dz-main img{width:100%;height:100%;object-fit:contain;padding:0;transform:scale(1.12);transition:transform .45s cubic-bezier(.2,.8,.2,1);cursor:zoom-in}
+.dz-main:hover img{transform:scale(1.28)}
 .dz-noimg{display:grid;place-items:center;height:100%;color:var(--dz-muted2);font-size:14px}
 .dz-zoom{position:absolute;right:14px;bottom:12px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
   color:var(--dz-muted);background:rgba(255,255,255,.82);border:1px solid var(--dz-line);
@@ -171,3 +169,15 @@
   .dz-buy{flex-wrap:wrap}
   .dz-primary{flex:1 0 100%}
 }
+
+
+/* --- richieste 28/07: bottoni più misurati, foto più grande --- */
+.dz-primary{padding:12px 18px!important;font-size:14.5px!important;border-radius:12px!important}
+.dz-wa{padding:12px 18px!important;font-size:14.5px!important;border-radius:12px!important}
+.dz-qty button{width:38px;font-size:17px}
+.dz-klarna{padding:10px 14px;border-radius:13px;margin-top:10px}
+.dz-kb{font-size:13px;padding:6px 11px}
+.dz-klarna b{font-size:13.5px}
+.dz-ksub{font-size:11.5px}
+.dz-fin{padding:14px 16px}
+.dz-trust span{padding:8px 11px;font-size:12px}
