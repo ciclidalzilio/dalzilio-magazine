@@ -62,7 +62,7 @@
     var c = v.colore_vero || ricavaColore(v.titolo);
     if (c === "Default Title" || c === t) c = "";
     return { id: v.id, taglia: t, colore: c, disponibile: v.disponibile, sku: v.sku, ean: v.ean,
-             prezzo: v.prezzo, listino: v.listino, prezzo_html: v.prezzo_html, foto: "" };
+             prezzo: v.prezzo, listino: v.listino, prezzo_html: v.prezzo_html, foto: v.foto || "" };
   });
 
   var $ = function (s) { return sezione.querySelector(s); };

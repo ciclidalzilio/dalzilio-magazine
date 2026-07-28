@@ -90,3 +90,9 @@
 .logowall{padding:28px 22px}
 .heroStats{margin-top:38px}
 .dzs-frow{padding:44px 24px}
+
+/* niente contorno del rettangolo foto sul fondale studio: bordi sfumati e fondo schiarito */
+.dzs-auto .dzs-featimg img{
+  filter:brightness(1.07) contrast(1.03) saturate(1.05)!important;
+  -webkit-mask-image:radial-gradient(80% 80% at 50% 50%,#000 52%,transparent 82%);
+  mask-image:radial-gradient(80% 80% at 50% 50%,#000 52%,transparent 82%)}

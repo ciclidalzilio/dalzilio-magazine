@@ -75,7 +75,7 @@
         {%- if vmin contains 'scott' -%}{%- assign marca_file = 'scott.png' -%}
         {%- elsif vmin contains 'trek' -%}{%- assign marca_file = 'trek.png' -%}
         {%- elsif vmin contains 'cannondale' -%}{%- assign marca_file = 'cnd.png' -%}
-        {%- elsif vmin contains 'amflow' -%}{%- assign marca_file = 'amflow-logo.png' -%}
+        {%- elsif vmin contains 'amflow' -%}{%- assign marca_file = 'amflow.png' -%}
         {%- else -%}{%- assign marca_file = p.vendor | handleize | append: '.png' -%}{%- endif -%}
         <div class="dz-brandrow">
           <img class="dz-brandlogo" src="{{ marca_file | file_url }}" alt="{{ p.vendor }}" loading="eager"
@@ -284,6 +284,7 @@
        "listino": {{ v.compare_at_price | default: 0 | divided_by: 100.0 }},
        "sku": {{ v.sku | json }},
        "ean": {{ v.barcode | json }},
+       "foto": {% if v.featured_media %}{{ v.featured_media | image_url: width: 1400 | json }}{% else %}""{% endif %},
        "prezzo_html": {{ v.price | money | json }}}{% unless forloop.last %},{% endunless %}
     {%- endfor -%}
     ]
