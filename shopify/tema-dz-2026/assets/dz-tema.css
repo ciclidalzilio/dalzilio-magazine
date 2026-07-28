@@ -358,3 +358,15 @@ section.block{padding:60px 0}
   box-shadow:0 8px 18px rgba(0,0,0,.12)}
 .dz-ig-band svg{width:30px;height:30px;flex-shrink:0}
 .dz-ig-band:hover{transform:translateY(-1px)}
+
+
+/* --- selettore paese/valuta e newsletter --- */
+.locform select{height:40px;padding:0 10px;border-radius:11px;border:1px solid transparent;background:none;
+  font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--ink-2);cursor:pointer}
+.locform select:hover{background:var(--surface);border-color:var(--line)}
+@media (max-width:560px){.locform{display:none}}
+.news{text-align:center;padding:40px 0 8px}
+.news h2{font-size:clamp(1.5rem,3vw,2.1rem);letter-spacing:-.03em;font-weight:740;margin:0}
+.news p{color:var(--muted);margin:12px auto 0;max-width:46ch}
+.nform{display:flex;gap:10px;justify-content:center;margin-top:24px;flex-wrap:wrap}
+.nform input{font-size:15px;padding:13px 18px;border-radius:13px;border:1px solid var(--line-strong);background:var(--surface);min-width:280px;color:var(--ink);font-family:inherit}

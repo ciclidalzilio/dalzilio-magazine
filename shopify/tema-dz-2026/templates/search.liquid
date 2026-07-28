@@ -1,1 +1,35 @@
-<div style="max-width:1200px;margin:0 auto;padding:40px 24px"><h1 style="font-weight:300">Ricerca</h1><p style="color:#5c6070">Pagina non usata in questa anteprima.</p></div>
+{%- comment -%} Ricerca DZ 2026 {%- endcomment -%}
+<div class="wrap">
+  <nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>Ricerca</b></nav>
+  <div class="ltop"><div><h1>Cerca nel catalogo</h1>
+    {%- if search.performed -%}<div class="sub">{{ search.results_count }} risultat{% if search.results_count == 1 %}o{% else %}i{% endif %} per “{{ search.terms | escape }}”</div>{%- endif -%}
+  </div></div>
+  <form action="{{ routes.search_url }}" method="get" class="nform" style="justify-content:flex-start;margin:0 0 26px">
+    <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Es. Domane, e-bike, casco…" aria-label="Cerca prodotti" style="min-width:min(420px,100%)">
+    <input type="hidden" name="type" value="product">
+    <button class="btn" type="submit">Cerca</button>
+  </form>
+  {%- if search.performed -%}
+    {%- paginate search.results by 24 -%}
+      <div class="listgrid">
+        {%- for item in search.results -%}
+          {%- if item.object_type == 'product' -%}{% render 'dz-card', product: item %}{%- endif -%}
+        {%- else -%}
+          <p style="grid-column:1/-1;color:var(--muted);padding:40px 0">Nessun risultato. Prova con un altro termine o <a href="{{ routes.all_products_collection_url }}" style="text-decoration:underline">sfoglia il catalogo</a>.</p>
+        {%- endfor -%}
+      </div>
+      {%- if paginate.pages > 1 -%}
+        <nav class="pagin">
+          {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">←</a>{%- endif -%}
+          {%- for part in paginate.parts -%}
+            {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>
+            {%- elsif part.title == paginate.current_page -%}<span class="cur">{{ part.title }}</span>
+            {%- else -%}<span>{{ part.title }}</span>{%- endif -%}
+          {%- endfor -%}
+          {%- if paginate.next -%}<a href="{{ paginate.next.url }}">→</a>{%- endif -%}
+        </nav>
+      {%- endif -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+</div>
+<div style="height:40px"></div>

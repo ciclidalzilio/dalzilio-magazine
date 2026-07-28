@@ -135,3 +135,17 @@
     <p class="fc-note">Esempio con ammortamento alla francese. Il TAEG dipende da spese di istruttoria e imposte ed è indicato nel contratto. Salvo approvazione della finanziaria.</p>
   </div></div>
 </div></section>
+
+<section class="block wrap" style="padding-bottom:30px"><div class="news">
+  <h2>Resta aggiornato</h2>
+  <p>Nuovi arrivi, usato fresco e offerte riservate. Niente spam, promesso.</p>
+  {%- form 'customer', class: 'nform' -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    {%- if form.posted_successfully? -%}
+      <p style="color:var(--ok);font-weight:600;width:100%">Iscrizione registrata: benvenuto!</p>
+    {%- else -%}
+      <input type="email" name="contact[email]" placeholder="La tua email" aria-label="La tua email" required>
+      <button class="btn" type="submit">Iscriviti</button>
+    {%- endif -%}
+  {%- endform -%}
+</div></section>
