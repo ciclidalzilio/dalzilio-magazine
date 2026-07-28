@@ -110,7 +110,22 @@
 </section>
 
 <section class="block wrap" id="bike-finder" style="padding-top:20px;padding-bottom:20px">
-  {% render 'bike-finder-app', whatsapp: '393457815102' %}
+  {%- comment -%}
+    Copertina ridisegnata: niente foto (cover trasparente), veste identica
+    alla scheda finanziamento, card in vetro aggiunta a destra.
+  {%- endcomment -%}
+  <div class="dz-finder">
+    {% render 'bike-finder-app', whatsapp: '393457815102', cover: 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==' %}
+    <div class="dz-findercard" aria-hidden="true">
+      <span class="fc-k">Come funziona</span>
+      <div class="fc-row"><span>Domande</span><b>3</b></div>
+      <div class="fc-row"><span>Tempo</span><b>1 minuto</b></div>
+      <div class="fc-big"><b>3 bici</b><span>su misura</span></div>
+      <div class="fc-bar"><i></i></div>
+      <div class="fc-legend"><span>Catalogo reale</span><span>Nella tua taglia</span></div>
+      <p class="fc-note">Ti proponiamo solo modelli davvero disponibili, nella tua taglia, presi dal catalogo del negozio.</p>
+    </div>
+  </div>
 </section>
 
 <section class="wrap vals-mob"><div class="values">{% render 'dz-valori' %}</div></section>
