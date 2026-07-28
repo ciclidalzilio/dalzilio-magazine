@@ -215,11 +215,6 @@
 .dz-size.on::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--gt-rosso)}
 .dz-size.off{opacity:.32!important}
 
-/* pulsante d'ordine nero col filo rosso, come sul concept */
-.dz-primary{background:#111214!important;border-radius:4px!important;box-shadow:0 18px 40px -22px rgba(10,10,15,.55)!important}
-.dz-primary::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--gt-rosso);z-index:2}
-.dz-primary:hover{background:#000!important}
-
 /* numeri chiave in veste GT: nero, pesi leggeri, lineetta rossa */
 .dzs-figs{background:#0a0a0c!important;border-bottom:0!important}
 .dzs-fig b{color:#fff;font-weight:200!important}

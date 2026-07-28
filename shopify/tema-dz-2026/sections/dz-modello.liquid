@@ -6,6 +6,21 @@
 
 {%- liquid
   assign p = product
+
+  comment
+    Garanzia telaio per marca: Scott 5 anni, Trek e Cannondale a vita.
+    Per gli altri marchi (es. Amflow) restiamo sul generico "Ufficiale".
+  endcomment
+  assign vmarca = p.vendor | downcase
+  assign gar_telaio = 'Ufficiale'
+  assign gar_frase = 'Garanzia ufficiale sul telaio, 2 anni sui componenti'
+  if vmarca contains 'scott'
+    assign gar_telaio = '5 anni'
+    assign gar_frase = 'Garanzia di 5 anni sul telaio, 2 anni sui componenti'
+  elsif vmarca contains 'trek' or vmarca contains 'cannondale'
+    assign gar_telaio = 'A vita'
+    assign gar_frase = 'Garanzia a vita sul telaio, 2 anni sui componenti'
+  endif
 -%}
 
 {%- comment -%} sugli accessori e ricambi questa sezione non appare {%- endcomment -%}
@@ -17,7 +32,7 @@
 {%- if mostra_qui -%}
 <section class="dzs dzs-figs">
   <div class="dzs-in dzs-frow">
-    <div class="dzs-fig"><b>A vita</b><span>Garanzia sul telaio</span></div>
+    <div class="dzs-fig"><b>{{ gar_telaio }}</b><span>Garanzia sul telaio</span></div>
     <div class="dzs-fig" data-dz-fig-colori-wrap><b data-dz-fig-colori>2 anni</b><span data-dz-fig-colori-label>Sui componenti</span></div>
     <div class="dzs-fig"><b data-dz-fig-taglie>{{ p.variants.size }}</b><span>Taglie</span></div>
     <div class="dzs-fig"><b><span data-dz-fig-rata>—</span><em>/mese</em></b><span>In <span data-dz-fig-mesi>48</span> rate</span></div>
@@ -47,7 +62,7 @@
     <ul class="dzs-flist">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Montaggio e controllo pre-consegna nella nostra officina</li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Regolazione di sella e posizione inclusa al ritiro</li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>Garanzia a vita sul telaio, 2 anni sui componenti</li>
+      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>{{ gar_frase }}</li>
     </ul>
   </div>
 </section>

@@ -256,6 +256,11 @@
             {%- if p.type == 'USATO' -%}
               Usato controllato nella nostra officina — chiedici i dettagli su WhatsApp o in negozio.
             {%- else -%}
+              {%- if vmin contains 'scott' -%}
+                Telaio garantito 5 anni, componenti 2 anni.
+              {%- elsif vmin contains 'trek' or vmin contains 'cannondale' -%}
+                Telaio garantito a vita, componenti 2 anni.
+              {%- endif -%}
               Garanzia ufficiale del produttore, gestita da noi: se serve un intervento parli con il negozio, non con un call center.
             {%- endif -%}
           </div>
