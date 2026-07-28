@@ -1,0 +1,20 @@
+{%- comment -%}
+  bf-product-json.liquid — un prodotto del catalogo in JSON, letto dal
+  JavaScript del bike finder. Solo lettura: non tocca nessun dato.
+  Uso: {% render 'bf-product-json', product: product %}
+{%- endcomment -%}
+{%- liquid
+  assign img = ''
+  if product.featured_image
+    assign img = product.featured_image | image_url: width: 640
+  endif
+-%}
+{"title": {{ product.title | json }},
+"url": {{ product.url | json }},
+"image": {{ img | json }},
+"vendor": {{ product.vendor | json }},
+"price": {{ product.price | json }},
+"compare_at": {{ product.compare_at_price | default: 0 | json }},
+"available": {{ product.available | json }},
+"published": {{ product.published_at | date: '%s' | plus: 0 | json }},
+"variants": [{%- for v in product.variants -%}{"title": {{ v.title | json }}, "available": {{ v.available | json }}}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]}
