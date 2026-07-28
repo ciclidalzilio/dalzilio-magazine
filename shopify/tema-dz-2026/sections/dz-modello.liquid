@@ -17,19 +17,22 @@
   </div>
 </section>
 
-<section class="dzs dzs-feat">
-  <div class="dzs-featimg">
+<section class="dzs dzs-feat dzs-auto">
+  <div class="dzs-featimg dzs-studio">
     {%- assign foto2 = p.media[1] | default: p.featured_media -%}
     {%- if foto2 -%}
       <img src="{{ foto2 | image_url: width: 1400 }}" alt="{{ p.title | escape }}" loading="lazy">
     {%- endif -%}
+    <span class="dzs-plate">{{ p.vendor | replace: 'scott_sports', 'SCOTT' }} · {{ 'now' | date: '%Y' }}</span>
   </div>
   <div class="dzs-feattxt">
     <p class="dzs-k">{{ section.settings.occhiello }}</p>
     <h2 class="dzs-h2f">Costruita per <b>durare oltre l'uscita di oggi.</b></h2>
     <p>
-      {%- if p.description != blank -%}
-        {{ p.description | strip_html | truncate: 220 }}
+      {%- assign descr = p.description | strip_html | strip -%}
+      {%- if descr != blank -%}
+        {%- comment -%} il feed incolla il titolo all'inizio della descrizione {%- endcomment -%}
+        {{ descr | remove_first: p.title | strip | truncate: 220 }}
       {%- else -%}
         Nuovo arrivo a catalogo: appena caricato dal feed ufficiale {{ p.vendor }}. Scrivici su WhatsApp per taglie, disponibilità e tempi di consegna.
       {%- endif -%}

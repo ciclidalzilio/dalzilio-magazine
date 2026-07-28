@@ -150,3 +150,31 @@
 .dzs-svc b{font-size:14.5px;font-weight:660;letter-spacing:-.015em}
 .dzs-svc>span:last-child{font-size:12.5px;color:#8b8fa2;margin-top:3px}
 @media (max-width:960px){.dzs-svcrow{grid-template-columns:1fr 1fr;gap:12px}.dzs-svc{padding:16px}}
+
+/* --- banda modello in stile automotive: studio chiaro + pannello grafite --- */
+.dzs-auto{background:#0d0e13;border-bottom:1px solid rgba(255,255,255,.06)}
+.dzs-studio{background:
+  radial-gradient(95% 130% at 50% 26%,#ffffff 0%,#f0f2f6 46%,#cfd4de 100%);
+  min-height:480px}
+.dzs-studio::before{content:"";position:absolute;left:10%;right:10%;bottom:11%;height:26px;
+  background:radial-gradient(50% 100% at 50% 50%,rgba(10,12,20,.32),transparent 72%);filter:blur(5px);z-index:1}
+.dzs-studio::after{content:"";position:absolute;left:0;right:0;bottom:0;height:18%;
+  background:linear-gradient(rgba(13,14,19,0),rgba(13,14,19,.08));pointer-events:none}
+.dzs-auto .dzs-featimg img{mix-blend-mode:multiply;filter:contrast(1.04) saturate(1.06);
+  transform:scale(1.32);padding:0;z-index:2}
+.dzs-plate{position:absolute;left:22px;top:20px;z-index:3;font-size:10px;letter-spacing:.18em;
+  text-transform:uppercase;color:#5c6070;background:rgba(255,255,255,.75);backdrop-filter:blur(6px);
+  border:1px solid rgba(18,20,42,.14);padding:7px 12px;border-radius:999px}
+.dzs-auto .dzs-feattxt{color:#fff;position:relative}
+.dzs-auto .dzs-feattxt::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(80% 70% at 85% 0%,rgba(255,122,0,.10),transparent 60%)}
+.dzs-auto .dzs-k{color:#ffb27a}
+.dzs-auto .dzs-h2f{color:#fff}
+.dzs-auto .dzs-h2f b{background:linear-gradient(100deg,#ffd07a,#ff8aa3 55%,#c4a9ff);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.dzs-auto .dzs-feattxt>p{color:rgba(255,255,255,.72)}
+.dzs-auto .dzs-flist{margin-top:26px;gap:0}
+.dzs-auto .dzs-flist li{color:rgba(255,255,255,.88);border-top:1px solid rgba(255,255,255,.1);
+  padding:12px 0;font-size:14px}
+.dzs-auto .dzs-flist li:last-child{border-bottom:1px solid rgba(255,255,255,.1)}
+@media (max-width:960px){.dzs-studio{min-height:320px}.dzs-auto .dzs-featimg img{transform:scale(1.22)}}
