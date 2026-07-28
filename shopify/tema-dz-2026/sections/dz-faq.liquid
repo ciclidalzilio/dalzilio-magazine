@@ -4,6 +4,13 @@
   i default già compilati con i testi reali.
 {%- endcomment -%}
 
+{%- comment -%} sugli accessori e ricambi questa sezione non appare {%- endcomment -%}
+{%- assign mostra_qui = true -%}
+{%- if template contains 'product' and product -%}
+  {%- capture bici_txt -%}{%- render 'dz-e-bici', product: product -%}{%- endcapture -%}
+  {%- unless bici_txt contains 'si' -%}{%- assign mostra_qui = false -%}{%- endunless -%}
+{%- endif -%}
+{%- if mostra_qui -%}
 <section class="block wrap dz-faq">
   <div class="head"><div><p class="k">{{ section.settings.occhiello }}</p><h2>{{ section.settings.titolo }}</h2></div></div>
   <div class="faqlist">
@@ -15,6 +22,7 @@
     {%- endfor -%}
   </div>
 </section>
+{%- endif -%}
 
 {% schema %}
 {

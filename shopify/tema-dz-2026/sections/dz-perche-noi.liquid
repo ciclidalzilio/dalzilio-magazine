@@ -3,6 +3,13 @@
   Difende il prezzo pieno rispetto ai siti che vendono senza assistenza.
 {%- endcomment -%}
 
+{%- comment -%} sugli accessori e ricambi questa sezione non appare {%- endcomment -%}
+{%- assign mostra_qui = true -%}
+{%- if template contains 'product' and product -%}
+  {%- capture bici_txt -%}{%- render 'dz-e-bici', product: product -%}{%- endcapture -%}
+  {%- unless bici_txt contains 'si' -%}{%- assign mostra_qui = false -%}{%- endunless -%}
+{%- endif -%}
+{%- if mostra_qui -%}
 <section class="dzs dzs-why">
   <div class="dzs-in dzs-why-grid">
     <div>
@@ -38,6 +45,7 @@
     </div>
   {%- endif -%}
 </section>
+{%- endif -%}
 
 {{ 'dz-sezioni.css' | asset_url | stylesheet_tag }}
 

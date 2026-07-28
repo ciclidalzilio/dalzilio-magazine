@@ -1,0 +1,23 @@
+{%- comment -%}
+  Risponde 'si' se il prodotto è una bicicletta, 'no' se è un accessorio
+  o ricambio. Il feed Scott usa il tipo "bike", l'usato "USATO", il feed
+  Trek dei codici (es. "CRD - Carbon Road", "EAT - E-ATB"); i prodotti
+  creati a mano spesso non hanno tipo: in dubbio, meglio trattarli da bici.
+  Uso: {% capture x %}{% render 'dz-e-bici', product: product %}{% endcapture %}
+{%- endcomment -%}
+{%- liquid
+  assign t = product.type | strip
+  assign risultato = 'no'
+  if t == blank or t == 'bike' or t == 'USATO'
+    assign risultato = 'si'
+  elsif t contains 'Bikes'
+    assign risultato = 'si'
+  else
+    assign codice = t | split: ' - ' | first | strip
+    assign codici_bici = 'AT1,AT2,AT3,CRD,EAT,ECM,ECR,EHY,EMF,ERD,ETR,HBR,KDS,MFS,RD,TKK' | split: ','
+    if codici_bici contains codice
+      assign risultato = 'si'
+    endif
+  endif
+  echo risultato
+-%}

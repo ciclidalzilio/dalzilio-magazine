@@ -19,14 +19,20 @@
     assign sconto = diff | divided_by: p.compare_at_price | round
   endif
 
+  comment
+    Su accessori e ricambi niente finanziamento, Klarna e servizi da bici.
+  endcomment
 -%}
+{%- capture bici_txt -%}{%- render 'dz-e-bici', product: p -%}{%- endcapture -%}
+{%- assign e_bici = false -%}
+{%- if bici_txt contains 'si' -%}{%- assign e_bici = true -%}{%- endif -%}
 
 <section class="dz" data-dz-prodotto>
 
   {%- comment -%} barra che resta fissa scorrendo: modello, prezzo, aggiungi {%- endcomment -%}
   <div class="dz-pdpbar" data-dz-pdpbar>
     <div class="dz-pdpbin">
-      <span class="nm"><b>{{ p.title }}</b><span><span data-dz-bar-prezzo>{{ p.price | money }}</span> · da <span data-dz-bar-rata></span>/mese</span></span>
+      <span class="nm"><b>{{ p.title }}</b><span><span data-dz-bar-prezzo>{{ p.price | money }}</span>{% if e_bici %} · da <span data-dz-bar-rata></span>/mese{% endif %}</span></span>
       <button type="button" class="dz-btn dz-primary" data-dz-bar-add>Aggiungi al carrello</button>
     </div>
   </div>
@@ -95,7 +101,7 @@
             {%- assign risparmio = p.compare_at_price | minus: p.price -%}
             <span class="dz-save">Risparmi {{ risparmio | money }}</span>
           {%- endif -%}
-          <span class="dz-from">o da <b data-dz-rata>—</b>/mese</span>
+          {%- if e_bici -%}<span class="dz-from">o da <b data-dz-rata>—</b>/mese</span>{%- endif -%}
         </div>
 
         {%- assign v0 = p.selected_or_first_available_variant -%}
@@ -175,7 +181,7 @@
           </a>
         {%- endif -%}
 
-        {%- if section.settings.tan > 0 -%}
+        {%- if section.settings.tan > 0 and e_bici -%}
           <div class="dz-fin" data-dz-fin
                data-prezzo="{{ p.price | divided_by: 100.0 }}"
                data-tan="{{ section.settings.tan }}"
@@ -199,21 +205,25 @@
           </div>
         {%- endif -%}
 
+        {%- if e_bici -%}
         <div class="dz-klarna" aria-label="Paga in 3 rate con Klarna">
           <span class="dz-kb">Klarna.</span>
           <div><b>Paga in 3 rate senza interessi</b><span class="dz-ksub">3 × {{ p.price | divided_by: 3 | money }}, senza costi aggiuntivi</span></div>
         </div>
+        {%- endif -%}
 
         {%- liquid
           assign sped = 'Spedizione gratuita in Italia'
-          if p.type != 'bike' and p.type != 'USATO' and p.price < 9900
+          if e_bici == false and p.price < 9900
             assign sped = 'Spedizione gratuita in Italia da € 99'
           endif
         -%}
         <div class="dz-trust">
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>{{ sped }}</span>
+          {%- if e_bici -%}
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2.1"/><circle cx="15" cy="12" r="2.1"/><circle cx="7" cy="17" r="2.1"/></svg>{{ section.settings.trust_2 }}</span>
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>{{ section.settings.trust_3 }}</span>
+          {%- endif -%}
         </div>
 
         <details class="dz-acc" open>
@@ -223,7 +233,7 @@
         <details class="dz-acc">
           <summary>Spedizione & resi</summary>
           <div class="dz-acc-in">
-            {%- if p.type == 'USATO' or p.type == 'bike' -%}
+            {%- if e_bici -%}
               {%- assign estero = 99 -%}
               {%- if p.title contains 'eRIDE' or p.title contains 'e-bike' or p.title contains 'E-bike' or p.title contains 'EXe' or p.title contains 'Rail' -%}{%- assign estero = 149 -%}{%- endif -%}
               Spedizione gratuita e assicurata in tutta Italia entro 3-5 giorni lavorativi.
@@ -235,6 +245,7 @@
             {%- endif -%}
           </div>
         </details>
+        {%- if e_bici -%}
         <details class="dz-acc">
           <summary>Garanzia</summary>
           <div class="dz-acc-in">
@@ -245,6 +256,7 @@
             {%- endif -%}
           </div>
         </details>
+        {%- endif -%}
       </div>
     </div>
   </div>
