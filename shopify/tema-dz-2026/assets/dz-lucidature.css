@@ -96,3 +96,45 @@
   filter:brightness(1.07) contrast(1.03) saturate(1.05)!important;
   -webkit-mask-image:radial-gradient(80% 80% at 50% 50%,#000 52%,transparent 82%);
   mask-image:radial-gradient(80% 80% at 50% 50%,#000 52%,transparent 82%)}
+
+/* pallini dei passi: numero sempre perfettamente centrato */
+.dzs-n{display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  line-height:1!important;text-align:center;padding:0!important}
+
+/* hero: pozza di luce più morbida, ellittica, con ombra a terra sotto la bici */
+.hero-foil{background:radial-gradient(62% 46% at 50% 55%,rgba(233,237,243,.85),rgba(233,237,243,0) 72%)}
+.hero-foil::after{content:"";position:absolute;left:18%;right:18%;bottom:9%;height:22px;
+  background:radial-gradient(50% 100% at 50% 50%,rgba(0,0,0,.45),transparent 72%);filter:blur(6px)}
+.hero-foil img{width:84%}
+
+/* bike finder: stessa veste della scheda finanziamento */
+.bfc__card{border-radius:28px!important;border:0!important;
+  box-shadow:0 30px 80px -44px rgba(20,10,50,.7)!important;overflow:hidden!important}
+.bfc__card::before{display:none!important}
+.bfc__card--img{
+  background-image:
+    linear-gradient(to right,rgba(20,23,38,.92) 0%,rgba(20,23,38,.72) 38%,rgba(20,23,38,.12) 60%,rgba(20,23,38,0) 78%),
+    var(--bfc-img),
+    radial-gradient(46% 62% at 72% 50%,#e9ecf1,rgba(233,236,241,0) 72%),
+    radial-gradient(70% 130% at 88% 8%,rgba(255,122,0,.32),transparent 58%),
+    radial-gradient(60% 120% at 10% 100%,rgba(139,47,230,.34),transparent 60%),
+    linear-gradient(120deg,#141726,#2a1a4a 55%,#4a1d52)!important;
+  background-size:auto,contain,auto,auto,auto,auto!important;
+  background-position:left center,right 28px center,right center,center,center,center!important;
+  background-repeat:no-repeat!important;
+  background-color:#141726!important;
+  background-blend-mode:normal,multiply,normal,normal,normal,normal!important;
+  border-radius:28px!important}
+.bfc__eyebrow{color:#ffb37a!important}
+@media (max-width:749px){
+  .bfc__card--img{
+    background-image:
+      linear-gradient(to top,rgba(20,23,38,.94) 0%,rgba(20,23,38,.8) 40%,rgba(20,23,38,.1) 66%,rgba(20,23,38,0) 80%),
+      var(--bfc-img),
+      radial-gradient(75% 45% at 50% 22%,#e9ecf1,rgba(233,236,241,0) 72%),
+      radial-gradient(70% 60% at 88% 8%,rgba(255,122,0,.3),transparent 58%),
+      radial-gradient(60% 60% at 10% 100%,rgba(139,47,230,.32),transparent 60%),
+      linear-gradient(160deg,#141726,#2a1a4a 55%,#4a1d52)!important;
+    background-size:auto,88% auto,auto,auto,auto,auto!important;
+    background-position:bottom center,center top 16px,center top,center,center,center!important}
+}
