@@ -125,3 +125,28 @@
 /* --- la bici riempie meglio il riquadro colorato --- */
 .dzs-featimg img{padding:0;transform:scale(1.42)}
 @media (max-width:960px){.dzs-featimg img{transform:scale(1.28)}}
+
+/* --- permuta in home: card con bici disegnata e conteggio usato --- */
+.dzs-h2b{font-weight:740;letter-spacing:-.035em}
+.dzs-lede b{color:var(--i);font-weight:650}
+.dzs-trade-art{display:grid;place-items:center;overflow:hidden}
+.dzs-bike{width:min(64%,300px);opacity:.95}
+.dzs-count{position:absolute;left:22px;top:22px;display:flex;align-items:center;gap:10px;
+  background:rgba(17,19,25,.38);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.3);
+  border-radius:14px;padding:9px 14px;color:#fff}
+.dzs-count b{font-size:1.55rem;font-weight:800;letter-spacing:-.03em;line-height:1}
+.dzs-count span{font-size:8.5px;letter-spacing:.12em;line-height:1.5}
+@media (max-width:960px){.dzs-trade-art{min-height:230px}.dzs-bike{width:min(52%,220px)}}
+
+/* --- fila servizi in home --- */
+.dzs-svcrow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.dzs-svc{background:#fff;border:1px solid rgba(18,20,42,.1);border-radius:16px;padding:20px;
+  display:flex;flex-direction:column;text-decoration:none;color:#111319;
+  box-shadow:0 1px 3px rgba(18,20,42,.04);transition:transform .3s,box-shadow .3s}
+.dzs-svc:hover{transform:translateY(-4px);box-shadow:0 18px 38px -26px rgba(18,20,42,.4)}
+.dzs-svc .ic{width:40px;height:40px;border-radius:11px;background:rgba(255,46,99,.09);color:#FF2E63;
+  display:grid;place-items:center;margin-bottom:14px}
+.dzs-svc .ic svg{width:20px;height:20px}
+.dzs-svc b{font-size:14.5px;font-weight:660;letter-spacing:-.015em}
+.dzs-svc>span:last-child{font-size:12.5px;color:#8b8fa2;margin-top:3px}
+@media (max-width:960px){.dzs-svcrow{grid-template-columns:1fr 1fr;gap:12px}.dzs-svc{padding:16px}}

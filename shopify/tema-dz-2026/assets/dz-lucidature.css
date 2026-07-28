@@ -1,0 +1,28 @@
+/* dz-lucidature.css — i dettagli premium: riflessi, hover, logo, integrazioni */
+
+/* logo header più grande (usa la versione a colori se caricata nei file) */
+.logo .reallogo{height:52px}
+@media (max-width:960px){.logo .reallogo{height:42px}}
+
+/* riflesso che attraversa i bottoni al passaggio, con leggero sollevamento */
+.btn,.dz-btn,.dzs-btn{position:relative;overflow:hidden;transition:transform .25s,box-shadow .25s}
+.btn::after,.dz-btn::after,.dzs-btn::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.5),transparent 70%);
+  transform:translateX(-130%);transition:transform .6s;pointer-events:none}
+.btn:hover::after,.dz-btn:hover::after,.dzs-btn:hover::after{transform:translateX(130%)}
+.btn:hover,.dz-btn:hover,.dzs-btn:hover{transform:translateY(-1px)}
+.btn:active,.dz-btn:active,.dzs-btn:active{transform:translateY(0) scale(.985)}
+.btn[disabled]:hover,.dz-btn[disabled]:hover{transform:none}
+.btn.ghost:hover{box-shadow:inset 0 0 0 1px #111319,0 4px 14px rgba(18,20,42,.05)}
+.dzs-ghost:hover{box-shadow:inset 0 0 0 1px #111319}
+.head .more{transition:background .2s,border-color .2s}
+.head .more:hover{background:#fff;border-color:#111319}
+.icb,.dz-sw,.dz-size,.sortsel,.fopt{transition:.2s}
+
+/* la bici resta brillante e integrata nel riquadro colorato */
+.dzs-featimg img{mix-blend-mode:darken;filter:contrast(1.06) saturate(1.06)}
+
+@media (prefers-reduced-motion:reduce){
+  .btn::after,.dz-btn::after,.dzs-btn::after{display:none}
+  .btn:hover,.dz-btn:hover,.dzs-btn:hover{transform:none}
+}

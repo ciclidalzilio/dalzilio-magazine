@@ -66,12 +66,19 @@
 
       {%- comment -%} ---------- colonna acquisto ---------- {%- endcomment -%}
       <div class="dz-info">
-        {%- assign marca_file = p.vendor | handleize | append: '.png' -%}
-        {%- if p.vendor == 'scott_sports' or p.vendor == 'SCOTT' -%}{%- assign marca_file = 'scott.png' -%}{%- endif -%}
-        {%- if p.vendor == 'TREK' -%}{%- assign marca_file = 'trek.png' -%}{%- endif -%}
-        {%- if p.vendor == 'CANNONDALE' -%}{%- assign marca_file = 'cnd.png' -%}{%- endif -%}
+        {%- comment -%}
+          Riconoscimento marca tollerante (maiuscole, suffissi tipo scott_sports).
+          Niente loading="lazy": il logo parte nascosto e Chrome non caricherebbe
+          mai un'immagine lazy invisibile.
+        {%- endcomment -%}
+        {%- assign vmin = p.vendor | downcase -%}
+        {%- if vmin contains 'scott' -%}{%- assign marca_file = 'scott.png' -%}
+        {%- elsif vmin contains 'trek' -%}{%- assign marca_file = 'trek.png' -%}
+        {%- elsif vmin contains 'cannondale' -%}{%- assign marca_file = 'cnd.png' -%}
+        {%- elsif vmin contains 'amflow' -%}{%- assign marca_file = 'amflow-logo.png' -%}
+        {%- else -%}{%- assign marca_file = p.vendor | handleize | append: '.png' -%}{%- endif -%}
         <div class="dz-brandrow">
-          <img class="dz-brandlogo" src="{{ marca_file | file_url }}" alt="{{ p.vendor }}" loading="lazy"
+          <img class="dz-brandlogo" src="{{ marca_file | file_url }}" alt="{{ p.vendor }}" loading="eager"
                onload="this.closest('.dz-brandrow').classList.add('ok')" onerror="this.remove()">
           <p class="dz-eye"><span class="dz-bn">{{ p.vendor | replace: 'scott_sports', 'SCOTT' }}{% if p.type != blank %} · {% endif %}</span>{{ p.type }}</p>
         </div>

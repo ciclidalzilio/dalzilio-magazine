@@ -13,6 +13,7 @@
   <link rel="canonical" href="{{ canonical_url }}">
   {{ content_for_header }}
   {{ 'dz-tema.css' | asset_url | stylesheet_tag }}
+  {{ 'dz-lucidature.css' | asset_url | stylesheet_tag }}
 </head>
 <body class="dz">
 
@@ -25,7 +26,15 @@
 <header>
   <div class="wrap nav">
     <a class="logo" href="{{ routes.root_url }}" aria-label="{{ shop.name }} — home">
-      <img class="reallogo" src="{{ 'logodz.svg' | file_url }}" alt="{{ shop.name }}" onload="this.closest('.logo').classList.add('has-logo')" onerror="this.remove()">
+      {%- comment -%}
+        Logo a colori se presente nei file (logodz-colori.png), altrimenti
+        il png originale, altrimenti l'svg. Basta caricare in Contenuti → File
+        un'immagine chiamata "logodz-colori.png" per avere la versione a colori.
+      {%- endcomment -%}
+      <img class="reallogo" src="{{ 'logodz-colori.png' | file_url }}" alt="{{ shop.name }}"
+           data-alt1="{{ 'logodz.png' | file_url }}" data-alt2="{{ 'logodz.svg' | file_url }}"
+           onload="this.closest('.logo').classList.add('has-logo')"
+           onerror="if(this.dataset.alt1){this.src=this.dataset.alt1;this.dataset.alt1=''}else if(this.dataset.alt2){this.src=this.dataset.alt2;this.dataset.alt2=''}else{this.remove()}">
       <span class="wm"><b>Cicli Dal Zilio</b><span>Cycling Store</span></span>
     </a>
     <nav class="menu" id="menu">

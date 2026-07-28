@@ -1,14 +1,17 @@
 {%- comment -%}
   dz-permuta.liquid — valutazione dell'usato a distanza e ritiro in tutta Italia.
-{%- endcomment -%}
 
-{%- comment -%}
+  Due vesti: sulla scheda prodotto la banda full-width col mockup chat,
+  in home (e altrove) la card con riquadro gradiente, bici disegnata e
+  conteggio delle bici usate — come nell'anteprima.
+
   La permuta si propone solo dove ha senso: mai sull'usato, mai su accessori
   e ricambi, solo su bici da 2.500 euro in su e non scontate oltre il 20%.
-  Fuori dalla scheda prodotto (es. home) la sezione appare sempre.
 {%- endcomment -%}
+{%- assign su_prodotto = false -%}
 {%- assign mostra_permuta = true -%}
 {%- if template contains 'product' and product -%}
+  {%- assign su_prodotto = true -%}
   {%- assign sc = 0 -%}
   {%- if product.compare_at_price > product.price -%}
     {%- assign d = product.compare_at_price | minus: product.price | times: 100.0 -%}
@@ -19,6 +22,8 @@
   {%- endif -%}
 {%- endif -%}
 {%- if mostra_permuta -%}
+{%- if su_prodotto -%}
+
 <section class="dzs dzs-feat dzs-rev">
   <div class="dzs-featimg dzs-permvis" aria-hidden="true">
     <div class="dzs-pvbg"></div>
@@ -59,6 +64,69 @@
   </div>
 </section>
 
+{%- else -%}
+
+{%- comment -%}
+  Usata come sezione statica in home: senza blocchi né impostazioni salvate,
+  quindi con valori di riserva (collezione usato-1, tre passi standard).
+{%- endcomment -%}
+{%- assign cusato = section.settings.collezione -%}
+{%- if cusato == blank -%}
+  {%- assign cusato = collections['usato-1'] -%}
+{%- elsif cusato.url == blank -%}
+  {%- assign cusato = collections[cusato] -%}
+{%- endif -%}
+
+<section class="dzs dzs-trade">
+  <div class="dzs-in dzs-trade-grid">
+    <div class="dzs-trade-txt">
+      <p class="dzs-k">{{ section.settings.occhiello }}</p>
+      <h2 class="dzs-h2 dzs-h2b">{{ section.settings.titolo }}</h2>
+      <p class="dzs-lede">Valutiamo la tua bici <b>a distanza</b>: ci mandi qualche foto, ti diamo una quotazione e — se accetti — <b>la ritiriamo a casa tua in tutta Italia</b>. L'importo va subito in permuta <b>sull'acquisto di una bici nuova</b> (non vale sull'usato).</p>
+
+      <div class="dzs-steps">
+        {%- if section.blocks.size > 0 -%}
+          {%- for block in section.blocks -%}
+            <div class="dzs-step" {{ block.shopify_attributes }}>
+              <span class="dzs-n">{{ forloop.index }}</span>
+              <div><b>{{ block.settings.titolo }}</b><span>{{ block.settings.testo }}</span></div>
+            </div>
+          {%- endfor -%}
+        {%- else -%}
+          <div class="dzs-step"><span class="dzs-n">1</span><div><b>Mandaci le foto</b><span>Modello, anno e stato: bastano pochi minuti.</span></div></div>
+          <div class="dzs-step"><span class="dzs-n">2</span><div><b>Ricevi la valutazione</b><span>Quotazione gratuita e senza impegno.</span></div></div>
+          <div class="dzs-step"><span class="dzs-n">3</span><div><b>Ritiriamo noi, a casa tua</b><span>Spedizione organizzata da noi in tutta Italia.</span></div></div>
+        {%- endif -%}
+      </div>
+
+      <div class="dzs-cta">
+        {%- assign wa = section.settings.whatsapp | default: '393457815102' -%}
+        <a class="dzs-btn dzs-wa" target="_blank" rel="noopener"
+           href="https://wa.me/{{ wa }}?text={{ 'Ciao! Vorrei far valutare la mia bici usata per una permuta. Vi mando le foto.' | url_encode }}">
+          Manda le foto su WhatsApp
+        </a>
+        {%- if cusato != blank -%}
+          <a class="dzs-btn dzs-ghost" href="{{ cusato.url }}">Vedi l'usato garantito</a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="dzs-trade-art" aria-hidden="true">
+      {%- if cusato != blank and cusato.products_count > 0 -%}
+        <span class="dzs-count"><b>{{ cusato.products_count }}</b><span>BICI USATE<br>GARANTITE</span></span>
+      {%- endif -%}
+      <svg class="dzs-bike" viewBox="0 0 260 200" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="62" cy="138" r="40"/>
+        <circle cx="198" cy="138" r="40"/>
+        <path d="M62 138 104 70 172 70 198 138M62 138 128 138 104 70M128 138 172 70"/>
+        <path d="M96 56h20M172 70 162 48h-16"/>
+      </svg>
+      <span class="dzs-pill">{{ section.settings.pill }}</span>
+    </div>
+  </div>
+</section>
+
+{%- endif -%}
 {%- endif -%}
 
 {{ 'dz-sezioni.css' | asset_url | stylesheet_tag }}
