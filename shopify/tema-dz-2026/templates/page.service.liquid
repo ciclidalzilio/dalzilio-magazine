@@ -1,0 +1,50 @@
+{%- comment -%}
+  Pagina Service — officina, prenotazione online HubTiger e sospensioni.
+  Assegnarla alla pagina "SERVICE" da: pagina → modello → page.service.
+{%- endcomment -%}
+<div class="wrap"><nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>{{ page.title }}</b></nav></div>
+
+<div class="sv-hero">
+  <img class="bg" src="{{ 'L1020277.jpg' | file_url }}" alt="" loading="eager">
+  <div class="sv-veil"></div>
+  <div class="wrap" style="position:relative;z-index:3;width:100%"><div class="sv-in">
+    <p class="kicker" style="color:#ffb27a;margin:0 0 12px">Officina & Service</p>
+    <h1>Utilizziamo i migliori componenti e le più innovative tecnologie in commercio</h1>
+  </div></div>
+</div>
+
+<div class="wrap">
+  <section class="block" style="padding-bottom:30px"><div class="sv-pts">
+    <div class="val"><div><b>Esperienza e competenza</b><span>Il nostro team è composto da professionisti con anni di esperienza nel settore delle biciclette. Ogni tipo di riparazione è eseguito con cura e precisione.</span></div></div>
+    <div class="val"><div><b>Servizio veloce</b><span>Sappiamo quanto sia importante tornare in sella in tempi rapidi. Offriamo riparazioni rapide e prenotazioni online per velocizzare il processo.</span></div></div>
+    <div class="val"><div><b>Ricambi originali e di qualità</b><span>Utilizziamo solo ricambi originali e di alta qualità per garantire performance ottimali e durature.</span></div></div>
+    <div class="val"><div><b>Prezzi competitivi</b><span>Offriamo prezzi trasparenti e senza sorprese. Ogni intervento viene preventivato prima dell'esecuzione.</span></div></div>
+  </div></section>
+
+  <section class="block" style="padding-top:0">
+    <div class="head"><div><p class="k">Prenotazione online</p><h2>Prenota il tuo servizio direttamente dal tuo divano</h2></div></div>
+    <iframe src="https://bookings.hubtiger.com/bikes?shop=HUB.598EFB995EBB47FE8A9268EDB94A36DE9E82CBC0051F4AE3B6854BCA2728CED8.TIGER&lang=it&service=84363"
+            frameborder="0" allow="geolocation" style="width:100%;height:500px;border-radius:18px;border:1px solid var(--line);background:#fff"></iframe>
+  </section>
+</div>
+
+<div class="sv-banner">
+  <img class="bg" src="{{ 'L1020297.jpg' | file_url }}" alt="" loading="lazy">
+  <div class="sv-veil" style="background:rgba(10,11,16,.52)"></div>
+  <div class="sv-bin"><h2>Revisione sospensioni</h2><p>Disponibile nella nostra sede di Montebelluna</p></div>
+</div>
+
+<div class="wrap">
+  <section class="block" style="padding-top:34px"><div class="sv-iwt">
+    <div class="sv-img"><img class="bg" src="{{ 'C24_LeftyOcho_Desktop_2.jpg' | file_url }}" alt="" loading="lazy"></div>
+    <div class="sv-tx">
+      <p class="kicker" style="margin:0 0 12px">Service sospensioni</p>
+      <h2>Sospensioni nuove in tempo zero</h2>
+      <p>Siamo specializzati nelle revisioni e nel tuning delle migliori sospensioni sul mercato:</p>
+      <p class="sv-brands">RockShox · Fox · Lefty Cannondale</p>
+      <p>Contattaci per maggiori informazioni e migliora le performance delle tue sospensioni.</p>
+      <a class="btn wa" style="margin-top:16px" target="_blank" rel="noopener noreferrer"
+         href="https://wa.me/393457815102?text={{ 'Ciao! Vorrei informazioni sulla revisione delle sospensioni (RockShox / Fox / Lefty).' | url_encode }}">Chiedi informazioni</a>
+    </div>
+  </div></section>
+</div>

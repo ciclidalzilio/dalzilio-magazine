@@ -1,0 +1,40 @@
+{%- comment -%}
+  Collezione DZ 2026 — griglia con le card nuove, ordinamento e paginazione.
+  I filtri avanzati restano all'app Globo già installata sul negozio.
+{%- endcomment -%}
+<div class="wrap">
+  <nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>{{ collection.title }}</b></nav>
+  <div class="ltop">
+    <div><h1>{{ collection.title }}</h1><div class="sub">{{ collection.products_count }} prodotti</div></div>
+    <select class="sortsel" onchange="location.href=this.value">
+      {%- assign base = collection.url | append: '?sort_by=' -%}
+      <option value="{{ base }}manual" {% if collection.sort_by == 'manual' or collection.sort_by == blank %}selected{% endif %}>Ordina: Rilevanza</option>
+      <option value="{{ base }}created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>Più recenti</option>
+      <option value="{{ base }}price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>Prezzo crescente</option>
+      <option value="{{ base }}price-descending" {% if collection.sort_by == 'price-descending' %}selected{% endif %}>Prezzo decrescente</option>
+      <option value="{{ base }}title-ascending" {% if collection.sort_by == 'title-ascending' %}selected{% endif %}>Nome A-Z</option>
+    </select>
+  </div>
+
+  {%- paginate collection.products by 24 -%}
+    <div class="listgrid">
+      {%- for p in collection.products -%}
+        {% render 'dz-card', product: p %}
+      {%- else -%}
+        <p style="grid-column:1/-1;color:var(--muted);padding:40px 0">Nessun prodotto in questa collezione.</p>
+      {%- endfor -%}
+    </div>
+    {%- if paginate.pages > 1 -%}
+      <nav class="pagin" aria-label="Pagine">
+        {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">←</a>{%- endif -%}
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>
+          {%- elsif part.title == paginate.current_page -%}<span class="cur">{{ part.title }}</span>
+          {%- else -%}<span>{{ part.title }}</span>{%- endif -%}
+        {%- endfor -%}
+        {%- if paginate.next -%}<a href="{{ paginate.next.url }}">→</a>{%- endif -%}
+      </nav>
+    {%- endif -%}
+  {%- endpaginate -%}
+</div>
+<div style="height:40px"></div>

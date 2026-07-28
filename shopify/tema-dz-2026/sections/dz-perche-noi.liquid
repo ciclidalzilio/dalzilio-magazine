@@ -1,0 +1,74 @@
+{%- comment -%}
+  dz-perche-noi.liquid — i servizi inclusi nell'acquisto.
+  Difende il prezzo pieno rispetto ai siti che vendono senza assistenza.
+{%- endcomment -%}
+
+<section class="dzs dzs-why">
+  <div class="dzs-in dzs-why-grid">
+    <div>
+      <p class="dzs-k">{{ section.settings.occhiello }}</p>
+      <h2 class="dzs-h2">{{ section.settings.titolo }}</h2>
+      <p class="dzs-lede">{{ section.settings.testo }}</p>
+      {%- if section.settings.sigillo != blank -%}
+        <span class="dzs-seal"><i></i>{{ section.settings.sigillo }}{% if product.vendor != blank %} {{ product.vendor }}{% endif %}</span>
+      {%- endif -%}
+    </div>
+
+    <div class="dzs-wlist">
+      {%- for block in section.blocks -%}
+        <div class="dzs-witem" {{ block.shopify_attributes }}>
+          <span class="dzs-tick">✓</span>
+          <span class="dzs-num">{{ forloop.index | prepend: '0' | slice: -2, 2 }}</span>
+          <b>{{ block.settings.titolo }}</b>
+          <p>{{ block.settings.testo }}</p>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  {%- if section.settings.nota != blank or section.settings.whatsapp != blank -%}
+    <div class="dzs-in dzs-wfoot">
+      <p class="dzs-note">{{ section.settings.nota }}</p>
+      {%- if section.settings.whatsapp != blank -%}
+        <a class="dzs-btn dzs-wa" target="_blank" rel="noopener"
+           href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'Ciao! Vorrei sapere cosa e incluso acquistando la ' | append: product.title | url_encode }}">
+          Parlane con noi
+        </a>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</section>
+
+{{ 'dz-sezioni.css' | asset_url | stylesheet_tag }}
+
+{% schema %}
+{
+  "name": "DZ · Perche da noi",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "occhiello", "label": "Occhiello", "default": "Perche comprarla da noi" },
+    { "type": "text", "id": "titolo", "label": "Titolo", "default": "Il prezzo e lo stesso. Quello che c'e dentro, no." },
+    { "type": "textarea", "id": "testo", "label": "Testo", "default": "Una bici non si spedisce e basta: va montata, misurata e seguita nel tempo. Ecco cosa e compreso quando la compri da Cicli Dal Zilio." },
+    { "type": "text", "id": "sigillo", "label": "Sigillo", "default": "Rivenditori ufficiali" },
+    { "type": "textarea", "id": "nota", "label": "Nota", "default": "Assistenza e garanzia valgono su tutta la gamma dei marchi che trattiamo: TREK, SCOTT, Cannondale e Amflow." },
+    { "type": "text", "id": "whatsapp", "label": "Numero WhatsApp", "default": "393457815102" }
+  ],
+  "blocks": [
+    { "type": "voce", "name": "Voce", "settings": [
+      { "type": "text", "id": "titolo", "label": "Titolo" },
+      { "type": "textarea", "id": "testo", "label": "Testo" }
+    ]}
+  ],
+  "presets": [{
+    "name": "DZ · Perche da noi",
+    "blocks": [
+      { "type": "voce", "settings": { "titolo": "Montaggio professionale", "testo": "La bici esce dalla nostra officina gia montata, allineata e controllata. Non da una scatola." }},
+      { "type": "voce", "settings": { "titolo": "Regolazione inclusa", "testo": "Sella, manubrio e posizione tarati su di te al ritiro, senza costi aggiuntivi." }},
+      { "type": "voce", "settings": { "titolo": "Primo tagliando compreso", "testo": "Dopo il rodaggio ricontrolliamo cavi, freni e serraggi: e il momento in cui una bici nuova si assesta." }},
+      { "type": "voce", "settings": { "titolo": "Garanzia gestita da noi", "testo": "Se serve un intervento parli con noi, non con un servizio clienti all'estero." }},
+      { "type": "voce", "settings": { "titolo": "Officina a due passi", "testo": "Assistenza, ricambi originali e consigli quando ti servono, a Montebelluna." }},
+      { "type": "voce", "settings": { "titolo": "Permuta e finanziamento", "testo": "Valutiamo la tua usata anche a distanza e rateizziamo l'acquisto da 6 a 60 mesi." }}
+    ]
+  }]
+}
+{% endschema %}

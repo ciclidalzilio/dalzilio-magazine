@@ -1,0 +1,118 @@
+{%- comment -%}
+  Home DZ 2026 — hero cinematografico, marchi, categorie, ultimi arrivi (dalla
+  collezione new-arrivals), usato reale, permuta (solo verso il nuovo), rate.
+  Tutto legge dalle collezioni esistenti: nessun dato inventato.
+{%- endcomment -%}
+
+<section class="hero">
+  <div class="backdrop" aria-hidden="true"></div>
+  <svg class="bike" viewBox="0 0 920 620" fill="none" aria-hidden="true">
+    <defs>
+      <linearGradient id="hgFrame" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF7A00"/><stop offset=".55" stop-color="#FF2E63"/><stop offset="1" stop-color="#8B2FE6"/></linearGradient>
+      <radialGradient id="hgShadow"><stop offset="0" stop-color="#000" stop-opacity=".5"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+    </defs>
+    <ellipse cx="240" cy="588" rx="185" ry="17" fill="url(#hgShadow)"/>
+    <ellipse cx="680" cy="588" rx="185" ry="17" fill="url(#hgShadow)"/>
+    <g stroke="rgba(255,255,255,.13)" stroke-width="1.5">
+      <path d="M106 430H374M240 296V564M145.3 335.3 334.7 524.7M145.3 524.7 334.7 335.3"/>
+      <path d="M546 430H814M680 296V564M585.3 335.3 774.7 524.7M585.3 524.7 774.7 335.3"/>
+    </g>
+    <circle cx="240" cy="430" r="148" stroke="rgba(255,255,255,.3)" stroke-width="9"/>
+    <circle cx="240" cy="430" r="134" stroke="rgba(255,255,255,.55)" stroke-width="2.5"/>
+    <circle cx="680" cy="430" r="148" stroke="rgba(255,255,255,.3)" stroke-width="9"/>
+    <circle cx="680" cy="430" r="134" stroke="rgba(255,255,255,.55)" stroke-width="2.5"/>
+    <path d="M432 402 240 412M432 490 240 448" stroke="rgba(255,255,255,.22)" stroke-width="3"/>
+    <circle cx="240" cy="430" r="18" stroke="rgba(255,255,255,.4)" stroke-width="3"/>
+    <path d="M372 270 636 258 654 306M432 446 372 270M432 446 654 306M432 446 240 430 372 270" stroke="url(#hgFrame)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M654 306C664 350 674 392 680 430" stroke="rgba(255,255,255,.8)" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="432" cy="446" r="44" stroke="rgba(255,255,255,.5)" stroke-width="3"/>
+    <circle cx="432" cy="446" r="10" fill="rgba(255,255,255,.8)"/>
+    <path d="M432 446 468 506M450 506H492" stroke="rgba(255,255,255,.85)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M372 270 356 208" stroke="rgba(255,255,255,.85)" stroke-width="8" stroke-linecap="round"/>
+    <path d="M316 202C340 196 372 196 396 202" stroke="rgba(255,255,255,.9)" stroke-width="9" stroke-linecap="round"/>
+    <path d="M636 258 668 242" stroke="rgba(255,255,255,.85)" stroke-width="8" stroke-linecap="round"/>
+    <path d="M668 242c34 -2 50 12 48 34c-2 24 -22 34 -40 30" stroke="rgba(255,255,255,.9)" stroke-width="8" stroke-linecap="round"/>
+    <circle cx="240" cy="430" r="8" fill="rgba(255,255,255,.85)"/>
+    <circle cx="680" cy="430" r="8" fill="rgba(255,255,255,.85)"/>
+  </svg>
+  <div class="veil" aria-hidden="true"></div>
+  <div class="wrap hwrap">
+    <p class="kicker" style="margin:0 0 18px">Nuova collezione {{ 'now' | date: '%Y' }}</p>
+    <h1>La tua prossima bici<br><span class="g">inizia qui.</span></h1>
+    <p class="lede">Bici da corsa, gravel, mountain bike ed e-bike delle migliori marche. Consegna in tutta Italia, assistenza in officina e la consulenza di chi pedala davvero.</p>
+    <div class="cta">
+      <a class="btn" href="{{ routes.all_products_collection_url }}">Scopri il catalogo</a>
+      <a class="btn ghost" href="/collections/new-arrivals">Ultimi arrivi →</a>
+    </div>
+    <div class="heroStats">
+      <div><b>{{ collections['new-arrivals'].products_count | default: '350+' }}</b><span>MODELLI A CATALOGO</span></div>
+      <div><b>4 brand</b><span>RIVENDITORI UFFICIALI</span></div>
+      <div><b>Officina</b><span>ASSISTENZA CERTIFICATA</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap vals-desk"><div class="values">{% render 'dz-valori' %}</div></section>
+
+<section class="wrap" style="padding-top:34px"><div class="logowall">
+  <span class="lw-label">Rivenditori ufficiali</span>
+  <div class="lw-row">
+    <div class="lw-cell"><img src="{{ 'trek.png' | file_url }}" alt="Trek" loading="lazy"></div>
+    <div class="lw-cell"><img src="{{ 'scott.png' | file_url }}" alt="Scott" loading="lazy"></div>
+    <div class="lw-cell"><img src="{{ 'cnd.png' | file_url }}" alt="Cannondale" loading="lazy"></div>
+    <div class="lw-cell"><img src="{{ 'amflow-logo.png' | file_url }}" alt="Amflow" loading="lazy"></div>
+  </div>
+</div></section>
+
+<section class="block wrap">
+  <div class="head"><div><p class="k">Il catalogo</p><h2>Scegli la tua disciplina</h2></div><a class="more" href="{{ routes.all_products_collection_url }}">Tutte le bici</a></div>
+  <div class="cats">
+    {%- assign bento = 'usato-1,bici-da-strada,ebikes,gravel,mountain-bike,urban' | split: ',' -%}
+    {%- for handle in bento -%}
+      {%- assign c = collections[handle] -%}
+      {%- if c != blank -%}
+        <a class="cat {% if forloop.first %}hero2{% elsif forloop.index == 2 or forloop.index == 3 %}wide{% endif %}" href="{{ c.url }}">
+          {%- if c.featured_image -%}<img class="bg" src="{{ c.featured_image | image_url: width: 900 }}" alt="" loading="lazy">{%- endif -%}
+          <div class="vg"></div>
+          {%- if forloop.first -%}<span class="flag"><i></i>Pezzi unici</span>{%- endif -%}
+          <div class="lb">
+            <span class="c">{{ c.products_count }} modelli</span>
+            <h3>{{ c.title }}</h3>
+            {%- if forloop.first -%}<p>Bici selezionate e controllate nella nostra officina, pronte a partire. Ogni annuncio ha la sua data di pubblicazione.</p>{%- endif -%}
+          </div>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+<section class="block wrap">
+  <div class="head"><div><p class="k">Ultimi arrivi</p><h2>Le ultime bici caricate</h2></div><a class="more" href="/collections/new-arrivals">Vedi tutte</a></div>
+  <div class="prods">
+    {%- assign mostrate = 0 -%}
+    {%- for p in collections['new-arrivals'].products limit: 24 -%}
+      {%- if mostrate < 8 and p.featured_image and p.type != 'USATO' -%}
+        {% render 'dz-card', product: p %}
+        {%- assign mostrate = mostrate | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+<section class="wrap vals-mob"><div class="values">{% render 'dz-valori' %}</div></section>
+
+<section class="block wrap">
+  <div class="head"><div><p class="k">Occasioni</p><h2>Usato garantito</h2></div><a class="more" href="/collections/usato-1">Tutto l'usato</a></div>
+  <div class="prods">
+    {%- for p in collections['usato-1'].products limit: 4 -%}
+      {% render 'dz-card', product: p %}
+    {%- endfor -%}
+  </div>
+</section>
+
+{% section 'dz-permuta' %}
+
+<section class="block wrap"><div class="promo">
+  <div><p class="k">Paga a rate</p><h2>Da 6 a 60 rate, risposta in pochi minuti.</h2></div>
+  <a class="btn" href="/pages/finanziamenti-agevolati">Scopri i finanziamenti</a>
+</div></section>

@@ -1,0 +1,53 @@
+{%- comment -%}
+  Contatti / Dove siamo — sedi reali, orari veri, modulo e mappe con indicazioni.
+  Assegnarla alla pagina "CONTATTI" da: pagina → modello → page.contact.
+{%- endcomment -%}
+<div class="wrap">
+  <nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>{{ page.title }}</b></nav>
+  <div class="ltop"><div><h1>Dove siamo</h1><div class="sub">Due sedi, la stessa passione dal 2011.</div></div></div>
+
+  <div class="storeGrid">
+    <div class="infoCard">
+      <h3>Vieni a trovarci</h3>
+      <div class="infoRow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><div><b>Montebelluna</b> — Via Piave 34, 31044 (TV)<br><span style="color:var(--muted)">Tel. +39 345 7815102</span></div></div>
+      <div class="infoRow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/></svg><div><b>Quinto di Treviso</b> — Via Vittorio Emanuele 53, 31055 (TV)<br><span style="color:var(--muted)">Tel. +39 347 4233961</span></div></div>
+      <div class="infoRow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><div>Lun–Ven 9:30–12:30 · 15:30–19:30<br><span style="color:var(--muted)">Mercoledì e sabato solo mattina · Domenica chiuso</span></div></div>
+      <div class="infoRow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg><div><a href="mailto:info@ciclidalzilio.com">info@ciclidalzilio.com</a></div></div>
+      <a class="btn wa block" style="margin-top:14px" target="_blank" rel="noopener noreferrer"
+         href="https://wa.me/393457815102?text={{ 'Ciao Cicli Dal Zilio! Vorrei un’informazione.' | url_encode }}">Scrivici su WhatsApp</a>
+    </div>
+    <div class="infoCard">
+      <h3>Scrivici due righe</h3>
+      {%- form 'contact' -%}
+        {%- if form.posted_successfully? -%}
+          <p style="color:var(--ok);font-weight:600">Messaggio inviato: ti rispondiamo il prima possibile.</p>
+        {%- elsif form.errors -%}
+          <p style="color:var(--rose)">Controlla i campi e riprova.</p>
+        {%- endif -%}
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <input type="text" name="contact[name]" placeholder="Nome e cognome" required style="font-family:inherit;font-size:15px;padding:13px 15px;border-radius:12px;border:1px solid var(--line-strong)">
+          <input type="email" name="contact[email]" placeholder="Email" required style="font-family:inherit;font-size:15px;padding:13px 15px;border-radius:12px;border:1px solid var(--line-strong)">
+          <input type="text" name="contact[oggetto]" placeholder="Oggetto (es. Trek Domane taglia 54)" style="font-family:inherit;font-size:15px;padding:13px 15px;border-radius:12px;border:1px solid var(--line-strong)">
+          <textarea name="contact[body]" rows="4" placeholder="Il tuo messaggio" required style="font-family:inherit;font-size:15px;padding:13px 15px;border-radius:12px;border:1px solid var(--line-strong)"></textarea>
+          <button class="btn" type="submit">Invia messaggio</button>
+        </div>
+      {%- endform -%}
+    </div>
+  </div>
+
+  <section class="block" style="padding-bottom:20px">
+    <div class="head"><div><p class="k">Come raggiungerci</p><h2>Le nostre sedi</h2></div></div>
+    <div class="mappe">
+      <div class="mcard">
+        <div class="mtop"><div><b>Montebelluna</b><span>Via Piave 34, 31044 Montebelluna (TV) · +39 345 7815102</span></div>
+          <a class="btn sm" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/dir/?api=1&destination={{ 'Cicli Dal Zilio, Via Piave 34, Montebelluna TV' | url_encode }}">Indicazioni →</a></div>
+        <div class="mframe"><iframe src="https://www.google.com/maps?q={{ 'Cicli Dal Zilio, Via Piave 34, Montebelluna TV' | url_encode }}&output=embed" loading="lazy" title="Mappa Montebelluna" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+      </div>
+      <div class="mcard">
+        <div class="mtop"><div><b>Quinto di Treviso</b><span>Via Vittorio Emanuele 53, 31055 Quinto di Treviso (TV) · +39 347 4233961</span></div>
+          <a class="btn sm" target="_blank" rel="noopener noreferrer" href="https://www.google.com/maps/dir/?api=1&destination={{ 'Cicli Dal Zilio, Via Vittorio Emanuele 53, Quinto di Treviso TV' | url_encode }}">Indicazioni →</a></div>
+        <div class="mframe"><iframe src="https://www.google.com/maps?q={{ 'Cicli Dal Zilio, Via Vittorio Emanuele 53, Quinto di Treviso TV' | url_encode }}&output=embed" loading="lazy" title="Mappa Quinto di Treviso" referrerpolicy="no-referrer-when-downgrade"></iframe></div>
+      </div>
+    </div>
+  </section>
+</div>

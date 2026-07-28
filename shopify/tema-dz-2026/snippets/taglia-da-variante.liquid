@@ -1,0 +1,59 @@
+{%- comment -%}
+  taglia-da-variante.liquid
+
+  Ricava la taglia dal titolo della variante SENZA modificare i prodotti.
+  Serve perché il catalogo Trek/Scott arriva da un feed automatico: le taglie
+  sono dentro la stringa dell'opzione ("… CAGR/M carbon grey M") e non vanno
+  toccate a mano, altrimenti la sincronizzazione le sovrascrive.
+
+  Uso:
+    {% render 'taglia-da-variante', variante: variant %}
+    → assegna la variabile {{ taglia_variante }}
+
+  Se il prodotto ha già una vera opzione "Taglia"/"Size", usa quella.
+  Logica identica allo script verificato in scripts/analizza-varianti.mjs.
+{%- endcomment -%}
+
+{%- liquid
+  assign taglia_variante = ''
+
+  # 1. Se esiste una vera opzione Taglia/Size, ha la precedenza.
+  for opzione in variante.product.options_with_values
+    assign nome_opzione = opzione.name | downcase
+    if nome_opzione == 'taglia' or nome_opzione == 'size'
+      assign indice = forloop.index0
+      assign taglia_variante = variante.options[indice]
+      break
+    endif
+  endfor
+
+  # 2. Altrimenti la deduco dal titolo, scorrendo le parole da destra:
+  #    nei feed la taglia è quasi sempre in fondo.
+  if taglia_variante == blank
+    assign taglie_lettera = 'XXS,XS,S,M,L,XL,XXL,XXXL' | split: ','
+    assign taglie_numero = '44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64' | split: ','
+
+    assign ripulito = variante.title | replace: '/', ' ' | replace: '(', ' ' | replace: ')', ' ' | replace: ',', ' '
+    assign parole = ripulito | split: ' '
+    assign ultima = parole.size | minus: 1
+
+    for i in (0..ultima)
+      assign indice = ultima | minus: i
+      assign parola = parole[indice] | strip | upcase
+
+      if taglie_lettera contains parola
+        assign taglia_variante = parola
+        break
+      endif
+      if taglie_numero contains parola
+        assign taglia_variante = parola
+        break
+      endif
+    endfor
+  endif
+
+  # 3. "Default Title" non è una taglia: resta vuoto.
+  if taglia_variante == 'DEFAULT TITLE' or taglia_variante == 'Default Title'
+    assign taglia_variante = ''
+  endif
+-%}

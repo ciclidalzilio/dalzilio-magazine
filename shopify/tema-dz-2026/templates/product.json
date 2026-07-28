@@ -1,0 +1,189 @@
+{
+  "sections": {
+    "prodotto": {
+      "type": "dz-scheda-prodotto",
+      "settings": {}
+    },
+    "perche": {
+      "type": "dz-perche-noi",
+      "settings": {},
+      "blocks": {
+        "v1": {
+          "type": "voce",
+          "settings": {
+            "titolo": "Montaggio professionale",
+            "testo": "La bici esce dalla nostra officina gia montata, allineata e controllata. Non da una scatola."
+          }
+        },
+        "v2": {
+          "type": "voce",
+          "settings": {
+            "titolo": "Regolazione inclusa",
+            "testo": "Sella, manubrio e posizione tarati su di te al ritiro, senza costi aggiuntivi."
+          }
+        },
+        "v3": {
+          "type": "voce",
+          "settings": {
+            "titolo": "Primo tagliando compreso",
+            "testo": "Dopo il rodaggio ricontrolliamo cavi, freni e serraggi: e il momento in cui una bici nuova si assesta."
+          }
+        },
+        "v4": {
+          "type": "voce",
+          "settings": {
+            "titolo": "Garanzia gestita da noi",
+            "testo": "Se serve un intervento parli con noi, non con un servizio clienti all'estero."
+          }
+        },
+        "v5": {
+          "type": "voce",
+          "settings": {
+            "titolo": "Officina a due passi",
+            "testo": "Assistenza, ricambi originali e consigli quando ti servono, a Montebelluna."
+          }
+        },
+        "v6": {
+          "type": "voce",
+          "settings": {
+            "titolo": "Permuta e finanziamento",
+            "testo": "Valutiamo la tua usata anche a distanza e rateizziamo l'acquisto da 6 a 60 mesi."
+          }
+        }
+      },
+      "block_order": [
+        "v1",
+        "v2",
+        "v3",
+        "v4",
+        "v5",
+        "v6"
+      ]
+    },
+    "permuta": {
+      "type": "dz-permuta",
+      "settings": {
+        "collezione": "usato-1"
+      },
+      "blocks": {
+        "p1": {
+          "type": "passo",
+          "settings": {
+            "titolo": "Mandaci le foto",
+            "testo": "Modello, anno e stato: bastano pochi minuti."
+          }
+        },
+        "p2": {
+          "type": "passo",
+          "settings": {
+            "titolo": "Ricevi la valutazione",
+            "testo": "Quotazione gratuita e senza impegno."
+          }
+        },
+        "p3": {
+          "type": "passo",
+          "settings": {
+            "titolo": "Ritiriamo noi, a casa tua",
+            "testo": "Spedizione organizzata da noi in tutta Italia."
+          }
+        }
+      },
+      "block_order": [
+        "p1",
+        "p2",
+        "p3"
+      ]
+    },
+    "correlati": {
+      "type": "dz-correlati",
+      "settings": {}
+    },
+    "faq": {
+      "type": "dz-faq",
+      "settings": {},
+      "blocks": {
+        "f0": {
+          "type": "voce",
+          "settings": {
+            "domanda": "La bicicletta viene consegnata già assemblata?",
+            "risposta": "Sì. Ogni bicicletta viene controllata e preparata dal nostro staff specializzato prima della spedizione. La bici viene consegnata pre-assemblata e pronta per essere completata con poche e semplici operazioni, che possono variare in base al modello e alle esigenze di trasporto."
+          }
+        },
+        "f1": {
+          "type": "voce",
+          "settings": {
+            "domanda": "Come posso scegliere la taglia corretta?",
+            "risposta": "La scelta della taglia dipende da altezza, cavallo, proporzioni corporee e stile di guida. Se hai dubbi, contattaci prima dell'acquisto indicando la tua altezza e la misura del cavallo: il nostro staff ti aiuterà a individuare la taglia più adatta."
+          }
+        },
+        "f2": {
+          "type": "voce",
+          "settings": {
+            "domanda": "La bicicletta è coperta da garanzia?",
+            "risposta": "Sì. Tutti i prodotti nuovi sono coperti dalla garanzia prevista dal produttore e dalla normativa applicabile. In caso di necessità, il nostro staff ti assisterà nella gestione della richiesta e nei rapporti con il produttore."
+          }
+        },
+        "f3": {
+          "type": "voce",
+          "settings": {
+            "domanda": "Quali sono i tempi di spedizione?",
+            "risposta": "I tempi possono variare in base alla disponibilità del prodotto e alla destinazione. Le biciclette disponibili vengono preparate con cura dal nostro staff prima della partenza. Dopo la spedizione riceverai le informazioni necessarie per seguire la consegna."
+          }
+        },
+        "f4": {
+          "type": "voce",
+          "settings": {
+            "domanda": "Spedite anche all'estero?",
+            "risposta": "Sì, effettuiamo spedizioni in Italia e in numerosi Paesi europei. Costi e modalità di consegna possono variare in base alla destinazione e alle dimensioni del prodotto."
+          }
+        },
+        "f5": {
+          "type": "voce",
+          "settings": {
+            "domanda": "Posso acquistare senza IVA con una partita IVA europea?",
+            "risposta": "Per i clienti aziendali con partita IVA valida in un altro Paese dell'Unione Europea possono essere applicate le condizioni fiscali previste per le operazioni intracomunitarie. Contattaci prima dell'acquisto indicando i dati completi dell'azienda e la partita IVA: verificheremo la possibilità di procedere secondo la normativa applicabile."
+          }
+        },
+        "f6": {
+          "type": "voce",
+          "settings": {
+            "domanda": "È possibile pagare a rate?",
+            "risposta": "Quando disponibile, puoi scegliere una delle soluzioni di pagamento rateale mostrate direttamente durante il checkout. La disponibilità e l'approvazione del pagamento dipendono dal servizio selezionato e dalle relative condizioni."
+          }
+        },
+        "f7": {
+          "type": "voce",
+          "settings": {
+            "domanda": "Posso restituire il prodotto?",
+            "risposta": "Puoi richiedere un reso secondo le condizioni e i termini indicati nella nostra politica di reso. Il prodotto dovrà rispettare i requisiti previsti e dovrà essere restituito nelle condizioni indicate. Ti consigliamo di consultare la pagina dedicata prima di procedere con la richiesta."
+          }
+        },
+        "f8": {
+          "type": "voce",
+          "settings": {
+            "domanda": "Il prodotto che vedo online è realmente disponibile?",
+            "risposta": "La disponibilità mostrata sul sito viene aggiornata regolarmente. Per prodotti particolarmente richiesti o per ordini urgenti, puoi contattarci prima dell'acquisto per una verifica diretta della disponibilità."
+          }
+        }
+      },
+      "block_order": [
+        "f0",
+        "f1",
+        "f2",
+        "f3",
+        "f4",
+        "f5",
+        "f6",
+        "f7",
+        "f8"
+      ]
+    }
+  },
+  "order": [
+    "prodotto",
+    "perche",
+    "permuta",
+    "correlati",
+    "faq"
+  ]
+}

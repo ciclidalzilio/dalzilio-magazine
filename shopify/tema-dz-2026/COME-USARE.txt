@@ -1,0 +1,46 @@
+DZ 2026 — tema per Shopify (design nuovo completo)
+===================================================
+
+COSA CONTIENE
+- Home: hero cinematografico, marchi, categorie (bento), "Le ultime bici
+  caricate" (collezione new-arrivals), usato reale, permuta, banda rate.
+- Collezioni: griglia nuova con ordinamento e paginazione. I filtri avanzati
+  restano all'app Globo già installata.
+- Scheda prodotto: foto grande con zoom a schermo intero, prezzo in evidenza
+  con risparmio, calcolatore rata (TAN 6,5%, 6-60 mesi), blocco Klarna 3 rate,
+  SKU/EAN per variante, logo della casa madre, taglie ricavate dal titolo
+  (il feed FTP Trek/Scott NON viene toccato), regole permuta e spedizione,
+  FAQ reali, "perché comprarla da noi", modelli correlati.
+- Pagine: Service (con prenotazione HubTiger e sospensioni), Chi siamo
+  (storia, team completo), Contatti (sedi, orari, mappe con indicazioni).
+- Navigazione mobile: menu a tutto schermo + barra fissa in basso.
+
+COME CARICARLO (senza toccare il sito attivo)
+1. Negozio online → Temi → Aggiungi tema → Carica file zip.
+2. Il tema arriva NON pubblicato: si prova con "Anteprima".
+3. NON premere "Pubblica" finché non è tutto verificato.
+
+DOPO IL CARICAMENTO (5 minuti)
+1. Pagine → SERVICE → Modello → "page.service".
+2. Pagine → CHI SIAMO → Modello → "page.chi-siamo".
+3. Pagine → CONTATTI → Modello → "page.contact".
+4. Contenuti → File: carica "matteo-pegoraro.jpg" (foto di Matteo) se non
+   c'è già: la card in Chi siamo la usa da sola.
+
+REGOLE GIA' DENTRO IL TEMA
+- Permuta proposta solo su bici nuove da 2.500 € in su, sconto max 20%,
+  mai su usato e accessori (si regola in sections/dz-permuta.liquid).
+- Spedizione: gratuita in Italia; accessori gratuiti da 99 €;
+  estero da 99 € (e-bike 149 €).
+- Sull'usato: data di pubblicazione dell'annuncio, niente recensioni,
+  garanzia "usato controllato in officina".
+
+DA SISTEMARE PRIMA DI PUBBLICARE
+- TAN e condizioni del finanziamento: verificare con la finanziaria
+  (impostazioni della sezione "DZ · Scheda prodotto" nel personalizzatore).
+- Klarna: attivare il messaging ufficiale dalle impostazioni pagamenti.
+- Le tariffe di spedizione vere si impostano in Impostazioni → Spedizione
+  (il tema le racconta, Shopify le applica).
+
+Il catalogo NON viene mai modificato dal tema: prodotti, prezzi e giacenze
+restano al sincronizzatore FTP.

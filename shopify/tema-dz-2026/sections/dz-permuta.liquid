@@ -1,0 +1,88 @@
+{%- comment -%}
+  dz-permuta.liquid — valutazione dell'usato a distanza e ritiro in tutta Italia.
+{%- endcomment -%}
+
+{%- comment -%}
+  La permuta si propone solo dove ha senso: mai sull'usato, mai su accessori
+  e ricambi, solo su bici da 2.500 euro in su e non scontate oltre il 20%.
+  Fuori dalla scheda prodotto (es. home) la sezione appare sempre.
+{%- endcomment -%}
+{%- assign mostra_permuta = true -%}
+{%- if template contains 'product' and product -%}
+  {%- assign sc = 0 -%}
+  {%- if product.compare_at_price > product.price -%}
+    {%- assign d = product.compare_at_price | minus: product.price | times: 100.0 -%}
+    {%- assign sc = d | divided_by: product.compare_at_price | round -%}
+  {%- endif -%}
+  {%- if product.type == 'USATO' or product.price < 250000 or sc > 20 -%}
+    {%- assign mostra_permuta = false -%}
+  {%- endif -%}
+{%- endif -%}
+{%- if mostra_permuta -%}
+<section class="dzs dzs-trade">
+  <div class="dzs-in dzs-trade-grid">
+    <div class="dzs-trade-txt">
+      <p class="dzs-k">{{ section.settings.occhiello }}</p>
+      <h2 class="dzs-h2">{{ section.settings.titolo }}</h2>
+      <p class="dzs-lede">{{ section.settings.testo }}</p>
+
+      <div class="dzs-steps">
+        {%- for block in section.blocks -%}
+          <div class="dzs-step" {{ block.shopify_attributes }}>
+            <span class="dzs-n">{{ forloop.index }}</span>
+            <div><b>{{ block.settings.titolo }}</b><span>{{ block.settings.testo }}</span></div>
+          </div>
+        {%- endfor -%}
+      </div>
+
+      <div class="dzs-cta">
+        {%- if section.settings.whatsapp != blank -%}
+          <a class="dzs-btn dzs-wa" target="_blank" rel="noopener"
+             href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'Ciao! Vorrei far valutare la mia bici usata per una permuta. Vi mando le foto.' | url_encode }}">
+            Manda le foto su WhatsApp
+          </a>
+        {%- endif -%}
+        {%- if section.settings.collezione != blank -%}
+          <a class="dzs-btn dzs-ghost" href="{{ collections[section.settings.collezione].url }}">Vedi l'usato garantito</a>
+        {%- endif -%}
+      </div>
+    </div>
+
+    <div class="dzs-trade-art">
+      <span class="dzs-pill">{{ section.settings.pill }}</span>
+    </div>
+  </div>
+</section>
+
+{%- endif -%}
+
+{{ 'dz-sezioni.css' | asset_url | stylesheet_tag }}
+
+{% schema %}
+{
+  "name": "DZ · Usato e permuta",
+  "tag": "section",
+  "settings": [
+    { "type": "text", "id": "occhiello", "label": "Occhiello", "default": "Usato e permuta" },
+    { "type": "text", "id": "titolo", "label": "Titolo", "default": "Ovunque tu sia, la tua vecchia bici vale." },
+    { "type": "textarea", "id": "testo", "label": "Testo", "default": "Valutiamo la tua bici a distanza: ci mandi qualche foto, ti diamo una quotazione e la ritiriamo a casa tua in tutta Italia. L'importo va subito in permuta sulla nuova." },
+    { "type": "text", "id": "pill", "label": "Etichetta immagine", "default": "Ritiro in tutta Italia" },
+    { "type": "collection", "id": "collezione", "label": "Collezione usato" },
+    { "type": "text", "id": "whatsapp", "label": "Numero WhatsApp", "default": "393457815102" }
+  ],
+  "blocks": [
+    { "type": "passo", "name": "Passo", "settings": [
+      { "type": "text", "id": "titolo", "label": "Titolo" },
+      { "type": "textarea", "id": "testo", "label": "Testo" }
+    ]}
+  ],
+  "presets": [{
+    "name": "DZ · Usato e permuta",
+    "blocks": [
+      { "type": "passo", "settings": { "titolo": "Mandaci le foto", "testo": "Modello, anno e stato: bastano pochi minuti." }},
+      { "type": "passo", "settings": { "titolo": "Ricevi la valutazione", "testo": "Quotazione gratuita e senza impegno." }},
+      { "type": "passo", "settings": { "titolo": "Ritiriamo noi, a casa tua", "testo": "Spedizione organizzata da noi in tutta Italia." }}
+    ]
+  }]
+}
+{% endschema %}

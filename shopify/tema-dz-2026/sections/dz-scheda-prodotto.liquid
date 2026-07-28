@@ -1,0 +1,316 @@
+{%- comment -%}
+  dz-scheda-prodotto.liquid — Cicli Dal Zilio
+
+  Scheda prodotto: galleria con rail verticale, colonna acquisto che segue lo
+  scorrimento, selettore taglia con le tabelle della casa madre, calcolatore
+  rata e contatto WhatsApp.
+
+  Non modifica alcun dato: taglia e colore sono ricavati dal titolo della
+  variante, perché il catalogo Trek/Scott arriva dal feed automatico.
+
+  Si aggiunge dal personalizzatore: Prodotto → Aggiungi sezione.
+{%- endcomment -%}
+
+{%- liquid
+  assign p = product
+  assign sconto = 0
+  if p.compare_at_price > p.price
+    assign diff = p.compare_at_price | minus: p.price | times: 100.0
+    assign sconto = diff | divided_by: p.compare_at_price | round
+  endif
+
+-%}
+
+<section class="dz" data-dz-prodotto>
+  <div class="dz-wrap">
+
+    <nav class="dz-crumb" aria-label="Percorso">
+      <a href="{{ routes.root_url }}">Home</a><span>/</span>
+      {%- if collection -%}<a href="{{ collection.url }}">{{ collection.title }}</a><span>/</span>{%- endif -%}
+      <b>{{ p.title }}</b>
+    </nav>
+
+    <div class="dz-grid">
+
+      {%- comment -%} ---------- galleria ---------- {%- endcomment -%}
+      <div class="dz-gallery">
+        <div class="dz-thumbs">
+          {%- for media in p.media limit: 8 -%}
+            <button type="button" class="dz-thumb{% if forloop.first %} on{% endif %}"
+                    data-dz-thumb="{{ forloop.index0 }}"
+                    data-src="{{ media | image_url: width: 1400 }}"
+                    aria-label="Foto {{ forloop.index }}">
+              <img src="{{ media | image_url: width: 200 }}" alt="" loading="lazy" width="82" height="70">
+            </button>
+          {%- endfor -%}
+        </div>
+        <div class="dz-main">
+          {%- if p.featured_media -%}
+            <img id="dz-foto" src="{{ p.featured_media | image_url: width: 1400 }}"
+                 alt="{{ p.featured_media.alt | escape }}" width="1400" height="1050">
+          {%- else -%}
+            <div class="dz-noimg">{{ 'general.image_placeholder' | t: default: 'Foto non disponibile' }}</div>
+          {%- endif -%}
+          <span class="dz-zoom">Clicca per lo zoom</span>
+        </div>
+      </div>
+
+      {%- comment -%} ---------- colonna acquisto ---------- {%- endcomment -%}
+      <div class="dz-info">
+        {%- assign marca_file = p.vendor | handleize | append: '.png' -%}
+        {%- if p.vendor == 'scott_sports' or p.vendor == 'SCOTT' -%}{%- assign marca_file = 'scott.png' -%}{%- endif -%}
+        {%- if p.vendor == 'TREK' -%}{%- assign marca_file = 'trek.png' -%}{%- endif -%}
+        {%- if p.vendor == 'CANNONDALE' -%}{%- assign marca_file = 'cnd.png' -%}{%- endif -%}
+        <div class="dz-brandrow">
+          <img class="dz-brandlogo" src="{{ marca_file | file_url }}" alt="{{ p.vendor }}" loading="lazy"
+               onload="this.closest('.dz-brandrow').classList.add('ok')" onerror="this.remove()">
+          <p class="dz-eye"><span class="dz-bn">{{ p.vendor | replace: 'scott_sports', 'SCOTT' }}{% if p.type != blank %} · {% endif %}</span>{{ p.type }}</p>
+        </div>
+        <h1 class="dz-title">{{ p.title }}</h1>
+        {%- if p.type == 'USATO' and p.published_at -%}
+          <p class="dz-pubdate">Annuncio pubblicato il {{ p.published_at | date: '%-d %B %Y' }}</p>
+        {%- endif -%}
+
+        <div class="dz-price{% if sconto > 0 %} sale{% endif %}">
+          <b data-dz-prezzo>{{ p.price | money }}</b>
+          {%- if sconto > 0 -%}
+            <span class="dz-old" data-dz-listino>{{ p.compare_at_price | money }}</span>
+            <span class="dz-off" data-dz-sconto>−{{ sconto }}%</span>
+            {%- assign risparmio = p.compare_at_price | minus: p.price -%}
+            <span class="dz-save">Risparmi {{ risparmio | money }}</span>
+          {%- endif -%}
+          <span class="dz-from">o da <b data-dz-rata>—</b>/mese</span>
+        </div>
+
+        {%- assign v0 = p.selected_or_first_available_variant -%}
+        <p class="dz-codici">
+          <span{% unless v0.sku != blank %} hidden{% endunless %}><b>SKU:</b> <span data-dz-sku>{{ v0.sku }}</span></span>
+          <span{% unless v0.barcode != blank %} hidden{% endunless %}><b>EAN:</b> <span data-dz-ean>{{ v0.barcode }}</span></span>
+        </p>
+
+        {%- comment -%} numeri chiave dai metafield, se presenti {%- endcomment -%}
+        {%- assign peso = p.metafields.specs.peso_kg -%}
+        {%- assign rapporti = p.metafields.specs.rapporti -%}
+        {%- if peso != blank or rapporti != blank -%}
+          <div class="dz-figs">
+            {%- if peso != blank -%}<div><b>{{ peso }} kg</b><span>Peso</span></div>{%- endif -%}
+            {%- if rapporti != blank -%}<div><b>{{ rapporti }}</b><span>Rapporti</span></div>{%- endif -%}
+            <div><b data-dz-ntaglie>—</b><span>Taglie</span></div>
+          </div>
+        {%- endif -%}
+
+        <form method="post" action="{{ routes.cart_add_url }}" id="dz-form" novalidate>
+          <input type="hidden" name="form_type" value="product">
+          <input type="hidden" name="utf8" value="✓">
+          <input type="hidden" name="id" value="{{ p.selected_or_first_available_variant.id }}" data-dz-variante>
+
+          <div class="dz-opt" data-dz-blocco-colore hidden>
+            <div class="dz-opt-top"><span>Colore</span><span data-dz-colore-nome></span></div>
+            <div class="dz-swatches" data-dz-colori></div>
+          </div>
+
+          <div class="dz-opt" data-dz-blocco-taglia hidden>
+            <div class="dz-opt-top">
+              <span>Taglia</span>
+              <button type="button" class="dz-help" data-dz-apri-taglie>Trova la mia taglia</button>
+            </div>
+
+            <div class="dz-adv" data-dz-adv hidden>
+              <label for="dz-altezza">Quanto sei alto?</label>
+              <div class="dz-adv-row">
+                <input type="number" id="dz-altezza" min="140" max="210" step="1" placeholder="es. 178">
+                <span>cm</span>
+                <button type="button" class="dz-btn dz-sm" data-dz-calcola>Calcola</button>
+              </div>
+              <p class="dz-adv-out" data-dz-adv-out></p>
+              <p class="dz-adv-note">Consigli di taglia della casa madre. Indicativi: per una scelta
+                precisa passa in negozio per il bikefitting.</p>
+            </div>
+
+            <div class="dz-sizes" data-dz-taglie></div>
+          </div>
+
+          <noscript>
+            <select name="id" style="width:100%;padding:12px;border-radius:12px;border:1px solid rgba(18,20,42,.18);margin-bottom:12px">
+              {%- for v in p.variants -%}
+                <option value="{{ v.id }}"{% unless v.available %} disabled{% endunless %}>
+                  {{ v.title }} · {{ v.price | money }}{% unless v.available %} (non disponibile){% endunless %}
+                </option>
+              {%- endfor -%}
+            </select>
+          </noscript>
+
+          <div class="dz-buy">
+            <div class="dz-qty">
+              <button type="button" data-dz-q="-1" aria-label="Diminuisci">−</button>
+              <input type="number" name="quantity" value="1" min="1" aria-label="Quantità">
+              <button type="button" data-dz-q="1" aria-label="Aumenta">+</button>
+            </div>
+            <button type="submit" class="dz-btn dz-primary" data-dz-aggiungi>
+              Aggiungi al carrello · <span data-dz-prezzo-btn>{{ p.price | money }}</span>
+            </button>
+          </div>
+        </form>
+
+        {%- if section.settings.whatsapp != blank -%}
+          <a class="dz-btn dz-wa" target="_blank" rel="noopener"
+             href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'Ciao! Sono interessato alla ' | append: p.title | url_encode }}">
+            Chiedi info su WhatsApp
+          </a>
+        {%- endif -%}
+
+        <div class="dz-klarna" aria-label="Paga in 3 rate con Klarna">
+          <span class="dz-kb">Klarna.</span>
+          <div><b>Paga in 3 rate senza interessi</b><span class="dz-ksub">3 × {{ p.price | divided_by: 3 | money }}, senza costi aggiuntivi</span></div>
+        </div>
+
+        {%- if section.settings.tan > 0 -%}
+          <div class="dz-fin" data-dz-fin
+               data-prezzo="{{ p.price | divided_by: 100.0 }}"
+               data-tan="{{ section.settings.tan }}"
+               data-min="{{ section.settings.rate_min }}"
+               data-max="{{ section.settings.rate_max }}"
+               data-def="{{ section.settings.rate_def }}">
+            <div class="dz-fin-top">
+              <span>Paga a rate</span>
+              <span class="dz-tan">TAN fisso {{ section.settings.tan }}%</span>
+            </div>
+            <div class="dz-fin-amt"><b data-dz-fin-rata>—</b><span>/mese</span></div>
+            <p class="dz-fin-sub">in <b data-dz-fin-mesi>{{ section.settings.rate_def }}</b> rate mensili</p>
+            <input type="range" data-dz-fin-range
+                   min="{{ section.settings.rate_min }}" max="{{ section.settings.rate_max }}"
+                   step="6" value="{{ section.settings.rate_def }}"
+                   aria-label="Durata del finanziamento in mesi">
+            <div class="dz-fin-ticks">
+              <span>{{ section.settings.rate_min }} mesi</span><span>{{ section.settings.rate_max }} mesi</span>
+            </div>
+            <p class="dz-fin-note">{{ section.settings.nota_fin }}</p>
+          </div>
+        {%- endif -%}
+
+        {%- liquid
+          assign sped = 'Spedizione gratuita in Italia'
+          if p.type != 'bike' and p.type != 'USATO' and p.price < 9900
+            assign sped = 'Spedizione gratuita in Italia da € 99'
+          endif
+        -%}
+        <div class="dz-trust">
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17.5" cy="18" r="1.6"/></svg>{{ sped }}</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/><circle cx="9" cy="7" r="2.1"/><circle cx="15" cy="12" r="2.1"/><circle cx="7" cy="17" r="2.1"/></svg>{{ section.settings.trust_2 }}</span>
+          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>{{ section.settings.trust_3 }}</span>
+        </div>
+
+        <details class="dz-acc" open>
+          <summary>Descrizione</summary>
+          <div class="dz-acc-in">{{ p.description }}</div>
+        </details>
+        <details class="dz-acc">
+          <summary>Spedizione & resi</summary>
+          <div class="dz-acc-in">
+            {%- if p.type == 'USATO' or p.type == 'bike' -%}
+              {%- assign estero = 99 -%}
+              {%- if p.title contains 'eRIDE' or p.title contains 'e-bike' or p.title contains 'E-bike' or p.title contains 'EXe' or p.title contains 'Rail' -%}{%- assign estero = 149 -%}{%- endif -%}
+              Spedizione gratuita e assicurata in tutta Italia entro 3-5 giorni lavorativi.
+              All'estero la spedizione parte da € {{ estero }} a seconda del modello.
+              Ritiro e montaggio gratuiti presso il nostro negozio.
+            {%- else -%}
+              Spedizione gratuita in Italia per ordini da € 99; sotto questa soglia il contributo
+              di spedizione viene calcolato al check-out. Ritiro gratuito in negozio.
+            {%- endif -%}
+          </div>
+        </details>
+        <details class="dz-acc">
+          <summary>Garanzia</summary>
+          <div class="dz-acc-in">
+            {%- if p.type == 'USATO' -%}
+              Usato controllato nella nostra officina — chiedici i dettagli su WhatsApp o in negozio.
+            {%- else -%}
+              Garanzia ufficiale del produttore, gestita da noi: se serve un intervento parli con il negozio, non con un call center.
+            {%- endif -%}
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%}
+    Dati varianti per il JavaScript. La taglia è ricavata dal titolo:
+    nessuna modifica al catalogo, il feed FTP resta intatto.
+  {%- endcomment -%}
+  {%- comment -%}
+    Dati varianti per il JavaScript: solo campi semplici, nessuna elaborazione
+    in Liquid. Taglia e colore vengono ricavati dal titolo lato browser, dove
+    si possono usare le espressioni regolari. Nessun dato viene modificato.
+  {%- endcomment -%}
+  <script type="application/json" data-dz-varianti>
+    [
+    {%- for v in p.variants -%}
+      {%- liquid
+        assign taglia_vera = ''
+        assign colore_vero = ''
+        for opzione in p.options_with_values
+          assign nome_opt = opzione.name | downcase
+          assign k = forloop.index0
+          if nome_opt == 'taglia' or nome_opt == 'size'
+            assign taglia_vera = v.options[k]
+          endif
+          if nome_opt == 'colore'
+            assign colore_vero = v.options[k]
+          endif
+        endfor
+      -%}
+      {"id": {{ v.id }},
+       "titolo": {{ v.title | json }},
+       "taglia_vera": {{ taglia_vera | json }},
+       "colore_vero": {{ colore_vero | json }},
+       "disponibile": {{ v.available | json }},
+       "prezzo": {{ v.price | divided_by: 100.0 }},
+       "listino": {{ v.compare_at_price | default: 0 | divided_by: 100.0 }},
+       "sku": {{ v.sku | json }},
+       "ean": {{ v.barcode | json }},
+       "prezzo_html": {{ v.price | money | json }}}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+    ]
+  </script>
+
+  <script type="application/json" data-dz-prodotto-nome>{{ p.title | json }}</script>
+  <script type="application/json" data-dz-tabelle-taglie>{{ section.settings.tabelle_taglie }}</script>
+</section>
+
+<div class="dz-zoombox" data-dz-zoombox>
+  <img alt="">
+  <button type="button" class="dz-zclose" aria-label="Chiudi lo zoom">✕</button>
+</div>
+
+{{ 'dz-prodotto.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'dz-prodotto.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "DZ · Scheda prodotto",
+  "tag": "section",
+  "settings": [
+    { "type": "header", "content": "Finanziamento" },
+    { "type": "number", "id": "tan", "label": "TAN fisso (%). 0 per nascondere il riquadro", "default": 6 },
+    { "type": "number", "id": "rate_min", "label": "Durata minima (mesi)", "default": 6 },
+    { "type": "number", "id": "rate_max", "label": "Durata massima (mesi)", "default": 60 },
+    { "type": "number", "id": "rate_def", "label": "Durata predefinita (mesi)", "default": 48 },
+    { "type": "textarea", "id": "nota_fin", "label": "Nota legale",
+      "default": "Esempio di calcolo con ammortamento alla francese. Il TAEG dipende da spese di istruttoria, incasso e imposte, ed è indicato nel contratto. Cifre indicative e non vincolanti, salvo approvazione della finanziaria." },
+
+    { "type": "header", "content": "Contatti" },
+    { "type": "text", "id": "whatsapp", "label": "Numero WhatsApp (senza + e senza spazi)", "default": "393457815102" },
+
+    { "type": "header", "content": "Garanzie" },
+    { "type": "text", "id": "trust_1", "label": "Voce 1", "default": "Spedizione gratuita" },
+    { "type": "text", "id": "trust_2", "label": "Voce 2", "default": "Regolazione inclusa" },
+    { "type": "text", "id": "trust_3", "label": "Voce 3", "default": "Imballaggio professionale" },
+
+    { "type": "header", "content": "Tabelle taglie" },
+    { "type": "paragraph", "content": "Formato JSON: marca in maiuscolo, poi elenco di [taglia, altezza minima, altezza massima]. Verificare con le tabelle ufficiali del produttore." },
+    { "type": "textarea", "id": "tabelle_taglie", "label": "Tabelle (JSON)",
+      "default": "{\"SCOTT\":[[\"XXS\",156,163],[\"XS\",163,170],[\"S\",170,175],[\"M\",175,180],[\"L\",180,186],[\"XL\",186,192],[\"XXL\",192,199]],\"TREK\":[[\"47\",152,160],[\"50\",160,165],[\"52\",165,172],[\"54\",172,178],[\"56\",178,183],[\"58\",183,188],[\"60\",188,193],[\"62\",193,198]]}" }
+  ],
+  "presets": [{ "name": "DZ · Scheda prodotto" }]
+}
+{% endschema %}
