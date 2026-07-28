@@ -164,3 +164,31 @@
   .dz-finder .bfc__content{max-width:100%!important;padding:36px 26px!important}
   .dz-findercard{display:none}
 }
+
+/* --- bike finder in tonalita' silver, scritte scure a contrasto --- */
+.dz-finder .bfc__card{border:1px solid rgba(18,20,42,.08)!important;
+  box-shadow:0 30px 70px -40px rgba(18,20,42,.45)!important}
+.dz-finder .bfc__card--img{
+  background-image:
+    radial-gradient(70% 130% at 85% 0%,rgba(255,255,255,.92),transparent 60%),
+    radial-gradient(60% 120% at 8% 100%,rgba(158,166,180,.5),transparent 62%),
+    linear-gradient(120deg,#f4f5f8,#e0e3e9 55%,#c7ccd6)!important;
+  background-color:#e3e6ec!important}
+.dz-finder .bfc__eyebrow{color:#FF2E63!important}
+.dz-finder .bfc__title{color:#111319!important}
+.dz-finder .bfc__sub{color:#5c6070!important}
+.dz-finder .bfc__trust{color:#8b8fa2!important}
+.dz-finder .bfc__btn{background:#111319!important;color:#fff!important}
+.dz-findercard{background:rgba(255,255,255,.6);border:1px solid rgba(18,20,42,.12);color:#111319}
+.dz-findercard .fc-k{color:#5c6070}
+.dz-findercard .fc-row{color:#2b2e3a;border-bottom:1px solid rgba(18,20,42,.12)}
+.dz-findercard .fc-row b{color:#111319}
+.dz-findercard .fc-big span{color:#5c6070}
+.dz-findercard .fc-bar{background:rgba(18,20,42,.12)}
+.dz-findercard .fc-legend{color:#8b8fa2}
+.dz-findercard .fc-note{color:#8b8fa2}
+
+/* --- modelli correlati: bici piu' grandi nelle card --- */
+.dzs-cimg{background:#fff}
+.dzs-cimg img{padding:0!important;transform:scale(1.22);transition:transform .35s}
+.dzs-card:hover .dzs-cimg img{transform:scale(1.28)}
