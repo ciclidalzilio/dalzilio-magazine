@@ -1,1 +1,57 @@
-<div style="max-width:1200px;margin:0 auto;padding:40px 24px"><h1 style="font-weight:300">Blog</h1><p style="color:#5c6070">Pagina non usata in questa anteprima.</p></div>
+{%- comment -%} Blog — DZ 2026 {%- endcomment -%}
+<div class="wrap">
+  <nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>{{ blog.title }}</b></nav>
+  <div class="ltop">
+    <div><h1>{{ blog.title }}</h1><div class="sub">{{ blog.articles_count }} articol{% if blog.articles_count == 1 %}o{% else %}i{% endif %}</div></div>
+  </div>
+
+  {%- paginate blog.articles by 12 -%}
+    <div class="bloggrid">
+      {%- for a in blog.articles -%}
+        <a class="bcard" href="{{ a.url }}">
+          {%- if a.image -%}
+            <span class="bimg"><img src="{{ a.image | image_url: width: 800 }}" alt="{{ a.image.alt | default: a.title | escape }}" loading="lazy"></span>
+          {%- endif -%}
+          <span class="bdate">{{ a.published_at | date: '%-d %B %Y' }}</span>
+          <h3>{{ a.title }}</h3>
+          {%- if a.excerpt != blank -%}
+            <p>{{ a.excerpt | strip_html | truncate: 120 }}</p>
+          {%- else -%}
+            <p>{{ a.content | strip_html | truncate: 120 }}</p>
+          {%- endif -%}
+          <span class="bmore">Leggi →</span>
+        </a>
+      {%- else -%}
+        <p style="grid-column:1/-1;color:var(--muted);padding:40px 0">Ancora nessun articolo.</p>
+      {%- endfor -%}
+    </div>
+    {%- if paginate.pages > 1 -%}
+      <nav class="pagin" aria-label="Pagine">
+        {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">←</a>{%- endif -%}
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>
+          {%- elsif part.title == paginate.current_page -%}<span class="cur">{{ part.title }}</span>
+          {%- else -%}<span>{{ part.title }}</span>{%- endif -%}
+        {%- endfor -%}
+        {%- if paginate.next -%}<a href="{{ paginate.next.url }}">→</a>{%- endif -%}
+      </nav>
+    {%- endif -%}
+  {%- endpaginate -%}
+</div>
+<div style="height:50px"></div>
+
+{% style %}
+  .bloggrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .bcard{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    overflow:hidden;padding-bottom:18px;transition:transform .3s,box-shadow .3s}
+  .bcard:hover{transform:translateY(-4px);box-shadow:0 20px 44px -30px rgba(18,20,42,.45)}
+  .bimg{display:block;aspect-ratio:16/9;overflow:hidden;background:#eef0f3;margin-bottom:14px}
+  .bimg img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+  .bcard:hover .bimg img{transform:scale(1.05)}
+  .bdate{font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted-2);padding:0 16px}
+  .bcard h3{margin:6px 16px 6px;font-size:1.05rem;font-weight:680;letter-spacing:-.02em;line-height:1.3}
+  .bcard p{margin:0 16px 10px;font-size:13.5px;color:var(--muted);line-height:1.5}
+  .bmore{margin:auto 16px 0;font-size:13px;font-weight:600;color:var(--rose)}
+  @media (max-width:900px){.bloggrid{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.bloggrid{grid-template-columns:1fr}}
+{% endstyle %}

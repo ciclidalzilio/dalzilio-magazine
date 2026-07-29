@@ -1,0 +1,237 @@
+{%- comment -%}
+  page.brand.liquid — pagina marchio riutilizzabile (Trek, Scott, Cannondale, Amflow).
+  Si attiva assegnando alla pagina il template "page.brand"; i contenuti per
+  marchio sono definiti qui sotto in base all'handle della pagina.
+  I link "gamma" usano i filtri nativi (filter.p.vendor) e la collezione
+  automatica /collections/vendors?q=MARCA.
+{%- endcomment -%}
+
+{%- liquid
+  assign h = page.handle
+  assign b_nome = page.title
+  assign b_vendor = ''
+  assign b_img = ''
+  assign b_tag = ''
+  assign b_desc = ''
+  assign b_f1v = ''
+  assign b_f1l = ''
+  assign b_f2v = ''
+  assign b_f2l = ''
+  assign b_f3v = ''
+  assign b_f3l = ''
+  assign b_t1t = ''
+  assign b_t1p = ''
+  assign b_t2t = ''
+  assign b_t2p = ''
+  assign b_t3t = ''
+  assign b_t3p = ''
+  assign b_cats = 'bici-da-strada:Corsa,gravel:Gravel,mountain-bike:MTB,ebikes:E-Bike'
+
+  case h
+    when 'trek'
+      assign b_nome = 'TREK'
+      assign b_vendor = 'TREK'
+      assign b_img = 'https://cdn.shopify.com/s/files/1/0873/6885/9912/files/TrekDomaneSLR7gen4red.jpg?v=1743781715&width=1100'
+      assign b_tag = 'Le bici di chi non si accontenta.'
+      assign b_desc = 'Da Waterloo, Wisconsin, il marchio che ha portato il carbonio OCLV al Tour de France. Corsa, MTB, e-bike e città: qui trovi la gamma Trek con assistenza ufficiale e garanzia a vita sul telaio.'
+      assign b_f1v = '1976'
+      assign b_f1l = 'Waterloo, USA'
+      assign b_f2v = 'OCLV'
+      assign b_f2l = 'Carbonio proprietario'
+      assign b_f3v = 'A vita'
+      assign b_f3l = 'Garanzia telaio'
+      assign b_t1t = 'Carbonio OCLV 800'
+      assign b_t1p = 'Il composito più leggero mai fatto da Trek: nato in galleria del vento, testato oltre gli standard.'
+      assign b_t2t = 'IsoSpeed'
+      assign b_t2p = 'Il disaccoppiatore che assorbe le asperità senza togliere rigidità: chilometri senza fatica.'
+      assign b_t3t = 'Project One'
+      assign b_t3p = 'La tua Trek, i tuoi colori: il programma di personalizzazione totale, ordinabile da noi in negozio.'
+    when 'scott'
+      assign b_nome = 'SCOTT'
+      assign b_vendor = 'SCOTT'
+      assign b_img = 'https://cdn.shopify.com/s/files/1/0873/6885/9912/files/4253408086.png?v=1783042506&width=1200'
+      assign b_tag = 'Innovazione svizzera, dal 1958.'
+      assign b_desc = 'Dal primo bastoncino da sci in alluminio alla Foil più veloce del gruppo: Scott è ingegneria leggera. Siamo rivenditore ufficiale con tutta la gamma: Foil, Addict, Scale, Spark, Lumen e le e-bike eRIDE.'
+      assign b_f1v = '1958'
+      assign b_f1l = 'Origini, Sun Valley'
+      assign b_f2v = 'HMX-SL'
+      assign b_f2l = 'Il carbonio più leggero'
+      assign b_f3v = '×4'
+      assign b_f3l = 'Ori olimpici XC'
+      assign b_t1t = 'Carbonio HMX-SL'
+      assign b_t1p = 'Fibre ad altissimo modulo per telai sotto i 900 grammi: la Scale RC e la Addict RC nascono così.'
+      assign b_t2t = 'TwinLoc'
+      assign b_t2p = 'Sospensioni e geometria si regolano insieme, dal manubrio, in corsa: tre bici in una.'
+      assign b_t3t = 'Integrazione totale'
+      assign b_t3p = 'Cavi invisibili, cockpit monoscocca, aerodinamica vera: la firma Scott su strada e in montagna.'
+    when 'cannondale'
+      assign b_nome = 'CANNONDALE'
+      assign b_vendor = 'CANNONDALE'
+      assign b_img = 'https://cdn.shopify.com/s/files/1/0873/6885/9912/files/9_4a20d348-54be-42ee-ace1-171dc906c3ce.jpg?v=1771578578&width=1100'
+      assign b_tag = 'Da sempre controcorrente.'
+      assign b_desc = 'Il marchio che ha inventato la forcella Lefty e portato l’alluminio dove nessuno credeva possibile. SuperSix, Synapse, Scalpel, Habit e le e-bike Moterra: la gamma Cannondale, con officina che le conosce davvero.'
+      assign b_f1v = '1971'
+      assign b_f1l = 'Connecticut, USA'
+      assign b_f2v = 'Lefty'
+      assign b_f2l = 'La forcella a un braccio'
+      assign b_f3v = 'BallisTec'
+      assign b_f3l = 'Carbonio da gara'
+      assign b_t1t = 'BallisTec Carbon'
+      assign b_t1p = 'Resina ad alta resistenza e fibre balistiche: telai leggeri che reggono la vita vera.'
+      assign b_t2t = 'Lefty Ocho'
+      assign b_t2p = 'Un solo braccio, più rigidità e sensibilità di molte forcelle a due: l’icona Cannondale.'
+      assign b_t3t = 'Proportional Response'
+      assign b_t3p = 'Ogni taglia ha cinematica e rigidità dedicate: la bici lavora uguale per ogni altezza.'
+    when 'amflow'
+      assign b_nome = 'AMFLOW'
+      assign b_vendor = 'AMFLOW'
+      assign b_img = 'https://cdn.shopify.com/s/files/1/0873/6885/9912/files/5_d9a3f52a-41bd-4c79-b84b-e4d83b1a25b7.jpg?v=1769701791&width=1100'
+      assign b_tag = 'La e-MTB che ha cambiato le regole.'
+      assign b_desc = 'Motore DJI Avinox da 105 Nm, batteria integrata e peso da bici light: Amflow PL è la e-MTB di cui parlano tutti. Noi ce l’abbiamo in negozio, pronta da vedere e toccare.'
+      assign b_f1v = '105 Nm'
+      assign b_f1l = 'Coppia DJI Avinox'
+      assign b_f2v = '850 W'
+      assign b_f2l = 'Picco in Boost'
+      assign b_f3v = '~19,2 kg'
+      assign b_f3l = 'Peso da light'
+      assign b_t1t = 'Motore DJI Avinox'
+      assign b_t1p = 'Compatto come un light, potente come un full power: 105 Nm e controllo da drone maker.'
+      assign b_t2t = 'Batteria 600/800 Wh'
+      assign b_t2p = 'Ricarica rapida all’80% in un’ora e mezza e autonomia vera in salita.'
+      assign b_t3t = 'Telaio full carbon'
+      assign b_t3p = 'Geometrie moderne, 150 mm di escursione, schermo OLED integrato nel tubo orizzontale.'
+      assign b_cats = 'e-mtb:E-MTB,ebikes:Tutte le E-Bike'
+  endcase
+
+  assign vendors_url = '/collections/vendors?q=' | append: b_vendor
+-%}
+
+{%- if b_vendor == blank -%}
+  {%- comment -%} handle non riconosciuto: pagina standard {%- endcomment -%}
+  <div class="wrap" style="padding:60px 0"><h1>{{ page.title }}</h1><div>{{ page.content }}</div></div>
+{%- else -%}
+
+<div class="brand-hero">
+  <div class="bh-ghost" aria-hidden="true">{{ b_nome }}</div>
+  <p class="bh-k">Rivenditore ufficiale</p>
+  <h1>{{ b_nome }}<span>.</span></h1>
+  <p class="bh-tag">{{ b_tag }}</p>
+  <div class="bh-ctas">
+    <a class="btn" href="{{ vendors_url }}">Tutte le {{ b_nome }}</a>
+    <a class="btn ghost" href="https://wa.me/393457815102?text={{ 'Ciao! Vorrei informazioni sulla gamma ' | append: b_nome | url_encode }}">Chiedi a noi</a>
+  </div>
+  <div class="bh-bike"><img src="{{ b_img }}" alt="{{ b_nome }}" loading="eager"></div>
+</div>
+
+<div class="brand-figs">
+  <div class="wrap bf-in">
+    <div class="bf-x"><b>{{ b_f1v }}</b><span>{{ b_f1l }}</span><i></i></div>
+    <div class="bf-x"><b>{{ b_f2v }}</b><span>{{ b_f2l }}</span><i></i></div>
+    <div class="bf-x"><b>{{ b_f3v }}</b><span>{{ b_f3l }}</span><i></i></div>
+  </div>
+</div>
+
+<section class="wrap brand-sect">
+  <div class="head"><div><p class="k">Il marchio</p><h2>{{ b_desc | split: '.' | first }}.</h2></div></div>
+  <p class="brand-desc">{{ b_desc }}</p>
+  <div class="brand-tech">
+    <div class="bt-card"><i></i><b>{{ b_t1t }}</b><p>{{ b_t1p }}</p></div>
+    <div class="bt-card"><i></i><b>{{ b_t2t }}</b><p>{{ b_t2p }}</p></div>
+    <div class="bt-card"><i></i><b>{{ b_t3t }}</b><p>{{ b_t3p }}</p></div>
+  </div>
+</section>
+
+<section class="wrap brand-sect">
+  <div class="head"><div><p class="k">La gamma</p><h2>{{ b_nome }} da Cicli Dal Zilio</h2></div>
+    <a class="more" href="{{ vendors_url }}">Tutte le {{ b_nome }}</a></div>
+  <div class="brand-cats">
+    {%- assign cat_list = b_cats | split: ',' -%}
+    {%- for c in cat_list -%}
+      {%- assign parts = c | split: ':' -%}
+      {%- assign c_handle = parts[0] -%}
+      {%- assign c_label = parts[1] -%}
+      {%- if collections[c_handle] != blank -%}
+        <a class="bc-tile" href="{{ collections[c_handle].url }}?filter.p.vendor={{ b_vendor | url_encode }}">
+          <span class="t">{{ c_label }}</span>
+          <span class="n">{{ b_nome | capitalize }} →</span>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</section>
+
+<section class="wrap brand-sect" style="padding-bottom:70px">
+  <div class="head"><div><p class="k">Perché da noi</p><h2>Comprarla qui conviene</h2></div></div>
+  <div class="brand-svc">
+    <div class="bs-x"><b>Consegna con bike fit</b><p>Ogni bici esce regolata sulle tue misure, con posizionamento incluso.</p></div>
+    <div class="bs-x"><b>Officina certificata</b><p>Assistenza ufficiale {{ b_nome | capitalize }}: ricambi, aggiornamenti, garanzia.</p></div>
+    <div class="bs-x"><b>Permuta valorizzata</b><p>La tua bici attuale vale subito come acconto sulla nuova.</p></div>
+    <div class="bs-x"><b>Finanziamento su misura</b><p>Da 6 a 60 rate a TAN fisso, risposta in pochi minuti.</p></div>
+  </div>
+</section>
+
+{% style %}
+  /* hero studio del marchio */
+  .brand-hero{position:relative;overflow:hidden;text-align:center;padding:58px 20px 0;
+    background:radial-gradient(95% 130% at 50% 26%,#ffffff 0%,#f0f2f6 46%,#cfd4de 100%)}
+  .bh-ghost{position:absolute;left:50%;top:34px;transform:translateX(-50%);white-space:nowrap;
+    font-size:clamp(64px,14vw,200px);font-weight:800;font-style:italic;letter-spacing:-.04em;line-height:1;
+    color:transparent;-webkit-text-stroke:1.5px rgba(17,18,20,.10);pointer-events:none;user-select:none}
+  .bh-k{position:relative;font-family:var(--font-mono);font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);margin:0}
+  .brand-hero h1{position:relative;font-size:clamp(34px,5.4vw,62px);font-weight:800;font-style:italic;letter-spacing:-.02em;margin:8px 0 2px}
+  .brand-hero h1 span{color:var(--rose)}
+  .bh-tag{position:relative;font-size:17px;color:var(--muted);margin:2px 0 24px}
+  .bh-ctas{position:relative;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
+  .bh-bike{position:relative;width:min(760px,94%);margin:10px auto -4px;isolation:isolate}
+  .bh-bike::before{content:"";position:absolute;left:10%;right:10%;top:20%;bottom:12%;z-index:-1;border-radius:50%;
+    background:radial-gradient(50% 50% at 35% 60%,rgba(255,46,99,.10),transparent 70%),
+               radial-gradient(45% 55% at 70% 40%,rgba(139,47,230,.10),transparent 72%);filter:blur(26px)}
+  .bh-bike img{width:100%;height:auto;mix-blend-mode:multiply;filter:drop-shadow(0 30px 26px rgba(10,12,16,.26))}
+
+  /* numeri chiave */
+  .brand-figs{background:#0a0a0c;color:#fff}
+  .bf-in{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding-top:28px;padding-bottom:28px}
+  .bf-x{border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px 18px;
+    background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02))}
+  .bf-x b{display:block;font-size:clamp(22px,3vw,34px);font-weight:200;letter-spacing:-.02em}
+  .bf-x span{display:block;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:5px}
+  .bf-x i{display:block;width:22px;height:2px;background:var(--rose);margin-top:10px}
+
+  .brand-sect{padding-top:64px}
+  .brand-desc{color:var(--muted);font-size:15.5px;max-width:70ch;margin:-8px 0 26px}
+  .brand-tech{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .bt-card{border:1px solid var(--line);border-radius:18px;padding:20px;background:rgba(255,255,255,.66);transition:box-shadow .25s}
+  .bt-card:hover{box-shadow:0 20px 40px -30px rgba(17,18,20,.4)}
+  .bt-card i{display:block;width:22px;height:2px;background:var(--rose);margin-bottom:13px}
+  .bt-card b{display:block;font-size:15.5px;letter-spacing:-.01em;margin-bottom:5px}
+  .bt-card p{margin:0;font-size:13px;color:var(--muted);line-height:1.5}
+
+  .brand-cats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .bc-tile{display:flex;flex-direction:column;gap:26px;justify-content:space-between;border-radius:18px;padding:20px;
+    background-image:radial-gradient(70% 130% at 85% 0%,rgba(255,255,255,.92),transparent 60%),
+      radial-gradient(60% 120% at 8% 100%,rgba(158,166,180,.5),transparent 62%),
+      linear-gradient(120deg,#f4f5f8,#e0e3e9 55%,#c7ccd6);
+    border:1px solid rgba(18,20,42,.08);transition:transform .25s,box-shadow .25s}
+  .bc-tile:hover{transform:translateY(-3px);box-shadow:0 24px 44px -30px rgba(17,18,20,.4)}
+  .bc-tile .t{font-size:19px;font-weight:720;letter-spacing:-.02em}
+  .bc-tile .n{font-size:13px;font-weight:600;color:var(--rose)}
+
+  .brand-svc{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    background:linear-gradient(120deg,#f4f5f8,#e0e3e9 55%,#c7ccd6)}
+  .bs-x{padding:20px;border-left:1px solid rgba(18,20,42,.08)}
+  .bs-x:first-child{border-left:0}
+  .bs-x b{display:block;font-size:14px;letter-spacing:-.01em;margin-bottom:5px}
+  .bs-x b::before{content:"";display:block;width:22px;height:2px;background:var(--rose);margin-bottom:11px}
+  .bs-x p{margin:0;font-size:12.5px;color:var(--muted);line-height:1.5}
+
+  @media (max-width:860px){
+    .bf-in,.brand-tech{grid-template-columns:1fr 1fr}
+    .bf-in{grid-template-columns:repeat(3,1fr)}
+    .brand-cats{grid-template-columns:1fr 1fr}
+    .brand-svc{grid-template-columns:1fr}
+    .bs-x{border-left:0;border-top:1px solid rgba(18,20,42,.08)}
+    .bs-x:first-child{border-top:0}
+  }
+{% endstyle %}
+
+{%- endif -%}
