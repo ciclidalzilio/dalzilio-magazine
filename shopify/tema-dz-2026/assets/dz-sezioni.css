@@ -139,12 +139,18 @@
 @media (max-width:960px){.dzs-trade-art{min-height:230px}.dzs-bike{width:min(52%,220px)}}
 
 /* --- fila servizi in home: lista compatta, niente card (si confondevano con le schede prodotto) --- */
-.dzs-svcrow{display:grid;grid-template-columns:repeat(4,1fr);background:#f5f6f8;
-  border:1px solid rgba(18,20,42,.08);border-radius:18px;overflow:hidden}
+.dzs-svcrow{display:grid;grid-template-columns:repeat(4,1fr);
+  background-image:
+    radial-gradient(70% 130% at 85% 0%,rgba(255,255,255,.92),transparent 60%),
+    radial-gradient(60% 120% at 8% 100%,rgba(158,166,180,.5),transparent 62%),
+    linear-gradient(120deg,#f4f5f8,#e0e3e9 55%,#c7ccd6);
+  background-color:#e3e6ec;
+  border:1px solid rgba(18,20,42,.08);border-radius:18px;overflow:hidden;
+  box-shadow:0 30px 70px -40px rgba(18,20,42,.45)}
 .dzs-svc{display:flex;align-items:center;gap:12px;padding:18px 18px;text-decoration:none;color:#111319;
   border-left:1px solid rgba(18,20,42,.07);transition:background .2s}
 .dzs-svc:first-child{border-left:0}
-.dzs-svc:hover{background:#fff}
+.dzs-svc:hover{background:rgba(255,255,255,.55)}
 .dzs-svc .ic{width:36px;height:36px;flex:0 0 36px;border-radius:10px;background:rgba(255,46,99,.09);color:#FF2E63;
   display:grid;place-items:center}
 .dzs-svc .ic svg{width:18px;height:18px}

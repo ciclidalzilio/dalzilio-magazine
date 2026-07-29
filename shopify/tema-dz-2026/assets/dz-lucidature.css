@@ -165,14 +165,17 @@
   .dz-findercard{display:none}
 }
 
-/* --- bike finder in tonalita' silver, scritte scure a contrasto --- */
+/* --- bike finder in tonalita' silver, scritte scure a contrasto ---
+   (sulla card base, non su --img: vale anche senza foto di copertina) --- */
 .dz-finder .bfc__card{border:1px solid rgba(18,20,42,.08)!important;
-  box-shadow:0 30px 70px -40px rgba(18,20,42,.45)!important}
-.dz-finder .bfc__card--img{
+  box-shadow:0 30px 70px -40px rgba(18,20,42,.45)!important;
   background-image:
     radial-gradient(70% 130% at 85% 0%,rgba(255,255,255,.92),transparent 60%),
     radial-gradient(60% 120% at 8% 100%,rgba(158,166,180,.5),transparent 62%),
     linear-gradient(120deg,#f4f5f8,#e0e3e9 55%,#c7ccd6)!important;
+  background-size:auto,auto,auto!important;
+  background-position:center,center,center!important;
+  background-repeat:no-repeat!important;
   background-color:#e3e6ec!important}
 .dz-finder .bfc__eyebrow{color:#FF2E63!important}
 .dz-finder .bfc__title{color:#111319!important}
