@@ -188,6 +188,16 @@ section.block{padding:60px 0}
 .prod .price{font-size:1.16rem;font-weight:720;letter-spacing:-.02em}
 .prod .price.sale{color:var(--rose)}
 .prod .old{text-decoration:line-through;color:var(--muted-2);font-weight:400;font-size:12.5px}
+/* bici esaurita in tutte le taglie: card offuscata + filigrana Sold out */
+.prod.esaurito .pimg img{opacity:.42;filter:grayscale(.85)}
+.prod.esaurito .pbody{opacity:.55}
+.prod.esaurito:hover{transform:none}
+.prod.esaurito:hover .pimg img{transform:scale(1.08)}
+.prod.esaurito .chip.sale{display:none}
+.prod .soldout{position:absolute;left:50%;top:50%;z-index:3;transform:translate(-50%,-50%) rotate(-12deg);
+  font-family:var(--font-mono);font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;
+  color:#15161a;border:2px solid #15161a;border-radius:6px;padding:6px 14px;background:rgba(255,255,255,.72);
+  opacity:.85;pointer-events:none;white-space:nowrap}
 .related,.listgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
 .listgrid{grid-template-columns:repeat(3,1fr)}
 @media (max-width:960px){.prods,.related{grid-template-columns:repeat(2,1fr)}.listgrid{grid-template-columns:repeat(2,1fr)}}

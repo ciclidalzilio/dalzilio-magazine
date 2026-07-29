@@ -5,7 +5,7 @@
 {%- endcomment -%}
 {%- assign in_sconto = false -%}
 {%- if product.compare_at_price > product.price -%}{%- assign in_sconto = true -%}{%- endif -%}
-<article class="prod">
+<article class="prod{% unless product.available %} esaurito{% endunless %}">
   <a class="pimg" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
     {%- if product.featured_image -%}
       <img src="{{ product.featured_image | image_url: width: 640 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="640" height="480">
@@ -19,6 +19,9 @@
       {%- assign perc = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
       <span class="chip sale">−{{ perc }}%</span>
     {%- endif -%}
+    {%- unless product.available -%}
+      <span class="soldout" aria-hidden="true">Sold out</span>
+    {%- endunless -%}
   </a>
   <div class="pbody">
     <span class="brand">{{ product.vendor | replace: 'scott_sports', 'SCOTT' }}</span>
