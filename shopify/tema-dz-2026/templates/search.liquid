@@ -96,7 +96,7 @@
             {%- for item in search.results -%}
               {%- if item.object_type == 'product' -%}{% render 'dz-card', product: item %}{%- endif -%}
             {%- else -%}
-              <p style="grid-column:1/-1;color:var(--muted);padding:40px 0">Nessun risultato. Prova con un altro termine o <a href="{{ routes.all_products_collection_url }}" style="text-decoration:underline">sfoglia il catalogo</a>.</p>
+              <p style="grid-column:1/-1;color:var(--muted);padding:40px 0">Nessun risultato. Prova con un altro termine o <a href="/collections/tutte-le-bici" style="text-decoration:underline">sfoglia il catalogo</a>.</p>
             {%- endfor -%}
           </div>
           {%- if paginate.pages > 1 -%}

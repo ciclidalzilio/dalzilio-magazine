@@ -50,12 +50,12 @@
     <h1>La tua prossima bici<br><span class="g">inizia qui.</span></h1>
     <p class="lede">Bici da corsa, gravel, mountain bike ed e-bike delle migliori marche. Consegna in tutta Italia, assistenza in officina e la consulenza di chi pedala davvero.</p>
     <div class="cta">
-      <a class="btn" href="{{ routes.all_products_collection_url }}">Scopri il catalogo</a>
+      <a class="btn" href="/collections/tutte-le-bici">Scopri il catalogo</a>
       <a class="btn ghost" href="#bike-finder">Trova la tua bici</a>
       <a class="btn ghost" href="/collections/new-arrivals">Ultimi arrivi →</a>
     </div>
     <div class="heroStats">
-      <div><b>{{ collections['new-arrivals'].products_count | default: '350+' }}</b><span>MODELLI A CATALOGO</span></div>
+      <div><b>{{ collections['tutte-le-bici'].products_count | default: '350+' }}</b><span>BICI A CATALOGO</span></div>
       <div><b>4 brand</b><span>RIVENDITORI UFFICIALI</span></div>
       <div><b>Officina</b><span>ASSISTENZA CERTIFICATA</span></div>
     </div>
@@ -73,7 +73,7 @@
 </div></section>
 
 <section class="block wrap">
-  <div class="head"><div><p class="k">Il catalogo</p><h2>Scegli la tua disciplina</h2></div><a class="more" href="{{ routes.all_products_collection_url }}">Tutte le bici</a></div>
+  <div class="head"><div><p class="k">Il catalogo</p><h2>Scegli la tua disciplina</h2></div><a class="more" href="/collections/tutte-le-bici">Tutte le bici</a></div>
   <div class="cats">
     {%- assign bento = 'usato-1,bici-da-strada,ebikes,gravel,mountain-bike,urban' | split: ',' -%}
     {%- for handle in bento -%}
