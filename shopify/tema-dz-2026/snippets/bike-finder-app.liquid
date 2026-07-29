@@ -31,15 +31,25 @@
   assign bf_bg = bg | default: '#fafaf8'
   assign bf_accent = accent | default: '#c8102e'
   assign bf_cover = cover | default: ''
+  comment
+    Le GIF "data:" usate come segnaposto non contano come foto: senza una
+    foto vera la card resta compatta, niente spazio vuoto su mobile.
+  endcomment
+  assign bf_has_cover = false
+  if bf_cover != blank
+    unless bf_cover contains 'data:image'
+      assign bf_has_cover = true
+    endunless
+  endif
   assign bf_subtitle = subtitle | default: 'Poche domande. Le 3 bici giuste per te, nella tua taglia.'
   assign bf_cta = cta | default: 'INIZIA IL TEST'
 -%}
 
 {%- comment -%} ============ COPERTINA (visibile in pagina) ============ {%- endcomment -%}
 <section class="bfc" id="bfc-cover">
-  {%- comment -%} La foto di default e' incorporata; passa cover: 'URL' per sostituirla {%- endcomment -%}
-  <div class="bfc__card bfc__card--img"
-       style="--bfc-img: url('{% if bf_cover != blank %}{{ bf_cover }}{% else %}data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=={% endif %}'); --bfc-img-m: url('{% if bf_cover != blank %}{{ bf_cover }}{% else %}data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=={% endif %}');">
+  {%- comment -%} Senza cover: card compatta su fondo chiaro. Con cover: foto a destra (desktop) / in alto (mobile) {%- endcomment -%}
+  <div class="bfc__card{% if bf_has_cover %} bfc__card--img{% endif %}"
+       {% if bf_has_cover %}style="--bfc-img: url('{{ bf_cover }}'); --bfc-img-m: url('{{ bf_cover }}');"{% endif %}>
     <div class="bfc__content">
       {% if bf_eyebrow != blank %}<p class="bfc__eyebrow">{{ bf_eyebrow }}</p>{% endif %}
       <h2 class="bfc__title">{{ bf_heading }}</h2>
@@ -150,7 +160,8 @@
   .bfc__arrow { font-size: 17px; }
   .bfc__trust { margin: 18px 0 0; font-size: 12.5px; color: #9aa0a6; }
   @media (max-width: 749px) {
-    .bfc__card { min-height: 0; border-radius: 16px; align-items: flex-end; }
+    .bfc__card { min-height: 0; border-radius: 16px; }
+    .bfc__card--img { align-items: flex-end; }
     .bfc__card--img {
       background-image:
         linear-gradient(to bottom,

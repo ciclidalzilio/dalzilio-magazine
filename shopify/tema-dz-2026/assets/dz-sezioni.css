@@ -138,18 +138,25 @@
 .dzs-count span{font-size:8.5px;letter-spacing:.12em;line-height:1.5}
 @media (max-width:960px){.dzs-trade-art{min-height:230px}.dzs-bike{width:min(52%,220px)}}
 
-/* --- fila servizi in home --- */
-.dzs-svcrow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
-.dzs-svc{background:#fff;border:1px solid rgba(18,20,42,.1);border-radius:16px;padding:20px;
-  display:flex;flex-direction:column;text-decoration:none;color:#111319;
-  box-shadow:0 1px 3px rgba(18,20,42,.04);transition:transform .3s,box-shadow .3s}
-.dzs-svc:hover{transform:translateY(-4px);box-shadow:0 18px 38px -26px rgba(18,20,42,.4)}
-.dzs-svc .ic{width:40px;height:40px;border-radius:11px;background:rgba(255,46,99,.09);color:#FF2E63;
-  display:grid;place-items:center;margin-bottom:14px}
-.dzs-svc .ic svg{width:20px;height:20px}
-.dzs-svc b{font-size:14.5px;font-weight:660;letter-spacing:-.015em}
-.dzs-svc>span:last-child{font-size:12.5px;color:#8b8fa2;margin-top:3px}
-@media (max-width:960px){.dzs-svcrow{grid-template-columns:1fr 1fr;gap:12px}.dzs-svc{padding:16px}}
+/* --- fila servizi in home: lista compatta, niente card (si confondevano con le schede prodotto) --- */
+.dzs-svcrow{display:grid;grid-template-columns:repeat(4,1fr);background:#f5f6f8;
+  border:1px solid rgba(18,20,42,.08);border-radius:18px;overflow:hidden}
+.dzs-svc{display:flex;align-items:center;gap:12px;padding:18px 18px;text-decoration:none;color:#111319;
+  border-left:1px solid rgba(18,20,42,.07);transition:background .2s}
+.dzs-svc:first-child{border-left:0}
+.dzs-svc:hover{background:#fff}
+.dzs-svc .ic{width:36px;height:36px;flex:0 0 36px;border-radius:10px;background:rgba(255,46,99,.09);color:#FF2E63;
+  display:grid;place-items:center}
+.dzs-svc .ic svg{width:18px;height:18px}
+.dzs-svc .tx{display:flex;flex-direction:column;min-width:0}
+.dzs-svc b{font-size:13.5px;font-weight:660;letter-spacing:-.015em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dzs-svc .tx span{font-size:11.5px;color:#8b8fa2;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (max-width:960px){
+  .dzs-svcrow{grid-template-columns:1fr}
+  .dzs-svc{border-left:0;border-top:1px solid rgba(18,20,42,.07);padding:13px 16px}
+  .dzs-svc:first-child{border-top:0}
+  .dzs-svc::after{content:"→";margin-left:auto;color:#c3c6d1;font-size:15px}
+}
 
 /* --- banda modello in stile automotive: studio chiaro + pannello grafite --- */
 .dzs-auto{background:#0d0e13;border-bottom:1px solid rgba(255,255,255,.06)}

@@ -1,35 +1,114 @@
-{%- comment -%} Ricerca DZ 2026 {%- endcomment -%}
+{%- comment -%}
+  Ricerca DZ 2026 — stessi filtri nativi delle collezioni (Search & Discovery):
+  colonna filtri, etichette attive rimovibili, ordinamento e paginazione.
+{%- endcomment -%}
 <div class="wrap">
   <nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>Ricerca</b></nav>
-  <div class="ltop"><div><h1>Cerca nel catalogo</h1>
-    {%- if search.performed -%}<div class="sub">{{ search.results_count }} risultat{% if search.results_count == 1 %}o{% else %}i{% endif %} per “{{ search.terms | escape }}”</div>{%- endif -%}
-  </div></div>
+  <div class="ltop">
+    <div><h1>Cerca nel catalogo</h1>
+      {%- if search.performed -%}<div class="sub">{{ search.results_count }} risultat{% if search.results_count == 1 %}o{% else %}i{% endif %} per “{{ search.terms | escape }}”</div>{%- endif -%}
+    </div>
+    {%- if search.performed -%}
+      <select class="sortsel" onchange="location.href=this.value">
+        {%- assign term_enc = search.terms | url_encode -%}
+        {%- assign base = routes.search_url | append: '?q=' | append: term_enc | append: '&type=product&sort_by=' -%}
+        <option value="{{ base }}relevance" {% if search.sort_by == 'relevance' or search.sort_by == blank %}selected{% endif %}>Ordina: Rilevanza</option>
+        <option value="{{ base }}price-ascending" {% if search.sort_by == 'price-ascending' %}selected{% endif %}>Prezzo crescente</option>
+        <option value="{{ base }}price-descending" {% if search.sort_by == 'price-descending' %}selected{% endif %}>Prezzo decrescente</option>
+      </select>
+    {%- endif -%}
+  </div>
   <form action="{{ routes.search_url }}" method="get" class="nform" style="justify-content:flex-start;margin:0 0 26px">
     <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Es. Domane, e-bike, casco…" aria-label="Cerca prodotti" style="min-width:min(420px,100%)">
     <input type="hidden" name="type" value="product">
     <button class="btn" type="submit">Cerca</button>
   </form>
+
   {%- if search.performed -%}
-    {%- paginate search.results by 24 -%}
-      <div class="listgrid">
-        {%- for item in search.results -%}
-          {%- if item.object_type == 'product' -%}{% render 'dz-card', product: item %}{%- endif -%}
-        {%- else -%}
-          <p style="grid-column:1/-1;color:var(--muted);padding:40px 0">Nessun risultato. Prova con un altro termine o <a href="{{ routes.all_products_collection_url }}" style="text-decoration:underline">sfoglia il catalogo</a>.</p>
+    {%- comment -%} filtri attivi, rimovibili con un tocco {%- endcomment -%}
+    {%- assign attivi = 0 -%}
+    {%- for filter in search.filters -%}
+      {%- assign attivi = attivi | plus: filter.active_values.size -%}
+      {%- if filter.type == 'price_range' and filter.min_value.value != blank -%}{%- assign attivi = attivi | plus: 1 -%}{%- endif -%}
+    {%- endfor -%}
+    {%- if attivi > 0 -%}
+      <div class="fattivi">
+        {%- for filter in search.filters -%}
+          {%- for v in filter.active_values -%}<a href="{{ v.url_to_remove }}">{{ v.label }}</a>{%- endfor -%}
+          {%- if filter.type == 'price_range' and filter.min_value.value != blank or filter.max_value.value != blank -%}
+            <a href="{{ filter.url_to_remove }}">Prezzo</a>
+          {%- endif -%}
         {%- endfor -%}
       </div>
-      {%- if paginate.pages > 1 -%}
-        <nav class="pagin">
-          {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">←</a>{%- endif -%}
-          {%- for part in paginate.parts -%}
-            {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>
-            {%- elsif part.title == paginate.current_page -%}<span class="cur">{{ part.title }}</span>
-            {%- else -%}<span>{{ part.title }}</span>{%- endif -%}
+    {%- endif -%}
+
+    <div class="listwrap{% if search.filters == blank or search.filters.size == 0 %} nofiltri{% endif %}">
+      {%- if search.filters.size > 0 -%}
+        <form class="filters" method="get" action="{{ routes.search_url }}">
+          <input type="hidden" name="q" value="{{ search.terms | escape }}">
+          <input type="hidden" name="type" value="product">
+          {%- if search.sort_by != blank -%}<input type="hidden" name="sort_by" value="{{ search.sort_by }}">{%- endif -%}
+          <h4>Filtri</h4>
+          {%- for filter in search.filters -%}
+            {%- liquid
+              assign f_open = false
+              if filter.active_values.size > 0
+                assign f_open = true
+              elsif filter.type == 'price_range'
+                if filter.min_value.value != blank or filter.max_value.value != blank
+                  assign f_open = true
+                endif
+              endif
+            -%}
+            <details {% if f_open %}open{% endif %}>
+              <summary>{{ filter.label }}</summary>
+              {%- case filter.type -%}
+                {%- when 'price_range' -%}
+                  <div class="fprice">
+                    <input type="number" name="{{ filter.min_value.param_name }}" placeholder="Da €"
+                           {% if filter.min_value.value %}value="{{ filter.min_value.value | money_without_currency | replace: ',', '.' }}"{% endif %} min="0">
+                    <input type="number" name="{{ filter.max_value.param_name }}" placeholder="A €"
+                           {% if filter.max_value.value %}value="{{ filter.max_value.value | money_without_currency | replace: ',', '.' }}"{% endif %} min="0">
+                  </div>
+                {%- else -%}
+                  {%- for v in filter.values limit: 14 -%}
+                    <label class="fopt">
+                      <input type="checkbox" name="{{ v.param_name }}" value="{{ v.value }}"
+                             {% if v.active %}checked{% endif %} {% if v.count == 0 and v.active == false %}disabled{% endif %}>
+                      {{ v.label }}<span class="n">{{ v.count }}</span>
+                    </label>
+                  {%- endfor -%}
+              {%- endcase -%}
+            </details>
           {%- endfor -%}
-          {%- if paginate.next -%}<a href="{{ paginate.next.url }}">→</a>{%- endif -%}
-        </nav>
+          <button class="btn sm block" type="submit" style="margin-top:14px">Applica filtri</button>
+          {%- if attivi > 0 -%}<a class="btn ghost sm block" style="margin-top:8px" href="{{ routes.search_url }}?q={{ search.terms | url_encode }}&type=product">Azzera</a>{%- endif -%}
+        </form>
       {%- endif -%}
-    {%- endpaginate -%}
+
+      <div>
+        {%- paginate search.results by 24 -%}
+          <div class="listgrid">
+            {%- for item in search.results -%}
+              {%- if item.object_type == 'product' -%}{% render 'dz-card', product: item %}{%- endif -%}
+            {%- else -%}
+              <p style="grid-column:1/-1;color:var(--muted);padding:40px 0">Nessun risultato. Prova con un altro termine o <a href="{{ routes.all_products_collection_url }}" style="text-decoration:underline">sfoglia il catalogo</a>.</p>
+            {%- endfor -%}
+          </div>
+          {%- if paginate.pages > 1 -%}
+            <nav class="pagin">
+              {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">←</a>{%- endif -%}
+              {%- for part in paginate.parts -%}
+                {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>
+                {%- elsif part.title == paginate.current_page -%}<span class="cur">{{ part.title }}</span>
+                {%- else -%}<span>{{ part.title }}</span>{%- endif -%}
+              {%- endfor -%}
+              {%- if paginate.next -%}<a href="{{ paginate.next.url }}">→</a>{%- endif -%}
+            </nav>
+          {%- endif -%}
+        {%- endpaginate -%}
+      </div>
+    </div>
   {%- endif -%}
 </div>
 <div style="height:40px"></div>

@@ -17,25 +17,12 @@
     </select>
   </div>
 
-  {%- comment -%} sottocategorie e-bike: E-MTB ed E-Road, come nell'anteprima {%- endcomment -%}
-  {%- if collection.handle == 'ebikes' -%}
-    {%- assign sub_mtb = collections['e-mtb'] -%}
-    {%- assign sub_road = collections['e-road-e-gravel'] -%}
-    <div class="cats" style="grid-template-columns:1fr 1fr;grid-auto-rows:150px;margin:0 0 26px">
-      {%- if sub_mtb != blank -%}
-        <a class="cat" style="grid-column:span 1;background:linear-gradient(135deg,#16241a,#2f4a33 55%,#4a6b3f)" href="{{ sub_mtb.url }}">
-          {%- if sub_mtb.featured_image -%}<img class="bg" src="{{ sub_mtb.featured_image | image_url: width: 900 }}" alt="" loading="lazy">{%- endif -%}
-          <div class="vg"></div>
-          <div class="lb"><span class="c">{{ sub_mtb.products_count }} modelli</span><h3>E-MTB</h3></div>
-        </a>
-      {%- endif -%}
-      {%- if sub_road != blank -%}
-        <a class="cat" style="grid-column:span 1;background:linear-gradient(135deg,#101528,#25355c 55%,#3d5a8a)" href="{{ sub_road.url }}">
-          {%- if sub_road.featured_image -%}<img class="bg" src="{{ sub_road.featured_image | image_url: width: 900 }}" alt="" loading="lazy">{%- endif -%}
-          <div class="vg"></div>
-          <div class="lb"><span class="c">{{ sub_road.products_count }} modelli</span><h3>E-Road / E-Gravel</h3></div>
-        </a>
-      {%- endif -%}
+  {%- comment -%} e-bike: due filtri rapidi a pillola invece delle card grandi {%- endcomment -%}
+  {%- if collection.handle == 'ebikes' or collection.handle == 'e-mtb' or collection.handle == 'e-road-e-gravel' -%}
+    <div class="fpills">
+      <a class="fpill{% if collection.handle == 'ebikes' %} on{% endif %}" href="{{ collections['ebikes'].url }}">Tutte</a>
+      <a class="fpill{% if collection.handle == 'e-mtb' %} on{% endif %}" href="{{ collections['e-mtb'].url }}">E-MTB</a>
+      <a class="fpill{% if collection.handle == 'e-road-e-gravel' %} on{% endif %}" href="{{ collections['e-road-e-gravel'].url }}">E-Road / E-Gravel</a>
     </div>
   {%- endif -%}
 
@@ -62,7 +49,17 @@
         {%- if collection.sort_by != blank -%}<input type="hidden" name="sort_by" value="{{ collection.sort_by }}">{%- endif -%}
         <h4>Filtri</h4>
         {%- for filter in collection.filters -%}
-          <details {% if filter.active_values.size > 0 or forloop.first %}open{% endif %}>
+          {%- liquid
+            assign f_open = false
+            if filter.active_values.size > 0
+              assign f_open = true
+            elsif filter.type == 'price_range'
+              if filter.min_value.value != blank or filter.max_value.value != blank
+                assign f_open = true
+              endif
+            endif
+          -%}
+          <details {% if f_open %}open{% endif %}>
             <summary>{{ filter.label }}</summary>
             {%- case filter.type -%}
               {%- when 'price_range' -%}
