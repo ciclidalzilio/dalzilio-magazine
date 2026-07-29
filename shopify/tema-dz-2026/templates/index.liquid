@@ -79,9 +79,13 @@
     {%- for handle in bento -%}
       {%- assign c = collections[handle] -%}
       {%- if c != blank -%}
+        {%- comment -%} bici scontornata dal catalogo al posto delle foto con scritte incorporate {%- endcomment -%}
+        {%- assign cimg = blank -%}
+        {%- for p in c.products limit: 12 -%}
+          {%- if p.featured_image -%}{%- assign cimg = p.featured_image -%}{%- break -%}{%- endif -%}
+        {%- endfor -%}
         <a class="cat {% if forloop.first %}hero2{% elsif forloop.index == 2 or forloop.index == 3 %}wide{% endif %}" href="{{ c.url }}">
-          {%- if c.featured_image -%}<img class="bg" src="{{ c.featured_image | image_url: width: 900 }}" alt="" loading="lazy">{%- endif -%}
-          <div class="vg"></div>
+          {%- if cimg != blank -%}<span class="cbike"><img src="{{ cimg | image_url: width: 900 }}" alt="" loading="lazy"></span>{%- endif -%}
           {%- if forloop.first -%}<span class="flag"><i></i>Pezzi unici</span>{%- endif -%}
           <div class="lb">
             <span class="c">{{ c.products_count }} modelli</span>
