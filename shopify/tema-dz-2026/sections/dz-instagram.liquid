@@ -21,6 +21,16 @@
   </div>
 </section>
 
+<script>
+  /* Il gruppo Instagram viene stampato dopo il contenuto (vincolo dei blocchi
+     app): in home lo spostiamo sopra la sezione permuta. */
+  (function () {
+    var io = document.getElementById('shopify-section-{{ section.id }}');
+    var perm = document.getElementById('shopify-section-dz-permuta');
+    if (io && perm) perm.parentNode.insertBefore(io, perm);
+  })();
+</script>
+
 {% schema %}
 {
   "name": "DZ · Instagram",
