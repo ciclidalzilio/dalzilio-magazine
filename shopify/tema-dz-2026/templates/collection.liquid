@@ -50,13 +50,17 @@
         <h4>Filtri</h4>
         {%- for filter in collection.filters -%}
           {%- liquid
+            comment
+              Aperti di default: Brand e Prezzo, piu' qualunque gruppo con un filtro attivo.
+            endcomment
+            assign f_label = filter.label | downcase
             assign f_open = false
             if filter.active_values.size > 0
               assign f_open = true
             elsif filter.type == 'price_range'
-              if filter.min_value.value != blank or filter.max_value.value != blank
-                assign f_open = true
-              endif
+              assign f_open = true
+            elsif f_label contains 'brand' or f_label contains 'marca'
+              assign f_open = true
             endif
           -%}
           <details {% if f_open %}open{% endif %}>
