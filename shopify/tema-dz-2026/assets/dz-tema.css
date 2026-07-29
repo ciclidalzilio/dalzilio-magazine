@@ -145,6 +145,13 @@ section.block{padding:96px 0 60px}
 .lw-cell{display:flex;align-items:center;justify-content:center;height:64px;opacity:.75;transition:.25s;position:relative}
 .lw-cell+.lw-cell::before{content:"";position:absolute;left:0;top:22%;bottom:22%;width:1px;background:var(--line)}
 .lw-cell:hover{opacity:1}
+.lw-cell{overflow:hidden}
+/* riflesso che attraversa il logo al passaggio del mouse */
+.lw-cell::after{content:"";position:absolute;top:0;bottom:0;left:-80%;width:45%;
+  background:linear-gradient(105deg,transparent,rgba(255,255,255,.85) 50%,transparent);
+  transform:skewX(-20deg);pointer-events:none}
+.lw-cell:hover::after{animation:lwshine .7s ease}
+@keyframes lwshine{to{left:135%}}
 .lw-cell img{max-height:52px;width:auto;object-fit:contain}
 @media (max-width:600px){.lw-row{grid-template-columns:repeat(2,1fr);gap:10px 14px}.lw-cell::before{display:none!important}}
 
