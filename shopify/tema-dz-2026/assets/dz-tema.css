@@ -367,14 +367,12 @@ section.block{padding:96px 0 60px}
 @media (max-width:960px){.fin{grid-template-columns:1fr;gap:26px;padding:38px 30px}}
 @media (max-width:560px){.fin{padding:30px 22px}.fin-card{padding:20px}}
 
-/* --- banda instagram --- */
-.dz-ig{margin:20px 0}
-.dz-ig-band{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:62px;padding:18px 20px;
-  background:linear-gradient(135deg,#383a3c 0%,#292b2d 55%,#222426 100%);color:#fff;
-  font-weight:800;font-style:italic;font-size:clamp(17px,2.4vw,26px);letter-spacing:-.4px;text-transform:uppercase;
-  box-shadow:0 8px 18px rgba(0,0,0,.12)}
-.dz-ig-band svg{width:30px;height:30px;flex-shrink:0}
-.dz-ig-band:hover{transform:translateY(-1px)}
+/* --- sezione instagram: stessa intestazione delle altre sezioni, feed con angoli morbidi --- */
+.dz-ig{padding:44px 0 72px}
+.dz-ig .ig-glyph{width:28px;height:28px;vertical-align:-3px;margin-right:10px}
+.ig-feed{margin-top:4px;border-radius:18px;overflow:hidden}
+.ig-feed img,.ig-feed video{border-radius:14px;transition:transform .35s}
+.ig-feed a:hover img,.ig-feed a:hover video{transform:scale(1.03)}
 
 
 /* --- selettore paese/valuta e newsletter --- */
