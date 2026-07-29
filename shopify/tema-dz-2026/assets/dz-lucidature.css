@@ -208,12 +208,13 @@
   letter-spacing:-.03em;line-height:1;color:transparent;-webkit-text-stroke:1.3px rgba(17,18,20,.13);
   pointer-events:none;user-select:none}
 
-/* taglie da cockpit: fila unita, selezione nera con riga rossa */
-.dz-sizes{gap:0!important;border:1px solid rgba(17,18,20,.16);border-radius:3px;width:max-content;max-width:100%;overflow-x:auto}
+/* taglie da cockpit: fila unita in argento, selezione nera con riga rossa */
+.dz-sizes{gap:0!important;border:1px solid rgba(17,18,20,.16);border-radius:3px;width:max-content;max-width:100%;overflow-x:auto;
+  background:linear-gradient(120deg,#f4f5f8,#e0e3e9 60%,#c7ccd6)}
 .dz-size{border:0!important;border-left:1px solid rgba(17,18,20,.16)!important;border-radius:0!important;
   min-width:52px!important;padding:13px 16px!important;position:relative;background:transparent!important}
 .dz-size:first-child{border-left:0!important}
-.dz-size:hover{background:rgba(17,18,20,.05)!important}
+.dz-size:hover{background:rgba(255,255,255,.6)!important}
 .dz-size.on{background:#111214!important;color:#fff!important}
 .dz-size.on::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--gt-rosso)}
 .dz-size.off{opacity:.32!important}
