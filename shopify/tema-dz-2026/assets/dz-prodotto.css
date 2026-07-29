@@ -55,8 +55,9 @@
 .dz-sw:hover{border-color:var(--dz-ink)}
 .dz-sw.on{background:var(--dz-ink);color:#fff;border-color:var(--dz-ink)}
 .dz-sizes{display:flex;gap:8px;flex-wrap:wrap}
-.dz-size{min-width:48px;padding:10px 12px;border-radius:11px;border:1px solid var(--dz-line2);
-  background:var(--dz-surf);cursor:pointer;font-size:14px;font-weight:600;color:var(--dz-ink);transition:.15s}
+.dz-size{min-width:48px;padding:10px 12px;border-radius:11px;border:1px solid rgba(18,20,42,.14);
+  background:linear-gradient(120deg,#f4f5f8,#e0e3e9 60%,#c7ccd6);
+  cursor:pointer;font-size:14px;font-weight:600;color:var(--dz-ink);transition:.15s}
 .dz-size:hover{border-color:var(--dz-ink)}
 .dz-size.on{background:var(--dz-ink);color:#fff;border-color:var(--dz-ink)}
 .dz-size.off{opacity:.38;cursor:not-allowed;text-decoration:line-through;background:var(--dz-canvas)}
