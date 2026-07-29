@@ -175,6 +175,8 @@ section.block{padding:96px 0 60px}
 
 /* card prodotto */
 .prods{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+/* su pc, le sezioni con .fullw (ultimi arrivi e usato in home) occupano tutto lo schermo */
+@media (min-width:961px){.dz .wrap.fullw{max-width:none;padding-left:36px;padding-right:36px}}
 .prod{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(18,20,42,.05);transition:transform .45s;display:flex;flex-direction:column;position:relative}
 .prod:hover{transform:translateY(-6px)}
 .prod .pimg{position:relative;aspect-ratio:4/2.7;background:#fff;display:block}
