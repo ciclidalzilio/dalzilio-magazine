@@ -241,7 +241,18 @@
 .hero .btn.ghost:hover{box-shadow:inset 0 0 0 1px #111319,0 4px 14px rgba(18,20,42,.08)}
 .heroStats div{border-left-color:rgba(18,20,42,.16)}
 .heroStats span{color:#8b8fa2}
-/* la bici si fonde direttamente nel fondale chiaro: niente pozza, niente maschera */
-.hero-foil{background:none!important;-webkit-mask-image:none!important;mask-image:none!important}
-.hero-foil img{mix-blend-mode:multiply;filter:contrast(1.04) saturate(1.03)}
-.hero-foil::after{background:radial-gradient(50% 100% at 50% 50%,rgba(18,20,42,.3),transparent 72%)}
+/* la foto corsa a tutta altezza sulla destra, fusa nel fondale chiaro:
+   multiply cancella il bianco della foto, la maschera dissolve il bordo sinistro */
+.hero-foil{position:absolute;top:0;right:0;bottom:0;left:auto;transform:none;width:min(72vw,1080px);height:100%;aspect-ratio:auto;
+  display:block;background:none!important;
+  -webkit-mask-image:linear-gradient(90deg,transparent 0,#000 32%)!important;
+  mask-image:linear-gradient(90deg,transparent 0,#000 32%)!important}
+.hero-foil img{width:100%!important;height:100%;object-fit:cover;object-position:right center;
+  mix-blend-mode:multiply;filter:contrast(1.06) saturate(1.05)}
+.hero-foil::after{display:none}
+@media (max-width:960px){
+  .hero-foil{width:100%;height:56%;top:auto;bottom:0;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 30%)!important;
+    mask-image:linear-gradient(180deg,transparent 0,#000 30%)!important}
+  .hero-foil img{object-position:right bottom}
+}
