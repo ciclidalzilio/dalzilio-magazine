@@ -233,13 +233,14 @@ section.block{padding:96px 0 60px}
 .related,.listgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
 .listgrid{grid-template-columns:repeat(3,1fr)}
 @media (max-width:960px){.prods,.related{grid-template-columns:repeat(2,1fr)}.listgrid{grid-template-columns:repeat(2,1fr)}}
-/* mobile: bici più piccole dentro la card (aria attorno, chip che non copre la bici) */
+/* mobile: niente etichetta tipo (copriva la bici), bici a tutta finestrella,
+   resta solo il badge sconto in basso a destra */
 @media (max-width:640px){
+  .prod .chip{display:none}
+  .prod .chip.sale{display:inline-block;left:auto;top:auto;right:8px;bottom:8px;font-size:9.5px;padding:3px 8px}
   .prod .pimg img,
   .prod:hover .pimg img,
-  .prod.esaurito:hover .pimg img{transform:scale(calc(var(--nz,1.08)*.84)) translate(var(--nx,0%),var(--ny,0%))}
-  .prod .chip{font-size:8.5px;padding:3px 7px;left:8px;top:8px}
-  .prod .chip.sale{left:auto;top:auto;right:8px;bottom:8px;font-size:9.5px}
+  .prod.esaurito:hover .pimg img{transform:scale(calc(var(--nz,1.08)*1.06)) translate(var(--nx,0%),var(--ny,0%))}
 }
 @media (max-width:560px){.prods,.related,.listgrid{grid-template-columns:1fr 1fr;gap:12px}}
 
