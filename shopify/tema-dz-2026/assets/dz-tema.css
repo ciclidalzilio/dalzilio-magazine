@@ -187,8 +187,9 @@ section.block{padding:96px 0 60px}
 .prod{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(18,20,42,.05);transition:transform .45s;display:flex;flex-direction:column;position:relative}
 .prod:hover{transform:translateY(-6px)}
 .prod .pimg{position:relative;aspect-ratio:4/2.7;background:#fff;display:block}
-.prod .pimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:0;transform:scale(1.08);transition:transform .4s}
-.prod:hover .pimg img{transform:scale(1.14)}
+.prod .pimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:0;
+  transform:scale(var(--nz,1.08)) translate(var(--nx,0%),var(--ny,0%));transition:transform .4s}
+.prod:hover .pimg img{transform:scale(calc(var(--nz,1.08)*1.055)) translate(var(--nx,0%),var(--ny,0%))}
 .prod .chip{position:absolute;left:12px;top:12px;z-index:2;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;background:rgba(255,255,255,.94);color:var(--ink);padding:4px 9px;border-radius:999px;font-weight:600;box-shadow:0 2px 8px rgba(18,20,42,.12)}
 .prod .chip.sale{left:auto;right:12px;top:auto;bottom:12px;background:var(--rose);color:#fff}
 .prod .pbody{padding:15px 16px 16px;display:flex;flex-direction:column;flex:1}
@@ -203,7 +204,7 @@ section.block{padding:96px 0 60px}
 .prod.esaurito .pimg img{opacity:.42;filter:grayscale(.85)}
 .prod.esaurito .pbody{opacity:.55}
 .prod.esaurito:hover{transform:none}
-.prod.esaurito:hover .pimg img{transform:scale(1.08)}
+.prod.esaurito:hover .pimg img{transform:scale(var(--nz,1.08)) translate(var(--nx,0%),var(--ny,0%))}
 .prod.esaurito .chip.sale{display:none}
 .prod .soldout{position:absolute;left:50%;top:50%;z-index:3;transform:translate(-50%,-50%) rotate(-12deg);
   font-family:var(--font-mono);font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;
