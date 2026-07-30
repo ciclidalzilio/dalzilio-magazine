@@ -6,34 +6,11 @@ jobs:
   fetch:
     runs-on: ubuntu-latest
     steps:
-      - name: Scarica collezione e stampa i pezzi utili
+      - name: Scarica due foto reali in base64
         run: |
-          UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
-          curl -sL -A "$UA" -o page.html -w "HTTP %{http_code}\n" "https://ciclidalzilio.com/collections/bici-da-strada"
-          echo "=== IMG CARD (primi 4) ==="
-          grep -o '<img[^>]*data-dz-fit[^>]*>' page.html | head -4 || echo "NESSUN img data-dz-fit TROVATO"
-          echo "=== ARTICLE PROD (primi 2) ==="
-          grep -o '<article class="prod[^"]*"[^>]*>' page.html | head -2 || true
-          echo "=== SCRIPT dz-tema ==="
-          grep -o '<script[^>]*dz-tema[^>]*>' page.html || echo "SCRIPT NON TROVATO"
-          echo "=== CSS dz-tema ==="
-          grep -o '<link[^>]*dz-tema[^>]*>' page.html | head -1 || true
-          JS=$(grep -o 'src="[^"]*dz-tema\.js[^"]*"' page.html | head -1 | sed 's/src="//;s/"$//')
-          echo "JS URL: $JS"
-          if [ -n "$JS" ]; then
-            case "$JS" in //*) JS="https:$JS";; /*) JS="https://ciclidalzilio.com$JS";; esac
-            curl -sL -A "$UA" -o dz.js "$JS" -w "HTTP JS %{http_code}\n"
-            echo "=== dz-tema.js: dimensione e marcatori ==="
-            wc -c dz.js
-            grep -c "probeUrl" dz.js || echo "probeUrl ASSENTE"
-            grep -c "data-dz-fit" dz.js || echo "selettore ASSENTE"
-            echo "--- prime 5 righe ---"; head -5 dz.js
-            echo "--- ultime 5 righe ---"; tail -5 dz.js
-          fi
-          CSSURL=$(grep -o 'href="[^"]*dz-tema\.css[^"]*"' page.html | head -1 | sed 's/href="//;s/"$//')
-          if [ -n "$CSSURL" ]; then
-            case "$CSSURL" in //*) CSSURL="https:$CSSURL";; /*) CSSURL="https://ciclidalzilio.com$CSSURL";; esac
-            curl -sL -A "$UA" -o dz.css "$CSSURL"
-            echo "=== regola transform card ==="
-            grep -o '\.prod \.pimg img{[^}]*}' dz.css | head -1
-          fi
+          UA="Mozilla/5.0 (Macintosh) Chrome/126.0"
+          curl -sL -A "$UA" -o cann.jpg "https://ciclidalzilio.com/cdn/shop/files/3_b63d29f7-188b-4c64-aa31-30ce4a14c173.jpg?v=1771578578&width=180"
+          curl -sL -A "$UA" -o scott.png "https://ciclidalzilio.com/cdn/shop/files/4233028086.png?v=1780097736&width=180"
+          file cann.jpg scott.png; wc -c cann.jpg scott.png
+          echo "=== B64 CANN INIZIO ==="; base64 -w0 cann.jpg; echo; echo "=== B64 CANN FINE ==="
+          echo "=== B64 SCOTT INIZIO ==="; base64 -w0 scott.png; echo; echo "=== B64 SCOTT FINE ==="
