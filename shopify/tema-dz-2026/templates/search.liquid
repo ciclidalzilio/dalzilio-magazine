@@ -19,7 +19,7 @@
     {%- endif -%}
   </div>
   <form action="{{ routes.search_url }}" method="get" class="nform" style="justify-content:flex-start;margin:0 0 26px">
-    <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Es. Domane, e-bike, casco…" aria-label="Cerca prodotti" style="min-width:min(420px,100%)">
+    <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Es. Domane, e-bike, casco…" aria-label="Cerca prodotti" style="min-width:min(420px,100%)" {% unless search.performed %}autofocus{% endunless %}>
     <input type="hidden" name="type" value="product">
     <button class="btn" type="submit">Cerca</button>
   </form>
