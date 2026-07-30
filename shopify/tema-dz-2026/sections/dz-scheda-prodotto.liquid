@@ -141,7 +141,23 @@
           </div>
         {%- endif -%}
 
-        <form method="post" action="{{ routes.cart_add_url }}" id="dz-form" novalidate>
+        {%- comment -%}
+          Esaurita in tutte le taglie: il form resta nel DOM (il JS lo usa) ma
+          nascosto; al suo posto un pannello "avvisami" + rimando alle simili.
+        {%- endcomment -%}
+        {%- unless p.available -%}
+          <div class="dz-soldbox">
+            <b>Esaurita in tutte le taglie</b>
+            <p>Capita con i modelli più richiesti. Scrivici e ti avvisiamo appena rientra — oppure guarda le gemelle disponibili adesso.</p>
+            {%- if section.settings.whatsapp != blank -%}
+              <a class="dz-btn dz-primary" target="_blank" rel="noopener"
+                 href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'Ciao! Avvisami se torna disponibile la ' | append: p.title | append: ' (indicami anche se rientra una simile nella mia taglia)' | url_encode }}">
+                Avvisami se torna</a>
+            {%- endif -%}
+            <a class="dz-btn dz-sbghost" href="#dz-simili">Vedi le simili disponibili ↓</a>
+          </div>
+        {%- endunless -%}
+        <form method="post" action="{{ routes.cart_add_url }}" id="dz-form" novalidate{% unless p.available %} hidden{% endunless %}>
           <input type="hidden" name="form_type" value="product">
           <input type="hidden" name="utf8" value="✓">
           <input type="hidden" name="id" value="{{ p.selected_or_first_available_variant.id }}" data-dz-variante>
@@ -194,7 +210,7 @@
           </div>
         </form>
 
-        {%- if section.settings.whatsapp != blank -%}
+        {%- if p.available and section.settings.whatsapp != blank -%}
           <a class="dz-btn dz-wa" target="_blank" rel="noopener"
              href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'Ciao! Sono interessato alla ' | append: p.title | url_encode }}">
             Chiedi info su WhatsApp
@@ -202,7 +218,7 @@
         {%- endif -%}
 
         {%- if section.settings.tan > 0 and e_bici -%}
-          <div class="dz-fin" data-dz-fin
+          <div class="dz-fin" data-dz-fin{% unless p.available %} hidden{% endunless %}
                data-prezzo="{{ p.price | divided_by: 100.0 }}"
                data-tan="{{ section.settings.tan }}"
                data-min="{{ section.settings.rate_min }}"
@@ -225,7 +241,7 @@
           </div>
         {%- endif -%}
 
-        {%- if e_bici -%}
+        {%- if e_bici and p.available -%}
         <div class="dz-klarna" aria-label="Paga in 3 rate con Klarna">
           <span class="dz-kb">Klarna.</span>
           <div><b>Paga in 3 rate senza interessi</b><span class="dz-ksub">3 × {{ p.price | divided_by: 3 | money }}, senza costi aggiuntivi</span></div>
@@ -310,6 +326,33 @@
         {%- endif -%}
       </div>
     </div>
+
+    {%- comment -%}
+      Bici esaurita: proponi le gemelle davvero disponibili — stessa collezione
+      di provenienza, prezzo entro ±35%. Se non ce ne sono, niente blocco.
+    {%- endcomment -%}
+    {%- unless p.available -%}
+      {%- assign pmin = p.price | times: 0.65 -%}
+      {%- assign pmax = p.price | times: 1.35 -%}
+      {%- assign trovate = 0 -%}
+      {%- capture simili_html -%}
+        {%- if bc != blank -%}
+          {%- for s in bc.products limit: 50 -%}
+            {%- if trovate < 4 and s.available and s.id != p.id and s.featured_image and s.price >= pmin and s.price <= pmax -%}
+              {% render 'dz-card', product: s %}
+              {%- assign trovate = trovate | plus: 1 -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      {%- endcapture -%}
+      {%- if trovate > 0 -%}
+        <div class="dz-simili" id="dz-simili">
+          <div class="head"><div><p class="k">Disponibili subito</p><h2>Simili a questa</h2></div>
+            {%- if bc != blank -%}<a class="more" href="{{ bc.url }}">Tutta la categoria</a>{%- endif -%}</div>
+          <div class="prods">{{ simili_html }}</div>
+        </div>
+      {%- endif -%}
+    {%- endunless -%}
   </div>
 
   {%- comment -%}
