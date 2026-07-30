@@ -18,8 +18,11 @@
       </select>
     {%- endif -%}
   </div>
-  <form action="{{ routes.search_url }}" method="get" class="nform" style="justify-content:flex-start;margin:0 0 26px">
-    <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Es. Domane, e-bike, casco…" aria-label="Cerca prodotti" style="min-width:min(420px,100%)" {% unless search.performed %}autofocus{% endunless %}>
+  <form action="{{ routes.search_url }}" method="get" class="nform sform" style="justify-content:flex-start;margin:0 0 26px">
+    <div class="sbox">
+      <input type="search" name="q" value="{{ search.terms | escape }}" placeholder="Es. Domane, e-bike, casco…" aria-label="Cerca prodotti" autocomplete="off" {% unless search.performed %}autofocus{% endunless %} data-dz-sugg-input>
+      <div class="sugg" data-dz-sugg hidden></div>
+    </div>
     <input type="hidden" name="type" value="product">
     <button class="btn" type="submit">Cerca</button>
   </form>
@@ -116,3 +119,79 @@
   {%- endif -%}
 </div>
 <div style="height:40px"></div>
+
+{% style %}
+  .sform .sbox{position:relative;flex:0 1 auto;width:min(420px,100%)}
+  .sform .sbox input[type="search"]{width:100%;min-width:0!important}
+  .sugg{position:absolute;left:0;right:0;top:calc(100% + 8px);z-index:60;background:var(--surface);
+    border:1px solid var(--line-strong);border-radius:16px;box-shadow:0 24px 60px -24px rgba(18,20,42,.35);
+    overflow:hidden;max-height:min(430px,60vh);overflow-y:auto}
+  .sugg a{display:flex;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line)}
+  .sugg a:hover{background:rgba(18,20,42,.04)}
+  .sugg img{width:52px;height:40px;object-fit:contain;background:#fff;border-radius:8px;flex:0 0 52px}
+  .sugg .st{min-width:0}
+  .sugg .st b{display:block;font-size:13.5px;font-weight:620;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .sugg .st span{font-size:12px;color:var(--muted)}
+  .sugg .tutti{justify-content:center;font-size:13px;font-weight:650;color:var(--rose);border-bottom:0;padding:12px}
+  .sugg .vuoto{padding:14px;font-size:13px;color:var(--muted);text-align:center}
+{% endstyle %}
+
+<script>
+  /* suggerimenti live dalla ricerca predittiva di Shopify */
+  (function () {
+    var input = document.querySelector("[data-dz-sugg-input]");
+    var box = document.querySelector("[data-dz-sugg]");
+    if (!input || !box) return;
+    var timer = null, ultimo = "";
+
+    function money(v) {
+      var n = parseFloat(v);
+      if (isNaN(n)) return "";
+      return "€ " + n.toLocaleString("it-IT", { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    }
+    function chiudi() { box.hidden = true; box.innerHTML = ""; }
+
+    function mostra(q, prodotti) {
+      if (!prodotti.length) {
+        box.innerHTML = '<div class="vuoto">Nessun suggerimento per “' + q.replace(/</g, "&lt;") + '”</div>';
+        box.hidden = false;
+        return;
+      }
+      var html = prodotti.map(function (p) {
+        var img = p.featured_image && p.featured_image.url
+          ? '<img src="' + p.featured_image.url.replace(/(\.[a-z]+)(\?|$)/, "_120x$1$2") + '" alt="" loading="lazy">'
+          : '<span style="width:52px;height:40px;flex:0 0 52px"></span>';
+        return '<a href="' + p.url + '">' + img +
+          '<span class="st"><b>' + p.title + '</b><span>' + (p.vendor || "") +
+          (p.price ? " · " + money(p.price) : "") + '</span></span></a>';
+      }).join("");
+      html += '<a class="tutti" href="{{ routes.search_url }}?q=' + encodeURIComponent(q) + '&type=product">Tutti i risultati per “' + q.replace(/</g, "&lt;") + '” →</a>';
+      box.innerHTML = html;
+      box.hidden = false;
+    }
+
+    input.addEventListener("input", function () {
+      var q = input.value.trim();
+      clearTimeout(timer);
+      if (q.length < 2) { chiudi(); return; }
+      timer = setTimeout(function () {
+        ultimo = q;
+        fetch("{{ routes.predictive_search_url }}?q=" + encodeURIComponent(q) +
+              "&resources[type]=product&resources[limit]=8&resources[options][unavailable_products]=last&section_id=")
+          .then(function (r) { return r.json(); })
+          .then(function (j) {
+            if (q !== ultimo) return;
+            var prodotti = (j.resources && j.resources.results && j.resources.results.products) || [];
+            mostra(q, prodotti);
+          })
+          .catch(chiudi);
+      }, 220);
+    });
+    document.addEventListener("click", function (e) {
+      if (!e.target.closest(".sbox")) chiudi();
+    });
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") chiudi();
+    });
+  })();
+</script>

@@ -29,7 +29,7 @@
 
   /* Taglia e colore non sempre esistono come opzioni: nel catalogo importato
      stanno dentro il titolo della variante. Qui li ricaviamo, senza toccare i dati. */
-  var TAGLIE = ["XXS", "XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+  var TAGLIE = ["XXS", "XS", "S", "SM", "M", "MD", "ML", "L", "LG", "XL", "XXL", "XXXL"];
 
   function ricavaTaglia(titolo) {
     var parole = String(titolo).replace(/[\/(),]/g, " ").split(/\s+/).filter(Boolean);
@@ -50,7 +50,7 @@
       .replace(/\bbike\b/gi, " ")
       .replace(/\((?:EU|TW|IT|DE|US|CH)\)/gi, " ")
       .replace(/\b[A-Z]{4}\b\s*\/?/g, " ")
-      .replace(/\b(XXS|XS|S|M|L|XL|XXL|XXXL)\b/g, " ")
+      .replace(/\b(XXS|XS|S|SM|M|MD|ML|L|LG|XL|XXL|XXXL)\b/g, " ")
       .replace(/\b(4[4-9]|5[0-9]|6[0-4])\b/g, " ")
       .replace(/\s{2,}/g, " ")
       .replace(/^[\s\/\-–]+|[\s\/\-–]+$/g, "")

@@ -427,8 +427,8 @@
   var SIZE_CHART = {
     b1: { nums: [44, 47, 48, 49],     letters: ['xxs', 'xs'] },
     b2: { nums: [49, 50, 51, 52],     letters: ['xs', 's'] },
-    b3: { nums: [52, 53, 54],         letters: ['s', 'm'] },
-    b4: { nums: [54, 55, 56],         letters: ['m', 'l'] },
+    b3: { nums: [52, 53, 54],         letters: ['s', 'm', 'ml'] },
+    b4: { nums: [54, 55, 56],         letters: ['m', 'ml', 'l'] },
     b5: { nums: [56, 57, 58],         letters: ['l', 'xl'] },
     b6: { nums: [58, 59, 60, 61, 62], letters: ['xl', 'xxl'] }
   };
@@ -438,7 +438,7 @@
     var out = { nums: [], letters: [] };
     var nm = s.match(/\b(4[4-9]|5[0-9]|6[0-2])\b/g);
     if (nm) nm.forEach(function (n) { out.nums.push(parseInt(n, 10)); });
-    var lm = s.match(/\b(xxs|xs|s|m|l|xl|xxl)\b/g);
+    var lm = s.match(/\b(xxs|xs|s|m|ml|l|xl|xxl)\b/g);
     if (lm) lm.forEach(function (t) { if (out.letters.indexOf(t) === -1) out.letters.push(t); });
     return out;
   }
