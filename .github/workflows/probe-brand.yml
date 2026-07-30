@@ -1,0 +1,28 @@
+name: probe-brand
+on:
+  push:
+    branches: ["claude/**"]
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: fetch brand images and rendered page
+        run: |
+          mkdir -p probe/brand
+          curl -sL -o probe/brand/trek.jpg "https://cdn.shopify.com/s/files/1/0873/6885/9912/files/TrekDomaneSLR7gen4red.jpg?v=1743781715&width=1100"
+          curl -sL -o probe/brand/scott.png "https://cdn.shopify.com/s/files/1/0873/6885/9912/files/4253408086.png?v=1783042506&width=1200"
+          curl -sL -o probe/brand/cannondale.jpg "https://cdn.shopify.com/s/files/1/0873/6885/9912/files/9_4a20d348-54be-42ee-ace1-171dc906c3ce.jpg?v=1771578578&width=1100"
+          curl -sL -o probe/brand/amflow.jpg "https://cdn.shopify.com/s/files/1/0873/6885/9912/files/5_d9a3f52a-41bd-4c79-b84b-e4d83b1a25b7.jpg?v=1769701791&width=1100"
+          curl -sL -A "Mozilla/5.0" -o probe/brand/amflow-page.html "https://ciclidalzilio.com/pages/amflow" || true
+          curl -sL -A "Mozilla/5.0" -o probe/brand/trek-page.html "https://ciclidalzilio.com/pages/trek" || true
+          ls -la probe/brand
+      - name: commit results
+        run: |
+          git config user.name "probe-bot"
+          git config user.email "probe@local"
+          git add probe/brand
+          git commit -m "probe: immagini brand + pagine renderizzate" || echo "nothing to commit"
+          git push
