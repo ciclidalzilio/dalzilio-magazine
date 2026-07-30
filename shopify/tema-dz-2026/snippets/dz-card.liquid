@@ -3,10 +3,20 @@
   Uso: {% render 'dz-card', product: prodotto %}
   Niente recensioni inventate; sull'usato mostra la data di pubblicazione.
 {%- endcomment -%}
+{%- liquid
+  comment
+    Link con contesto collezione (/collections/x/products/y) quando la card
+    e' dentro una collezione: cosi' la scheda prodotto mostra il percorso.
+  endcomment
+  assign p_url = product.url
+  if collection and collection.handle != blank
+    assign p_url = product.url | within: collection
+  endif
+-%}
 {%- assign in_sconto = false -%}
 {%- if product.compare_at_price > product.price -%}{%- assign in_sconto = true -%}{%- endif -%}
 <article class="prod{% unless product.available %} esaurito{% endunless %}" data-vendor="{{ product.vendor | escape }}">
-  <a class="pimg" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
+  <a class="pimg" href="{{ p_url }}" aria-label="{{ product.title | escape }}">
     {%- if product.featured_image -%}
       <img src="{{ product.featured_image | image_url: width: 640 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="640" height="480" data-dz-fit>
     {%- endif -%}
@@ -25,7 +35,7 @@
   </a>
   <div class="pbody">
     <span class="brand">{{ product.vendor | replace: 'scott_sports', 'SCOTT' }}</span>
-    <h3><a href="{{ product.url }}">{{ product.title }}</a></h3>
+    <h3><a href="{{ p_url }}">{{ product.title }}</a></h3>
     {%- if product.type == 'USATO' and product.published_at -%}
       <span class="pdate">Pubblicato il {{ product.published_at | date: '%-d %B %Y' }}</span>
     {%- endif -%}

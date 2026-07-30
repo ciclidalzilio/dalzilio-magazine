@@ -39,9 +39,25 @@
 
   <div class="dz-wrap">
 
+    {%- liquid
+      comment
+        Percorso: usa la collezione di provenienza; senza contesto (accesso
+        diretto) sceglie la prima collezione "vera" della bici, saltando
+        quelle di servizio (ultimi arrivi, promo, tutte le bici...).
+      endcomment
+      assign bc = collection
+      if bc == blank
+        for c in p.collections
+          unless c.handle == 'new-arrivals' or c.handle == 'tutte-le-bici' or c.handle == 'promozioni' or c.handle == 'best-price' or c.handle == 'frontpage' or c.handle contains 'globofilter' or c.handle contains 'example'
+            assign bc = c
+            break
+          endunless
+        endfor
+      endif
+    -%}
     <nav class="dz-crumb" aria-label="Percorso">
       <a href="{{ routes.root_url }}">Home</a><span>/</span>
-      {%- if collection -%}<a href="{{ collection.url }}">{{ collection.title }}</a><span>/</span>{%- endif -%}
+      {%- if bc != blank -%}<a href="{{ bc.url }}">{{ bc.title }}</a><span>/</span>{%- endif -%}
       <b>{{ p.title }}</b>
     </nav>
 
