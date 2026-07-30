@@ -246,6 +246,32 @@
           {%- endif -%}
         </div>
 
+        {%- if p.type == 'USATO' -%}
+          {%- comment -%} checklist officina: toglie la paura dell'usato {%- endcomment -%}
+          <div class="dz-usatochk">
+            <div class="dz-uc-top">
+              <span class="dz-uc-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5L19.5 7"/></svg></span>
+              <div>
+                <b>Controllata in officina</b>
+                <span>{{ section.settings.usato_punti | default: 30 }} punti verificati prima della messa in vendita</span>
+              </div>
+            </div>
+            <ul class="dz-uc-list">
+              <li>Telaio e forcella: integrità e allineamento</li>
+              <li>Trasmissione: usura di catena e cassetta</li>
+              <li>Freni: pastiglie, dischi e spurgo</li>
+              <li>Ruote: tensione raggi e cuscinetti</li>
+              <li>Cambio e comandi: regolazione completa</li>
+              <li>Tagliando finale con prova su strada</li>
+            </ul>
+            {%- if section.settings.whatsapp != blank -%}
+              <a class="dz-uc-link" target="_blank" rel="noopener"
+                 href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'Ciao! Vorrei la scheda dei controlli della ' | append: p.title | url_encode }}">
+                Chiedici la scheda dei controlli →</a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
         <details class="dz-acc" open>
           <summary>Descrizione</summary>
           <div class="dz-acc-in">{{ p.description }}</div>
@@ -354,6 +380,7 @@
 
     { "type": "header", "content": "Contatti" },
     { "type": "text", "id": "whatsapp", "label": "Numero WhatsApp (senza + e senza spazi)", "default": "393457815102" },
+    { "type": "number", "id": "usato_punti", "label": "Punti di controllo sull'usato", "default": 30 },
 
     { "type": "header", "content": "Garanzie" },
     { "type": "text", "id": "trust_1", "label": "Voce 1", "default": "Spedizione gratuita" },
