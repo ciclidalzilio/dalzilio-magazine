@@ -251,8 +251,9 @@
   mix-blend-mode:multiply;filter:contrast(1.06) saturate(1.05)}
 .hero-foil::after{display:none}
 @media (max-width:960px){
-  .hero-foil{width:100%;height:56%;top:auto;bottom:0;
-    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 30%)!important;
-    mask-image:linear-gradient(180deg,transparent 0,#000 30%)!important}
+  .hero .hwrap{padding-bottom:calc(100vw * .5)}
+  .hero-foil{width:100%;top:auto;bottom:0;height:auto;aspect-ratio:16/10;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 38%)!important;
+    mask-image:linear-gradient(180deg,transparent 0,#000 38%)!important}
   .hero-foil img{object-position:right bottom}
 }
