@@ -161,6 +161,12 @@ section.block{padding:96px 0 60px}
 .cat.wide{grid-column:span 3}
 .cat.hero2{grid-column:span 3;grid-row:span 2}
 .cat:hover{transform:translateY(-4px)}
+/* riflesso specchiato leggero al passaggio (hover) o al tocco (mobile) */
+.cat::after{content:"";position:absolute;top:-60%;bottom:-60%;left:0;width:34%;z-index:4;
+  background:linear-gradient(105deg,transparent 0,rgba(255,255,255,.20) 42%,rgba(255,255,255,.38) 50%,rgba(255,255,255,.20) 58%,transparent 100%);
+  transform:skewX(-18deg) translateX(-160%);opacity:0;pointer-events:none}
+.cat:hover::after,.cat:active::after{animation:catshine .85s cubic-bezier(.3,.55,.35,1) forwards}
+@keyframes catshine{0%{transform:skewX(-18deg) translateX(-160%);opacity:0}15%{opacity:1}100%{transform:skewX(-18deg) translateX(420%);opacity:0}}
 .cat img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .cat .vg{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,20,.03),rgba(10,10,20,.16) 58%,rgba(10,10,20,.44));z-index:2}
 .cat .flag{position:absolute;left:14px;top:14px;z-index:3;display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:#15161a;background:rgba(255,255,255,.94);padding:5px 10px;border-radius:999px}
