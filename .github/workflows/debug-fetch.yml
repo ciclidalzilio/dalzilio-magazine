@@ -1,0 +1,14 @@
+name: debug-fetch
+on:
+  push:
+    branches: ["claude/**"]
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Scarica foto Speedster in base64
+        run: |
+          UA="Mozilla/5.0 (Macintosh) Chrome/126.0"
+          curl -sL -A "$UA" -o sp.png "https://ciclidalzilio.com/cdn/shop/files/293264.png?v=1763512516&width=180"
+          file sp.png; wc -c sp.png
+          echo "=== B64 SP INIZIO ==="; base64 -w0 sp.png; echo; echo "=== B64 SP FINE ==="
