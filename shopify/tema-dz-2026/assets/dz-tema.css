@@ -162,14 +162,21 @@ section.block{padding:96px 0 60px}
 .cat.hero2{grid-column:span 3;grid-row:span 2}
 .cat:hover{transform:translateY(-4px)}
 .cat img.bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
-.cat .vg{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,20,.04),rgba(10,10,20,.30) 58%,rgba(10,10,20,.78));z-index:2}
+.cat .vg{position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,20,.03),rgba(10,10,20,.16) 58%,rgba(10,10,20,.44));z-index:2}
 .cat .flag{position:absolute;left:14px;top:14px;z-index:3;display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:#15161a;background:rgba(255,255,255,.94);padding:5px 10px;border-radius:999px}
 .cat .flag i{width:6px;height:6px;border-radius:50%;background:var(--grad)}
-.cat .lb{position:absolute;left:14px;right:14px;bottom:12px;z-index:3;text-shadow:0 1px 10px rgba(8,9,14,.55)}
-.cat .lb .c{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.1em;opacity:.88;text-transform:uppercase}
-.cat .lb h3{margin:3px 0 0;font-size:1.5rem;font-weight:800;letter-spacing:-.022em;color:#fff}
-.cat.wide .lb h3{font-size:1.7rem}
-.cat.hero2 .lb h3{font-size:2.1rem}
+/* pannello vetro stile Apple: blur reale della foto sotto, bordo luminoso, highlight interno */
+.cat .lb{position:absolute;left:10px;right:10px;bottom:10px;z-index:3;padding:12px 15px 13px;
+  border-radius:15px;background:rgba(19,21,30,.34);
+  backdrop-filter:blur(16px) saturate(1.5);-webkit-backdrop-filter:blur(16px) saturate(1.5);
+  border:1px solid rgba(255,255,255,.22);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 12px 30px -18px rgba(8,9,14,.6);
+  text-shadow:0 1px 8px rgba(8,9,14,.4)}
+.cat .lb .c{font-family:var(--font-mono);font-size:9.5px;letter-spacing:.14em;opacity:.92;text-transform:uppercase}
+.cat .lb h3{margin:3px 0 0;font-size:1.4rem;font-weight:850;font-style:italic;text-transform:uppercase;
+  letter-spacing:-.02em;line-height:1.04;color:#fff}
+.cat.wide .lb h3{font-size:1.62rem}
+.cat.hero2 .lb h3{font-size:2rem}
 .cat.hero2 .lb p{margin:8px 0 0;font-size:13.5px;line-height:1.45;color:rgba(255,255,255,.9);max-width:34ch}
 @media (max-width:960px){
   .cats{grid-template-columns:repeat(4,1fr);grid-auto-rows:168px}
