@@ -24,15 +24,15 @@
 })();
 
 /* Bici di dimensione uniforme nelle card.
-   Le foto dei produttori hanno cornici diverse (Scott larghe e bianche,
-   Cannondale grigio chiaro, Trek strette): misuriamo il riquadro reale
-   della bici su una miniatura SAME-ORIGIN (proxy /cdn/ di Shopify) e
-   compensiamo con zoom e centratura. Lo sfondo non e' assunto bianco:
-   viene campionato dai bordi, cosi' funziona anche col grigio studio.
-   Se il canvas non e' leggibile, ripiega su uno zoom per marca. */
+   Due cause di bici "piccole": 1) margini di sfondo dentro la foto;
+   2) foto quadrate dentro la card larga (object-fit contain le rimpicciolisce).
+   Misuriamo il riquadro reale della bici su una miniatura same-origin
+   (proxy /cdn/ di Shopify, canvas sempre leggibile, sfondo campionato dai
+   bordi) e calcoliamo lo zoom RISPETTO ALLA CARD, tenendo conto del
+   rapporto immagine/contenitore. Fallback per marca se il canvas fallisce. */
 (function () {
-  var TARGET = 0.9, MAXZ = 1.6, MINZ = 1.02;
-  var PER_MARCA = { "SCOTT": 1.32, "SCOTT_SPORTS": 1.32, "CANNONDALE": 1.25, "AMFLOW": 1.15, "TREK": 1.05 };
+  var TARGET = 0.9, MAXZ = 1.7, MINZ = 1.02;
+  var PER_MARCA = { "SCOTT": 1.32, "SCOTT_SPORTS": 1.32, "CANNONDALE": 1.35, "AMFLOW": 1.15, "TREK": 1.05 };
 
   function probeUrl(src) {
     try {
@@ -80,13 +80,13 @@
         var dv = Math.abs(c[0] - br) + Math.abs(c[1] - bg) + Math.abs(c[2] - bb);
         if (dv > varmax) varmax = dv;
       });
-      /* bordi non uniformi o sfondo scuro: e' una foto vera (usato), non toccare */
+      /* bordi non uniformi o sfondo scuro: foto vera (usato), non toccare */
       if (varmax > 90 || (br + bg + bb) / 3 < 170) return;
 
       var x0 = w, x1 = -1, y0 = h, y1 = -1, x, y, i, dv;
       for (y = 0; y < h; y++) for (x = 0; x < w; x++) {
         i = (y * w + x) * 4;
-        if (d[i + 3] < 40) continue; /* trasparente = sfondo */
+        if (d[i + 3] < 40) continue;
         dv = Math.abs(d[i] - br) + Math.abs(d[i + 1] - bg) + Math.abs(d[i + 2] - bb);
         if (dv > 54) {
           if (x < x0) x0 = x; if (x > x1) x1 = x;
@@ -95,11 +95,22 @@
       }
       if (x1 < 0 || y1 < 0) return;
       var fw = (x1 - x0 + 1) / w, fh = (y1 - y0 + 1) / h;
-      if (fw > 0.96 && fh > 0.96) return;
-      var s = Math.max(MINZ, Math.min(MAXZ, Math.min(TARGET / fw, TARGET / fh)));
+
+      /* quanto della CARD occupa oggi la bici: dipende da come il contain
+         adatta l'immagine al contenitore (foto quadrate -> piu' piccole) */
+      var box = img.closest(".pimg") || img.parentElement;
+      var R = (box && box.clientWidth > 0 && box.clientHeight > 0)
+        ? box.clientWidth / box.clientHeight : 4 / 2.7;
+      var r = el.naturalWidth / el.naturalHeight;
+      var dw = r >= R ? 1 : r / R;   /* larghezza mostrata / larghezza card */
+      var dh = r >= R ? R / r : 1;   /* altezza mostrata / altezza card */
+
+      var occW = fw * dw, occH = fh * dh;
+      if (occW > 0.86 && occH > 0.86) return; /* gia' grande: non toccare */
+      var s = Math.max(MINZ, Math.min(MAXZ, Math.min(TARGET / occW, TARGET / occH)));
       img.style.setProperty("--nz", s.toFixed(3));
-      img.style.setProperty("--nx", (-((x0 + x1 + 1) / 2 / w - 0.5) * 100).toFixed(1) + "%");
-      img.style.setProperty("--ny", (-((y0 + y1 + 1) / 2 / h - 0.5) * 100).toFixed(1) + "%");
+      img.style.setProperty("--nx", (-((x0 + x1 + 1) / 2 / w - 0.5) * dw * 100).toFixed(1) + "%");
+      img.style.setProperty("--ny", (-((y0 + y1 + 1) / 2 / h - 0.5) * dh * 100).toFixed(1) + "%");
     } catch (e) { fallbackMarca(img); }
   }
 
