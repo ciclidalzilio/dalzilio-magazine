@@ -8,7 +8,7 @@
 <article class="prod{% unless product.available %} esaurito{% endunless %}">
   <a class="pimg" href="{{ product.url }}" aria-label="{{ product.title | escape }}">
     {%- if product.featured_image -%}
-      <img src="{{ product.featured_image | image_url: width: 640 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="640" height="480" crossorigin="anonymous" data-dz-fit>
+      <img src="{{ product.featured_image | image_url: width: 640 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="640" height="480" data-dz-fit>
     {%- endif -%}
     {%- if product.type == 'USATO' -%}
       <span class="chip">Usato</span>
