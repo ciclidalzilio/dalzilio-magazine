@@ -73,22 +73,33 @@
         camp.push(px(0, Math.round((h - 1) * k / 7)));
         camp.push(px(w - 1, Math.round((h - 1) * k / 7)));
       }
+      /* PNG con sfondo trasparente: i bordi hanno alpha ~0 */
+      var trasp = 0;
+      camp.forEach(function (c) { if (c[3] < 40) trasp++; });
+      var isTrasp = trasp > camp.length * 0.6;
       var br = 0, bg = 0, bb = 0, varmax = 0;
-      camp.forEach(function (c) { br += c[0]; bg += c[1]; bb += c[2]; });
-      br /= camp.length; bg /= camp.length; bb /= camp.length;
-      camp.forEach(function (c) {
-        var dv = Math.abs(c[0] - br) + Math.abs(c[1] - bg) + Math.abs(c[2] - bb);
-        if (dv > varmax) varmax = dv;
-      });
-      /* bordi non uniformi o sfondo scuro: foto vera (usato), non toccare */
-      if (varmax > 90 || (br + bg + bb) / 3 < 170) return;
+      if (!isTrasp) {
+        camp.forEach(function (c) { br += c[0]; bg += c[1]; bb += c[2]; });
+        br /= camp.length; bg /= camp.length; bb /= camp.length;
+        camp.forEach(function (c) {
+          var dv = Math.abs(c[0] - br) + Math.abs(c[1] - bg) + Math.abs(c[2] - bb);
+          if (dv > varmax) varmax = dv;
+        });
+        /* bordi non uniformi o sfondo scuro: foto vera (usato), non toccare */
+        if (varmax > 90 || (br + bg + bb) / 3 < 170) return;
+      }
 
-      var x0 = w, x1 = -1, y0 = h, y1 = -1, x, y, i, dv;
+      var x0 = w, x1 = -1, y0 = h, y1 = -1, x, y, i, dv, pieno;
       for (y = 0; y < h; y++) for (x = 0; x < w; x++) {
         i = (y * w + x) * 4;
         if (d[i + 3] < 40) continue;
-        dv = Math.abs(d[i] - br) + Math.abs(d[i + 1] - bg) + Math.abs(d[i + 2] - bb);
-        if (dv > 54) {
+        if (isTrasp) {
+          pieno = true; /* su sfondo trasparente basta l'alpha */
+        } else {
+          dv = Math.abs(d[i] - br) + Math.abs(d[i + 1] - bg) + Math.abs(d[i + 2] - bb);
+          pieno = dv > 54;
+        }
+        if (pieno) {
           if (x < x0) x0 = x; if (x > x1) x1 = x;
           if (y < y0) y0 = y; if (y > y1) y1 = y;
         }
