@@ -77,16 +77,35 @@
       var trasp = 0;
       camp.forEach(function (c) { if (c[3] < 40) trasp++; });
       var isTrasp = trasp > camp.length * 0.6;
-      var br = 0, bg = 0, bb = 0, varmax = 0;
+      var br = 0, bg = 0, bb = 0;
       if (!isTrasp) {
-        camp.forEach(function (c) { br += c[0]; bg += c[1]; bb += c[2]; });
-        br /= camp.length; bg /= camp.length; bb /= camp.length;
+        /* sfondo = media dei soli campioni CHIARI: se la bici tocca i bordi
+           dell'immagine, quei punti scuri non sono "sfondo fotografico" */
+        var chiari = [], opachi = 0;
         camp.forEach(function (c) {
-          var dv = Math.abs(c[0] - br) + Math.abs(c[1] - bg) + Math.abs(c[2] - bb);
-          if (dv > varmax) varmax = dv;
+          if (c[3] < 40) return;
+          opachi++;
+          if ((c[0] + c[1] + c[2]) / 3 >= 170) chiari.push(c);
         });
-        /* bordi non uniformi o sfondo scuro: foto vera (usato), non toccare */
-        if (varmax > 90 || (br + bg + bb) / 3 < 170) return;
+        /* meno del 55% di bordi chiari: foto vera (usato), non toccare */
+        if (!opachi || chiari.length < opachi * 0.55) return;
+        chiari.forEach(function (c) { br += c[0]; bg += c[1]; bb += c[2]; });
+        br /= chiari.length; bg /= chiari.length; bb /= chiari.length;
+        /* la MAGGIORANZA dei campioni chiari deve somigliarsi: i singoli
+           outlier sono la bici che sfiora il bordo, non un altro sfondo */
+        var devs = chiari.map(function (c) {
+          return Math.abs(c[0] - br) + Math.abs(c[1] - bg) + Math.abs(c[2] - bb);
+        }).sort(function (a, b) { return a - b; });
+        if (devs[Math.floor(devs.length * 0.75)] > 90) return;
+        /* ricalcola lo sfondo senza gli outlier */
+        var puliti = chiari.filter(function (c) {
+          return Math.abs(c[0] - br) + Math.abs(c[1] - bg) + Math.abs(c[2] - bb) <= 90;
+        });
+        if (puliti.length) {
+          br = 0; bg = 0; bb = 0;
+          puliti.forEach(function (c) { br += c[0]; bg += c[1]; bb += c[2]; });
+          br /= puliti.length; bg /= puliti.length; bb /= puliti.length;
+        }
       }
 
       var x0 = w, x1 = -1, y0 = h, y1 = -1;      /* bbox soffice (include ombre) */
