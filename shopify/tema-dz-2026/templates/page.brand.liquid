@@ -120,7 +120,7 @@
     <a class="btn" href="{{ vendors_url }}">Tutte le {{ b_nome }}</a>
     <a class="btn ghost" href="https://wa.me/393457815102?text={{ 'Ciao! Vorrei informazioni sulla gamma ' | append: b_nome | url_encode }}">Chiedi a noi</a>
   </div>
-  <div class="bh-bike"><span class="bh-glow" aria-hidden="true"></span><img src="{{ b_img }}" alt="{{ b_nome }}" loading="eager"></div>
+  <div class="bh-bike"><span class="bh-glow" aria-hidden="true"></span><span class="bh-shadow" aria-hidden="true"></span><img src="{{ b_img }}" alt="{{ b_nome }}" loading="eager"></div>
 </div>
 
 <div class="brand-figs">
@@ -182,13 +182,17 @@
   .brand-hero h1 span{color:var(--rose)}
   .bh-tag{position:relative;font-size:17px;color:var(--muted);margin:2px 0 24px}
   .bh-ctas{position:relative;display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-bottom:6px}
-  .bh-bike{position:relative;width:min(760px,94%);margin:10px auto -4px}
+  .bh-bike{position:relative;width:min(760px,94%);margin:10px auto -4px;overflow:hidden}
   .bh-glow{position:absolute;left:10%;right:10%;top:20%;bottom:12%;border-radius:50%;
     background:radial-gradient(50% 50% at 35% 60%,rgba(255,46,99,.10),transparent 70%),
                radial-gradient(45% 55% at 70% 40%,rgba(139,47,230,.10),transparent 72%);filter:blur(26px)}
-  /* multiply senza isolation: il bianco della foto si fonde con lo studio */
-  .bh-bike img{position:relative;width:100%;height:auto;mix-blend-mode:multiply;
-    filter:drop-shadow(0 30px 26px rgba(10,12,16,.26))}
+  /* ombra a terra ellittica: sta sotto l'img e traspare attraverso il multiply */
+  .bh-shadow{position:absolute;left:15%;right:15%;bottom:5.5%;height:5.5%;border-radius:50%;
+    background:radial-gradient(50% 50% at 50% 50%,rgba(10,12,16,.30),transparent 68%);filter:blur(9px)}
+  /* niente drop-shadow: su un JPG opaco disegna un'ombra rettangolare (il "riquadro").
+     I margini negativi tagliano l'aria bianca sopra/sotto la bici nelle foto quadrate. */
+  .bh-bike img{position:relative;width:100%;height:auto;margin:-13% 0 -15%;
+    mix-blend-mode:multiply;filter:contrast(1.05) saturate(1.04)}
 
   /* numeri chiave */
   .brand-figs{background:#0a0a0c;color:#fff}
