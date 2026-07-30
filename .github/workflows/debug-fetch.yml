@@ -1,5 +1,7 @@
 name: debug-fetch
-on: workflow_dispatch
+on:
+  push:
+    branches: ["claude/**"]
 jobs:
   fetch:
     runs-on: ubuntu-latest
