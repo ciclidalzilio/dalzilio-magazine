@@ -186,7 +186,7 @@ section.block{padding:96px 0 60px}
 @media (min-width:961px){.dz .wrap.fullw{max-width:none;padding-left:36px;padding-right:36px}}
 .prod{background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 1px 3px rgba(18,20,42,.05);transition:transform .45s;display:flex;flex-direction:column;position:relative}
 .prod:hover{transform:translateY(-6px)}
-.prod .pimg{position:relative;aspect-ratio:4/2.7;background:#fff;display:block}
+.prod .pimg{position:relative;aspect-ratio:4/2.7;background:#fff;display:block;overflow:hidden}
 .prod .pimg img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;padding:0;
   transform:scale(var(--nz,1.08)) translate(var(--nx,0%),var(--ny,0%));transition:transform .4s}
 .prod:hover .pimg img{transform:scale(calc(var(--nz,1.08)*1.055)) translate(var(--nx,0%),var(--ny,0%))}

@@ -89,23 +89,35 @@
         if (varmax > 90 || (br + bg + bb) / 3 < 170) return;
       }
 
-      var x0 = w, x1 = -1, y0 = h, y1 = -1, x, y, i, dv, pieno;
+      var x0 = w, x1 = -1, y0 = h, y1 = -1;      /* bbox soffice (include ombre) */
+      var cx0 = w, cx1 = -1, cy0 = h, cy1 = -1;  /* bbox del nucleo scuro */
+      var x, y, i, dv, pieno, forte;
       for (y = 0; y < h; y++) for (x = 0; x < w; x++) {
         i = (y * w + x) * 4;
         if (d[i + 3] < 40) continue;
         if (isTrasp) {
-          pieno = true; /* su sfondo trasparente basta l'alpha */
+          pieno = true; forte = true; /* su sfondo trasparente basta l'alpha */
         } else {
           dv = Math.abs(d[i] - br) + Math.abs(d[i + 1] - bg) + Math.abs(d[i + 2] - bb);
-          pieno = dv > 54;
+          pieno = dv > 54; forte = dv > 120;
         }
         if (pieno) {
           if (x < x0) x0 = x; if (x > x1) x1 = x;
           if (y < y0) y0 = y; if (y > y1) y1 = y;
         }
+        if (forte) {
+          if (x < cx0) cx0 = x; if (x > cx1) cx1 = x;
+          if (y < cy0) cy0 = y; if (y > cy1) cy1 = y;
+        }
       }
       if (x1 < 0 || y1 < 0) return;
       var fw = (x1 - x0 + 1) / w, fh = (y1 - y0 + 1) / h;
+      /* ombre e riflessi (zona soffice ben piu' ampia del nucleo) contano a meta' */
+      if (cx1 >= 0) {
+        var cfw = (cx1 - cx0 + 1) / w, cfh = (cy1 - cy0 + 1) / h;
+        if (cfh > 0.2 && cfh < fh * 0.8) { fh = (fh + cfh) / 2; y0 = Math.round((y0 + cy0) / 2); y1 = Math.round((y1 + cy1) / 2); }
+        if (cfw > 0.2 && cfw < fw * 0.8) { fw = (fw + cfw) / 2; x0 = Math.round((x0 + cx0) / 2); x1 = Math.round((x1 + cx1) / 2); }
+      }
 
       /* quanto della CARD occupa oggi la bici: dipende da come il contain
          adatta l'immagine al contenitore (foto quadrate -> piu' piccole) */
@@ -120,8 +132,12 @@
       if (occW > 0.86 && occH > 0.86) return; /* gia' grande: non toccare */
       var s = Math.max(MINZ, Math.min(MAXZ, Math.min(TARGET / occW, TARGET / occH)));
       img.style.setProperty("--nz", s.toFixed(3));
-      img.style.setProperty("--nx", (-((x0 + x1 + 1) / 2 / w - 0.5) * dw * 100).toFixed(1) + "%");
-      img.style.setProperty("--ny", (-((y0 + y1 + 1) / 2 / h - 0.5) * dh * 100).toFixed(1) + "%");
+      var nx = -((x0 + x1 + 1) / 2 / w - 0.5) * dw * 100;
+      var ny = -((y0 + y1 + 1) / 2 / h - 0.5) * dh * 100;
+      nx = Math.max(-12, Math.min(12, nx));
+      ny = Math.max(-12, Math.min(12, ny));
+      img.style.setProperty("--nx", nx.toFixed(1) + "%");
+      img.style.setProperty("--ny", ny.toFixed(1) + "%");
     } catch (e) { fallbackMarca(img); }
   }
 
@@ -148,4 +164,16 @@
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", scan);
   else scan();
+})();
+
+
+/* Filtri collezione/ricerca: il cambio di una casella applica subito,
+   senza premere "Applica filtri" (che resta per il prezzo). */
+(function () {
+  document.addEventListener("change", function (e) {
+    var input = e.target;
+    if (input && input.type === "checkbox" && input.closest("form.filters")) {
+      input.closest("form").submit();
+    }
+  });
 })();
