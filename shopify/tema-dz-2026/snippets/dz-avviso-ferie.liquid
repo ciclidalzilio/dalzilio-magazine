@@ -1,0 +1,15 @@
+{%- comment -%}
+  Avviso chiusura di Ferragosto. Appare da subito e sparisce da solo dopo
+  il 23 agosto 2026: 1787529600 e' l'epoch del 24/08/2026 00:00 UTC.
+  Uso: {% render 'dz-avviso-ferie' %}
+{%- endcomment -%}
+{%- assign adesso = 'now' | date: '%s' | plus: 0 -%}
+{%- if adesso < 1787529600 -%}
+  <div class="dz-ferie" role="alert">
+    <span class="dz-ferie-ico" aria-hidden="true">⚠️</span>
+    <div>
+      <b>Attenzione — chiusura di Ferragosto</b>
+      <p>Nella settimana di Ferragosto il negozio resterà chiuso: gli ordini effettuati in questo periodo subiranno ritardi, anche per le chiusure estive di corrieri e fornitori. Alla riapertura evadiamo tutto in ordine di arrivo.</p>
+    </div>
+  </div>
+{%- endif -%}

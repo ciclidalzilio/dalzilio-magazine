@@ -217,6 +217,8 @@
           </a>
         {%- endif -%}
 
+        {% render 'dz-avviso-ferie' %}
+
         {%- if section.settings.tan > 0 and e_bici -%}
           <div class="dz-fin" data-dz-fin{% unless p.available %} hidden{% endunless %}
                data-prezzo="{{ p.price | divided_by: 100.0 }}"
