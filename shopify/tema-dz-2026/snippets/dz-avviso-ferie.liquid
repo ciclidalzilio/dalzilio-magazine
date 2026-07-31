@@ -1,15 +1,31 @@
 {%- comment -%}
   Avviso chiusura di Ferragosto. Appare da subito e sparisce da solo dopo
   il 23 agosto 2026: 1787529600 e' l'epoch del 24/08/2026 00:00 UTC.
+  Tradotto secondo la lingua della vetrina (it/en/de/fr).
   Uso: {% render 'dz-avviso-ferie' %}
 {%- endcomment -%}
 {%- assign adesso = 'now' | date: '%s' | plus: 0 -%}
 {%- if adesso < 1787529600 -%}
+  {%- liquid
+    assign lingua = request.locale.iso_code | downcase
+    assign fe_tit = 'Attenzione — chiusura di Ferragosto'
+    assign fe_txt = 'Nella settimana di Ferragosto il negozio resterà chiuso: gli ordini effettuati in questo periodo subiranno ritardi, anche per le chiusure estive di corrieri e fornitori. Alla riapertura evadiamo tutto in ordine di arrivo.'
+    if lingua contains 'en'
+      assign fe_tit = 'Please note — mid-August closure'
+      assign fe_txt = 'Our shop will be closed during the Ferragosto week (mid-August): orders placed in this period will be delayed, also due to the summer closures of couriers and suppliers. Once we reopen, all orders are processed in order of arrival.'
+    elsif lingua contains 'de'
+      assign fe_tit = 'Achtung — Betriebsferien Mitte August'
+      assign fe_txt = 'In der Ferragosto-Woche (Mitte August) bleibt unser Geschäft geschlossen: Bestellungen aus diesem Zeitraum verzögern sich, auch wegen der Sommerpausen von Kurieren und Lieferanten. Nach der Wiedereröffnung bearbeiten wir alle Bestellungen der Reihe nach.'
+    elsif lingua contains 'fr'
+      assign fe_tit = 'Attention — fermeture de la mi-août'
+      assign fe_txt = 'Notre magasin sera fermé pendant la semaine du 15 août (Ferragosto) : les commandes passées durant cette période subiront des retards, également en raison des fermetures estivales des transporteurs et des fournisseurs. À la réouverture, toutes les commandes seront traitées dans l’ordre d’arrivée.'
+    endif
+  -%}
   <div class="dz-ferie" role="alert">
     <span class="dz-ferie-ico" aria-hidden="true">⚠️</span>
     <div>
-      <b>Attenzione — chiusura di Ferragosto</b>
-      <p>Nella settimana di Ferragosto il negozio resterà chiuso: gli ordini effettuati in questo periodo subiranno ritardi, anche per le chiusure estive di corrieri e fornitori. Alla riapertura evadiamo tutto in ordine di arrivo.</p>
+      <b>{{ fe_tit }}</b>
+      <p>{{ fe_txt }}</p>
     </div>
   </div>
 {%- endif -%}
