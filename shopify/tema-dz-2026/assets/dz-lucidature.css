@@ -208,16 +208,21 @@
   letter-spacing:-.03em;line-height:1;color:transparent;-webkit-text-stroke:1.3px rgba(17,18,20,.13);
   pointer-events:none;user-select:none}
 
-/* taglie da cockpit: fila unita in argento, selezione nera con riga rossa */
-.dz-sizes{gap:0!important;border:1px solid rgba(17,18,20,.16);border-radius:3px;width:max-content;max-width:100%;overflow-x:auto;
-  background:linear-gradient(120deg,#f4f5f8,#e0e3e9 60%,#c7ccd6)}
-.dz-size{border:0!important;border-left:1px solid rgba(17,18,20,.16)!important;border-radius:0!important;
-  min-width:52px!important;padding:13px 16px!important;position:relative;background:transparent!important}
-.dz-size:first-child{border-left:0!important}
-.dz-size:hover{background:rgba(255,255,255,.6)!important}
-.dz-size.on{background:#111214!important;color:#fff!important}
-.dz-size.on::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--gt-rosso)}
-.dz-size.off{opacity:.32!important}
+/* taglie: chip racing — corsivo bold, la scelta accende il gradiente dz */
+.dz-sizes{gap:9px!important;flex-wrap:wrap;border:0;border-radius:0;width:auto;max-width:none;overflow:visible;background:none}
+.dz-size{min-width:54px!important;padding:13px 16px!important;border:1.5px solid rgba(17,18,20,.16)!important;
+  border-radius:13px!important;background:#fff!important;position:relative;
+  font-size:14.5px;font-weight:800;font-style:italic;letter-spacing:.01em;color:#111214}
+.dz-size:hover{border-color:#111214!important;transform:translateY(-2px);box-shadow:0 10px 20px -12px rgba(17,18,20,.4)}
+.dz-size.on{border-color:transparent!important;color:#fff!important;
+  background:linear-gradient(120deg,#ff7a00,#ff2e63 55%,#8b2fe6)!important;
+  box-shadow:0 12px 26px -12px rgba(255,46,99,.6)}
+.dz-size.off{opacity:.32!important;text-decoration:line-through;background:#f3f4f7!important}
+@media (max-width:640px){
+  .dz-sizes{gap:8px!important}
+  .dz-size{min-width:50px!important;padding:12px 13px!important;font-size:14px}
+  .dz-size:hover{transform:none;box-shadow:none}
+}
 
 /* numeri chiave in veste GT: nero, pesi leggeri, lineetta rossa */
 .dzs-figs{background:#0a0a0c!important;border-bottom:0!important}
