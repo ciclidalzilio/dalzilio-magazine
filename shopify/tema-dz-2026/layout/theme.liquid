@@ -19,7 +19,7 @@
 
 <div class="util" aria-hidden="true"><div class="track">
   {%- for i in (1..2) -%}
-    <b>Spedizione gratuita in tutta Italia</b><b>Rivenditori ufficiali TREK · SCOTT · CANNONDALE · AMFLOW</b><b>Pagamenti rateali</b><b>Assistenza in officina</b><b>Ritiro gratuito in negozio</b>
+    <b>{{ 'util.u1' | t }}</b><b>{{ 'util.u2' | t }}</b><b>{{ 'util.u3' | t }}</b><b>{{ 'util.u4' | t }}</b><b>{{ 'util.u5' | t }}</b>
   {%- endfor -%}
 </div></div>
 
@@ -38,26 +38,33 @@
       <span class="wm"><b>Cicli Dal Zilio</b><span>Cycling Store</span></span>
     </a>
     <nav class="menu" id="menu">
-      <a href="/collections/bici-da-strada">Corsa</a>
-      <a href="/collections/ebikes">E-Bike</a>
-      <a href="/collections/gravel">Gravel</a>
-      <a href="/collections/mountain-bike">MTB</a>
-      <a href="/collections/urban">Urban</a>
-      <a href="/pages/service">Servizi</a>
-      <a class="sale" href="/collections/usato-1">Usato</a>
+      <a href="/collections/bici-da-strada">{{ 'nav.corsa' | t }}</a>
+      <a href="/collections/ebikes">{{ 'nav.ebike' | t }}</a>
+      <a href="/collections/gravel">{{ 'nav.gravel' | t }}</a>
+      <a href="/collections/mountain-bike">{{ 'nav.mtb' | t }}</a>
+      <a href="/collections/urban">{{ 'nav.urban' | t }}</a>
+      <a href="/pages/service">{{ 'nav.servizi' | t }}</a>
+      <a class="sale" href="/collections/usato-1">{{ 'nav.usato' | t }}</a>
     </nav>
     <div class="tools">
-      <button class="burger" id="burger" aria-label="Menu" aria-expanded="false"><span></span></button>
-      <a class="icb" href="{{ routes.search_url }}" aria-label="Cerca"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></a>
-      <a class="icb acc" href="{{ routes.account_url }}" aria-label="Account"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></a>
+      <button class="burger" id="burger" aria-label="{{ 'nav.menu' | t }}" aria-expanded="false"><span></span></button>
+      <a class="icb" href="{{ routes.search_url }}" aria-label="{{ 'nav.cerca' | t }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg></a>
+      <a class="icb acc" href="{{ routes.account_url }}" aria-label="{{ 'nav.account' | t }}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg></a>
       {%- form 'localization', class: 'locform' -%}
-        <select name="country_code" onchange="this.form.submit()" aria-label="Paese e valuta">
+        {%- if localization.available_languages.size > 1 -%}
+          <select name="locale_code" onchange="this.form.submit()" aria-label="{{ 'nav.lingua' | t }}">
+            {%- for lingua in localization.available_languages -%}
+              <option value="{{ lingua.iso_code }}" {% if lingua.iso_code == localization.language.iso_code %}selected{% endif %}>{{ lingua.iso_code | upcase }}</option>
+            {%- endfor -%}
+          </select>
+        {%- endif -%}
+        <select name="country_code" onchange="this.form.submit()" aria-label="{{ 'nav.paese' | t }}">
           {%- for country in localization.available_countries -%}
             <option value="{{ country.iso_code }}" {% if country.iso_code == localization.country.iso_code %}selected{% endif %}>{{ country.iso_code }} · {{ country.currency.iso_code }}</option>
           {%- endfor -%}
         </select>
       {%- endform -%}
-      <a class="icb" href="{{ routes.cart_url }}" aria-label="Carrello">
+      <a class="icb" href="{{ routes.cart_url }}" aria-label="{{ 'nav.carrello' | t }}">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.4 12.3a1.5 1.5 0 001.5 1.2h8.8a1.5 1.5 0 001.5-1.2L21 8H6"/><circle cx="9.5" cy="20.5" r="1.3"/><circle cx="17.5" cy="20.5" r="1.3"/></svg>
         {% if cart.item_count > 0 %}<span class="badge">{{ cart.item_count }}</span>{% endif %}
       </a>
@@ -66,28 +73,28 @@
 </header>
 
 <div class="mobmenu" id="mobMenu">
-  <h4>Catalogo</h4>
-  <a href="/collections/bici-da-strada">Corsa</a>
-  <a href="/collections/ebikes">E-Bike</a>
-  <a href="/collections/gravel">Gravel</a>
-  <a href="/collections/mountain-bike">Mountain Bike</a>
-  <a href="/collections/urban">Urban</a>
-  <a class="sale" href="/collections/usato-1">USATO</a>
-  <h4>Servizi</h4>
-  <a href="/pages/service">Officina e assistenza</a>
-  <a href="/pages/permuta-il-tuo-usato">Permuta il tuo usato</a>
-  <a href="/pages/finanziamenti-agevolati">Finanziamenti</a>
-  <h4>Negozio</h4>
-  <a href="/pages/contact">Dove siamo e contatti</a>
-  <a href="/pages/chi-siamo">Chi siamo</a>
+  <h4>{{ 'nav.catalogo' | t }}</h4>
+  <a href="/collections/bici-da-strada">{{ 'nav.corsa' | t }}</a>
+  <a href="/collections/ebikes">{{ 'nav.ebike' | t }}</a>
+  <a href="/collections/gravel">{{ 'nav.gravel' | t }}</a>
+  <a href="/collections/mountain-bike">{{ 'nav.mtb_full' | t }}</a>
+  <a href="/collections/urban">{{ 'nav.urban' | t }}</a>
+  <a class="sale" href="/collections/usato-1">{{ 'nav.usato' | t | upcase }}</a>
+  <h4>{{ 'nav.servizi' | t }}</h4>
+  <a href="/pages/service">{{ 'nav.officina' | t }}</a>
+  <a href="/pages/permuta-il-tuo-usato">{{ 'nav.permuta' | t }}</a>
+  <a href="/pages/finanziamenti-agevolati">{{ 'nav.finanziamenti' | t }}</a>
+  <h4>{{ 'nav.negozio' | t }}</h4>
+  <a href="/pages/contact">{{ 'nav.dove' | t }}</a>
+  <a href="/pages/chi-siamo">{{ 'nav.chi_siamo' | t }}</a>
 </div>
 
 <div class="botbar">
   <nav>
-    <a href="{{ routes.root_url }}" {% if template == 'index' %}class="on"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9.5 20v-5h5v5"/></svg>Home</a>
-    <a href="/collections/tutte-le-bici" {% if template contains 'collection' or template contains 'product' %}class="on"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="6" cy="16" r="3.4"/><circle cx="18" cy="16" r="3.4"/><path d="M6 16l5-8h4l2.6 8M11 8L9.7 5.6h3.6"/></svg>Bici</a>
-    <a href="{{ routes.search_url }}" {% if template contains 'search' %}class="on"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>Cerca</a>
-    <a href="{{ routes.cart_url }}" {% if template contains 'cart' %}class="on"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 11h9.6L19 8H6"/><circle cx="9.5" cy="19.5" r="1.2"/><circle cx="16.5" cy="19.5" r="1.2"/></svg>Carrello</a>
+    <a href="{{ routes.root_url }}" {% if template == 'index' %}class="on"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9.5 20v-5h5v5"/></svg>{{ 'nav.home' | t }}</a>
+    <a href="/collections/tutte-le-bici" {% if template contains 'collection' or template contains 'product' %}class="on"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="6" cy="16" r="3.4"/><circle cx="18" cy="16" r="3.4"/><path d="M6 16l5-8h4l2.6 8M11 8L9.7 5.6h3.6"/></svg>{{ 'nav.bici' | t }}</a>
+    <a href="{{ routes.search_url }}" {% if template contains 'search' %}class="on"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>{{ 'nav.cerca' | t }}</a>
+    <a href="{{ routes.cart_url }}" {% if template contains 'cart' %}class="on"{% endif %}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4h2l2.2 11h9.6L19 8H6"/><circle cx="9.5" cy="19.5" r="1.2"/><circle cx="16.5" cy="19.5" r="1.2"/></svg>{{ 'nav.carrello' | t }}</a>
   </nav>
   {% if cart.item_count > 0 %}<span class="bb-badge">{{ cart.item_count }}</span>{% endif %}
 </div>
@@ -108,12 +115,12 @@
     <div class="fgrid">
       <div class="fcol brandcol">
         <b class="fbrand">Cicli Dal Zilio</b>
-        <p>Passione su due ruote dal cuore del Veneto. Vendita, assistenza e consulenza per ogni ciclista.</p>
-        <span class="dealer"><i></i>Rivenditori TREK · Scott · Cannondale · Amflow</span>
+        <p>{{ 'foot.tagline' | t }}</p>
+        <span class="dealer"><i></i>{{ 'foot.dealer' | t }}</span>
       </div>
-      <div class="fcol"><h5>Catalogo</h5><a href="/collections/bici-da-strada">Bici da Corsa</a><a href="/collections/ebikes">E-Bike</a><a href="/collections/gravel">Gravel</a><a href="/collections/mountain-bike">Mountain Bike</a><a href="/collections/usato-1">Usato</a></div>
-      <div class="fcol"><h5>Servizi</h5><a href="/pages/service">Service & officina</a><a href="/pages/permuta-il-tuo-usato">Permuta il tuo usato</a><a href="/pages/finanziamenti-agevolati">Finanziamenti agevolati</a></div>
-      <div class="fcol"><h5>Contatti</h5><a href="/pages/chi-siamo">Chi siamo</a><a href="/pages/contact">Dove siamo</a><a href="/pages/contact">Assistenza clienti</a><a href="/pages/contact">Orari negozio</a><a href="https://www.instagram.com/ciclidalzilio/" target="_blank" rel="noopener noreferrer">Instagram</a></div>
+      <div class="fcol"><h5>{{ 'foot.catalogo' | t }}</h5><a href="/collections/bici-da-strada">{{ 'foot.corsa' | t }}</a><a href="/collections/ebikes">{{ 'nav.ebike' | t }}</a><a href="/collections/gravel">{{ 'nav.gravel' | t }}</a><a href="/collections/mountain-bike">{{ 'nav.mtb_full' | t }}</a><a href="/collections/usato-1">{{ 'nav.usato' | t }}</a></div>
+      <div class="fcol"><h5>{{ 'foot.servizi' | t }}</h5><a href="/pages/service">{{ 'foot.service' | t }}</a><a href="/pages/permuta-il-tuo-usato">{{ 'nav.permuta' | t }}</a><a href="/pages/finanziamenti-agevolati">{{ 'foot.fin' | t }}</a></div>
+      <div class="fcol"><h5>{{ 'foot.contatti' | t }}</h5><a href="/pages/chi-siamo">{{ 'nav.chi_siamo' | t }}</a><a href="/pages/contact">{{ 'foot.dove' | t }}</a><a href="/pages/contact">{{ 'foot.assistenza' | t }}</a><a href="/pages/contact">{{ 'foot.orari' | t }}</a><a href="https://www.instagram.com/ciclidalzilio/" target="_blank" rel="noopener noreferrer">Instagram</a></div>
     </div>
     <div class="fbottom">
       <small>© {{ 'now' | date: '%Y' }} {{ shop.name | upcase }}</small>
@@ -122,8 +129,8 @@
   </div>
 </footer>
 
-<a class="wa-fab" target="_blank" rel="noopener noreferrer" aria-label="Scrivici su WhatsApp"
-   href="https://wa.me/393457815102?text={{ 'Ciao Cicli Dal Zilio! Vorrei un’informazione.' | url_encode }}">
+<a class="wa-fab" target="_blank" rel="noopener noreferrer" aria-label="{{ 'foot.wa_aria' | t }}"
+   href="https://wa.me/393457815102?text={{ 'foot.wa_msg' | t | url_encode }}">
   <svg viewBox="0 0 32 32" fill="currentColor" aria-hidden="true"><path d="M16.04 3C8.86 3 3.03 8.83 3.03 16.01c0 2.29.6 4.53 1.75 6.5L3 29l6.66-1.74a12.94 12.94 0 006.38 1.66h.01c7.18 0 13.01-5.83 13.01-13.01C29.06 8.83 23.22 3 16.04 3zm0 23.72h-.01a10.8 10.8 0 01-5.5-1.5l-.39-.24-4.06 1.06 1.08-3.96-.26-.41a10.73 10.73 0 01-1.65-5.74c0-5.96 4.85-10.81 10.82-10.81 2.89 0 5.6 1.13 7.64 3.17a10.74 10.74 0 013.16 7.65c0 5.96-4.85 10.8-10.83 10.8zm5.94-8.09c-.33-.16-1.93-.95-2.22-1.06-.3-.11-.52-.16-.73.17-.22.32-.84 1.05-1.03 1.27-.19.22-.38.24-.7.08-.33-.16-1.38-.51-2.62-1.62-.97-.86-1.62-1.93-1.81-2.26-.19-.32-.02-.5.14-.66.15-.15.33-.38.49-.58.16-.19.22-.33.33-.54.11-.22.05-.41-.03-.57-.08-.16-.73-1.77-1-2.42-.26-.63-.53-.55-.73-.56l-.62-.01c-.22 0-.57.08-.86.41-.3.32-1.13 1.1-1.13 2.69s1.16 3.12 1.32 3.34c.16.22 2.28 3.48 5.52 4.88.77.33 1.37.53 1.84.68.77.25 1.48.21 2.03.13.62-.09 1.93-.79 2.2-1.55.27-.76.27-1.42.19-1.55-.08-.14-.3-.22-.62-.38z"/></svg>
 </a>
 

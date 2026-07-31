@@ -21,7 +21,7 @@
       <img src="{{ product.featured_image | image_url: width: 640 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="640" height="480" data-dz-fit>
     {%- endif -%}
     {%- if product.type == 'USATO' -%}
-      <span class="chip">Usato</span>
+      <span class="chip">{{ 'card.usato' | t }}</span>
     {%- elsif product.type != blank and product.type != 'bike' -%}
       <span class="chip">{{ product.type | truncate: 14, '' }}</span>
     {%- endif -%}
@@ -30,14 +30,14 @@
       <span class="chip sale">−{{ perc }}%</span>
     {%- endif -%}
     {%- unless product.available -%}
-      <span class="soldout" aria-hidden="true">Sold out</span>
+      <span class="soldout" aria-hidden="true">{{ 'card.soldout' | t }}</span>
     {%- endunless -%}
   </a>
   <div class="pbody">
     <span class="brand">{{ product.vendor | replace: 'scott_sports', 'SCOTT' }}</span>
     <h3><a href="{{ p_url }}">{{ product.title }}</a></h3>
     {%- if product.type == 'USATO' and product.published_at -%}
-      <span class="pdate">Pubblicato il {{ product.published_at | date: '%-d %B %Y' }}</span>
+      {%- assign data_pub = product.published_at | date: '%-d %B %Y' -%}<span class="pdate">{{ 'card.pubblicato' | t: data: data_pub }}</span>
     {%- endif -%}
     <div class="foot">
       <span class="price{% if in_sconto %} sale{% endif %}">{{ product.price | money }}</span>

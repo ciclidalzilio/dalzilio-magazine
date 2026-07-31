@@ -46,24 +46,24 @@
   </div>
   <div class="veil" aria-hidden="true"></div>
   <div class="wrap hwrap">
-    <p class="kicker" style="margin:0 0 18px">Nuova collezione {{ 'now' | date: '%Y' }}</p>
-    <h1>La tua prossima bici<br><span class="g">inizia qui.</span></h1>
-    <p class="lede">Bici da corsa, gravel, mountain bike ed e-bike delle migliori marche. Consegna in tutta Italia, assistenza in officina e la consulenza di chi pedala davvero.</p>
+    {%- assign anno_c = 'now' | date: '%Y' -%}<p class="kicker" style="margin:0 0 18px">{{ 'home.kicker' | t: anno: anno_c }}</p>
+    <h1>{{ 'home.h1a' | t }}<br><span class="g">{{ 'home.h1b' | t }}</span></h1>
+    <p class="lede">{{ 'home.lede' | t }}</p>
     <div class="cta">
-      <a class="btn" href="/collections/tutte-le-bici">Scopri il catalogo</a>
-      <a class="btn ghost" href="#bike-finder">Trova la tua bici</a>
-      <a class="btn ghost" href="/collections/new-arrivals">Ultimi arrivi →</a>
+      <a class="btn" href="/collections/tutte-le-bici">{{ 'home.cta_catalogo' | t }}</a>
+      <a class="btn ghost" href="#bike-finder">{{ 'home.cta_finder' | t }}</a>
+      <a class="btn ghost" href="/collections/new-arrivals">{{ 'home.cta_arrivi' | t }}</a>
     </div>
     <div class="heroStats">
-      <div><b>{{ collections['tutte-le-bici'].products_count | default: '350+' }}</b><span>BICI A CATALOGO</span></div>
-      <div><b>4 brand</b><span>RIVENDITORI UFFICIALI</span></div>
-      <div><b>Officina</b><span>ASSISTENZA CERTIFICATA</span></div>
+      <div><b>{{ collections['tutte-le-bici'].products_count | default: '350+' }}</b><span>{{ 'home.stat_bici' | t }}</span></div>
+      <div><b>{{ 'home.stat_brand_v' | t }}</b><span>{{ 'home.stat_brand_l' | t }}</span></div>
+      <div><b>{{ 'home.stat_off_v' | t }}</b><span>{{ 'home.stat_off_l' | t }}</span></div>
     </div>
   </div>
 </section>
 
 <section class="wrap fullw" style="padding-top:34px"><div class="logowall">
-  <span class="lw-label">Rivenditori ufficiali</span>
+  <span class="lw-label">{{ 'home.loghi' | t }}</span>
   <div class="lw-row">
     <a class="lw-cell" href="/pages/trek"><img src="{{ 'trek.png' | file_url }}" alt="Trek" loading="lazy"></a>
     <a class="lw-cell" href="/pages/scott"><img src="{{ 'scott.png' | file_url }}" alt="Scott" loading="lazy"></a>
@@ -73,7 +73,7 @@
 </div></section>
 
 <section class="block wrap">
-  <div class="head"><div><p class="k">Il catalogo</p><h2>Scegli la tua disciplina</h2></div><a class="more" href="/collections/tutte-le-bici">Tutte le bici</a></div>
+  <div class="head"><div><p class="k">{{ 'home.cat_k' | t }}</p><h2>{{ 'home.cat_h' | t }}</h2></div><a class="more" href="/collections/tutte-le-bici">{{ 'home.cat_all' | t }}</a></div>
   <div class="cats">
     {%- assign bento = 'usato-1,bici-da-strada,ebikes,gravel,mountain-bike,urban' | split: ',' -%}
     {%- for handle in bento -%}
@@ -82,11 +82,11 @@
         <a class="cat {% if forloop.first %}hero2{% elsif forloop.index == 2 or forloop.index == 3 %}wide{% endif %}" href="{{ c.url }}">
           {%- if c.featured_image -%}<img class="bg" src="{{ c.featured_image | image_url: width: 900 }}" alt="" loading="lazy">{%- endif -%}
           <div class="vg"></div>
-          {%- if forloop.first -%}<span class="flag"><i></i>Pezzi unici</span>{%- endif -%}
+          {%- if forloop.first -%}<span class="flag"><i></i>{{ 'home.flag_unici' | t }}</span>{%- endif -%}
           <div class="lb">
-            <span class="c">{{ c.products_count }} modelli</span>
+            <span class="c">{{ 'home.modelli' | t: n: c.products_count }}</span>
             <h3>{{ c.title }}</h3>
-            {%- if forloop.first -%}<p>Bici selezionate e controllate nella nostra officina, pronte a partire. Ogni annuncio ha la sua data di pubblicazione.</p>{%- endif -%}
+            {%- if forloop.first -%}<p>{{ 'home.usato_p' | t }}</p>{%- endif -%}
           </div>
         </a>
       {%- endif -%}
@@ -95,7 +95,7 @@
 </section>
 
 <section class="block wrap fullw">
-  <div class="head"><div><p class="k">Ultimi arrivi</p><h2>Le ultime bici caricate</h2></div><a class="more" href="/collections/new-arrivals">Vedi tutte</a></div>
+  <div class="head"><div><p class="k">{{ 'home.arrivi_k' | t }}</p><h2>{{ 'home.arrivi_h' | t }}</h2></div><a class="more" href="/collections/new-arrivals">{{ 'home.vedi_tutte' | t }}</a></div>
   <div class="prods">
     {%- assign mostrate = 0 -%}
     {%- for p in collections['new-arrivals'].products limit: 24 -%}
@@ -115,19 +115,19 @@
   <div class="dz-finder">
     {% render 'bike-finder-app', whatsapp: '393457815102' %}
     <div class="dz-findercard" aria-hidden="true">
-      <span class="fc-k">Come funziona</span>
-      <div class="fc-row"><span>Domande</span><b>3</b></div>
-      <div class="fc-row"><span>Tempo</span><b>1 minuto</b></div>
-      <div class="fc-big"><b>3 bici</b><span>su misura</span></div>
+      <span class="fc-k">{{ 'home.fc_k' | t }}</span>
+      <div class="fc-row"><span>{{ 'home.fc_domande' | t }}</span><b>3</b></div>
+      <div class="fc-row"><span>{{ 'home.fc_tempo' | t }}</span><b>{{ 'home.fc_tempo_v' | t }}</b></div>
+      <div class="fc-big"><b>{{ 'home.fc_bici' | t }}</b><span>{{ 'home.fc_misura' | t }}</span></div>
       <div class="fc-bar"><i></i></div>
-      <div class="fc-legend"><span>Catalogo reale</span><span>Nella tua taglia</span></div>
-      <p class="fc-note">Ti proponiamo solo modelli davvero disponibili, nella tua taglia, presi dal catalogo del negozio.</p>
+      <div class="fc-legend"><span>{{ 'home.fc_cat' | t }}</span><span>{{ 'home.fc_taglia' | t }}</span></div>
+      <p class="fc-note">{{ 'home.fc_note' | t }}</p>
     </div>
   </div>
 </section>
 
 <section class="block wrap fullw">
-  <div class="head"><div><p class="k">Occasioni</p><h2>Usato garantito</h2></div><a class="more" href="/collections/usato-1">Tutto l'usato</a></div>
+  <div class="head"><div><p class="k">{{ 'home.usato_k' | t }}</p><h2>{{ 'home.usato_h' | t }}</h2></div><a class="more" href="/collections/usato-1">{{ 'home.usato_all' | t }}</a></div>
   <div class="prods">
     {%- for p in collections['usato-1'].products limit: 4 -%}
       {% render 'dz-card', product: p %}
@@ -136,31 +136,31 @@
 </section>
 
 <section class="block wrap fullw" style="padding-top:40px">
-  <div class="head"><div><p class="k">Servizi</p><h2>Più di un negozio di bici</h2></div><a class="more" href="/pages/service">Tutti i servizi</a></div>
+  <div class="head"><div><p class="k">{{ 'home.sv_k' | t }}</p><h2>{{ 'home.sv_h' | t }}</h2></div><a class="more" href="/pages/service">{{ 'home.sv_all' | t }}</a></div>
   <div class="svcbig">
     <a class="sb" href="/pages/service">
       <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 00-5.4 5.4L4 17v3h3l5.3-5.3a4 4 0 005.4-5.4L15 12l-3-3z"/></svg></span>
-      <h3>Service & Officina</h3>
-      <p>Tagliandi, sospensioni, gruppi elettronici: la tua bici in mani esperte, qualunque sia il marchio.</p>
-      <span class="go">Scopri →</span>
+      <h3>{{ 'home.sv1_t' | t }}</h3>
+      <p>{{ 'home.sv1_p' | t }}</p>
+      <span class="go">{{ 'home.scopri' | t }}</span>
     </a>
     <a class="sb" href="/pages/permuta-il-tuo-usato">
       <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg></span>
-      <h3>Permuta il tuo usato</h3>
-      <p>Valutazione gratuita in negozio: la tua bici attuale vale subito come acconto sulla nuova.</p>
-      <span class="go">Scopri →</span>
+      <h3>{{ 'home.sv2_t' | t }}</h3>
+      <p>{{ 'home.sv2_p' | t }}</p>
+      <span class="go">{{ 'home.scopri' | t }}</span>
     </a>
     <a class="sb" href="/pages/finanziamenti-agevolati">
       <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v10H4z"/><path d="M4 10h16"/></svg></span>
-      <h3>Finanziamenti agevolati</h3>
-      <p>Da 6 a 60 rate a TAN fisso, risposta in pochi minuti. Simuli la rata sulla scheda di ogni bici.</p>
-      <span class="go">Scopri →</span>
+      <h3>{{ 'home.sv3_t' | t }}</h3>
+      <p>{{ 'home.sv3_p' | t }}</p>
+      <span class="go">{{ 'home.scopri' | t }}</span>
     </a>
     <a class="sb" href="/pages/contact">
       <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="6.5" cy="16.5" r="3.4"/><circle cx="17.5" cy="16.5" r="3.4"/><path d="M6.5 16.5l5-8h4l2 8M11.5 8.5l-1.5-3h3.5"/></svg></span>
-      <h3>Test ride & consulenza</h3>
-      <p>Prova prima di scegliere, con i consigli di chi pedala davvero. In negozio o su appuntamento.</p>
-      <span class="go">Scopri →</span>
+      <h3>{{ 'home.sv4_t' | t }}</h3>
+      <p>{{ 'home.sv4_p' | t }}</p>
+      <span class="go">{{ 'home.scopri' | t }}</span>
     </a>
   </div>
 </section>
@@ -169,32 +169,32 @@
 
 <section class="block wrap"><div class="fin">
   <div class="fin-l">
-    <p class="k">Finanziamento agevolato</p>
-    <h2>La bici subito. Il pagamento, con calma.</h2>
-    <p>Da <b>6 a 60 rate</b> con <b>TAN fisso</b> e risposta in pochi minuti. Simuli la rata direttamente sulla scheda di ogni bici. Anche sull'usato.</p>
-    <a class="btn" style="background:#fff;color:var(--ink)" href="/pages/finanziamenti-agevolati">Scopri i finanziamenti</a>
+    <p class="k">{{ 'home.fin_k' | t }}</p>
+    <h2>{{ 'home.fin_h' | t }}</h2>
+    <p>{{ 'home.fin_p' | t }}</p>
+    <a class="btn" style="background:#fff;color:var(--ink)" href="/pages/finanziamenti-agevolati">{{ 'home.fin_cta' | t }}</a>
   </div>
   <div class="fin-r"><div class="fin-card">
-    <span class="fc-k">Esempio di rata</span>
-    <div class="fc-row"><span>Importo</span><b>€ 4.199</b></div>
-    <div class="fc-row"><span>Durata</span><b>48 mesi</b></div>
-    <div class="fc-big"><b>€ 100</b><span>/mese</span></div>
+    <span class="fc-k">{{ 'home.fin_es' | t }}</span>
+    <div class="fc-row"><span>{{ 'home.fin_importo' | t }}</span><b>€ 4.199</b></div>
+    <div class="fc-row"><span>{{ 'home.fin_durata' | t }}</span><b>{{ 'home.fin_48' | t }}</b></div>
+    <div class="fc-big"><b>€ 100</b><span>{{ 'home.mese' | t }}</span></div>
     <div class="fc-bar"><i></i></div>
-    <div class="fc-legend"><span>6 mesi</span><span>60 mesi</span></div>
-    <p class="fc-note">Esempio con ammortamento alla francese. Il TAEG dipende da spese di istruttoria e imposte ed è indicato nel contratto. Salvo approvazione della finanziaria.</p>
+    <div class="fc-legend"><span>{{ 'home.fin_6' | t }}</span><span>{{ 'home.fin_60' | t }}</span></div>
+    <p class="fc-note">{{ 'home.fin_note' | t }}</p>
   </div></div>
 </div></section>
 
 <section class="block wrap" style="padding-bottom:30px"><div class="news">
-  <h2>Resta aggiornato</h2>
-  <p>Nuovi arrivi, usato fresco e offerte riservate. Niente spam, promesso.</p>
+  <h2>{{ 'home.news_h' | t }}</h2>
+  <p>{{ 'home.news_p' | t }}</p>
   {%- form 'customer', class: 'nform' -%}
     <input type="hidden" name="contact[tags]" value="newsletter">
     {%- if form.posted_successfully? -%}
-      <p style="color:var(--ok);font-weight:600;width:100%">Iscrizione registrata: benvenuto!</p>
+      <p style="color:var(--ok);font-weight:600;width:100%">{{ 'home.news_ok' | t }}</p>
     {%- else -%}
-      <input type="email" name="contact[email]" placeholder="La tua email" aria-label="La tua email" required>
-      <button class="btn" type="submit">Iscriviti</button>
+      <input type="email" name="contact[email]" placeholder="{{ 'home.news_ph' | t }}" aria-label="{{ 'home.news_ph' | t }}" required>
+      <button class="btn" type="submit">{{ 'home.news_btn' | t }}</button>
     {%- endif -%}
   {%- endform -%}
 </div></section>

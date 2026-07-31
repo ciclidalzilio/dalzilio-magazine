@@ -1,11 +1,11 @@
 {%- comment -%} 404 — DZ 2026 {%- endcomment -%}
 <div class="wrap" style="text-align:center;padding:90px 24px 100px">
-  <p class="kicker" style="margin:0 0 14px">Errore 404</p>
-  <h1 style="font-size:clamp(2rem,5vw,3.4rem);letter-spacing:-.035em;font-weight:740;margin:0 0 12px">Questa pagina è andata in fuga.</h1>
-  <p style="color:var(--muted);max-width:46ch;margin:0 auto 30px">L'indirizzo non esiste o non è più disponibile. Nel frattempo, le bici sono tutte al loro posto.</p>
+  <p class="kicker" style="margin:0 0 14px">{{ 'nf.kicker' | t }}</p>
+  <h1 style="font-size:clamp(2rem,5vw,3.4rem);letter-spacing:-.035em;font-weight:740;margin:0 0 12px">{{ 'nf.h1' | t }}</h1>
+  <p style="color:var(--muted);max-width:46ch;margin:0 auto 30px">{{ 'nf.p' | t }}</p>
   <div style="display:flex;justify-content:center;gap:12px;flex-wrap:wrap">
-    <a class="btn" href="/collections/tutte-le-bici">Vedi tutte le bici</a>
-    <a class="btn ghost" href="{{ routes.root_url }}">Torna alla home</a>
-    <a class="btn ghost" href="{{ routes.search_url }}">Cerca nel catalogo</a>
+    <a class="btn" href="/collections/tutte-le-bici">{{ 'nf.tutte' | t }}</a>
+    <a class="btn ghost" href="{{ routes.root_url }}">{{ 'nf.home' | t }}</a>
+    <a class="btn ghost" href="{{ routes.search_url }}">{{ 'nf.cerca' | t }}</a>
   </div>
 </div>

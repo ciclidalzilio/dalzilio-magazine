@@ -56,7 +56,7 @@
       endif
     -%}
     <nav class="dz-crumb" aria-label="Percorso">
-      <a href="{{ routes.root_url }}">Home</a><span>/</span>
+      <a href="{{ routes.root_url }}">{{ 'nav.home' | t }}</a><span>/</span>
       {%- if bc != blank -%}<a href="{{ bc.url }}">{{ bc.title }}</a><span>/</span>{%- endif -%}
       <b>{{ p.title }}</b>
     </nav>
@@ -118,10 +118,10 @@
           {%- if sconto > 0 -%}
             <span class="dz-old" data-dz-listino>{{ p.compare_at_price | money }}</span>
             <span class="dz-off" data-dz-sconto>−{{ sconto }}%</span>
-            {%- assign risparmio = p.compare_at_price | minus: p.price -%}
-            <span class="dz-save">Risparmi {{ risparmio | money }}</span>
+            {%- assign risparmio = p.compare_at_price | minus: p.price | money -%}
+            <span class="dz-save">{{ 'prod.risparmi' | t: importo: risparmio }}</span>
           {%- endif -%}
-          {%- if e_bici -%}<span class="dz-from">o da <b data-dz-rata>—</b>/mese</span>{%- endif -%}
+          {%- if e_bici -%}<span class="dz-from">{{ 'prod.o_da' | t }} <b data-dz-rata>—</b>{{ 'prod.mese' | t }}</span>{%- endif -%}
         </div>
 
         {%- assign v0 = p.selected_or_first_available_variant -%}
@@ -135,9 +135,9 @@
         {%- assign rapporti = p.metafields.specs.rapporti -%}
         {%- if peso != blank or rapporti != blank -%}
           <div class="dz-figs">
-            {%- if peso != blank -%}<div><b>{{ peso }} kg</b><span>Peso</span></div>{%- endif -%}
-            {%- if rapporti != blank -%}<div><b>{{ rapporti }}</b><span>Rapporti</span></div>{%- endif -%}
-            <div><b data-dz-ntaglie>—</b><span>Taglie</span></div>
+            {%- if peso != blank -%}<div><b>{{ peso }} kg</b><span>{{ 'prod.peso' | t }}</span></div>{%- endif -%}
+            {%- if rapporti != blank -%}<div><b>{{ rapporti }}</b><span>{{ 'prod.rapporti' | t }}</span></div>{%- endif -%}
+            <div><b data-dz-ntaglie>—</b><span>{{ 'prod.taglie' | t }}</span></div>
           </div>
         {%- endif -%}
 
@@ -147,14 +147,14 @@
         {%- endcomment -%}
         {%- unless p.available -%}
           <div class="dz-soldbox">
-            <b>Esaurita in tutte le taglie</b>
-            <p>Capita con i modelli più richiesti. Scrivici e ti avvisiamo appena rientra — oppure guarda le gemelle disponibili adesso.</p>
+            <b>{{ 'prod.sold_t' | t }}</b>
+            <p>{{ 'prod.sold_p' | t }}</p>
             {%- if section.settings.whatsapp != blank -%}
               <a class="dz-btn dz-primary" target="_blank" rel="noopener"
-                 href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'Ciao! Avvisami se torna disponibile la ' | append: p.title | append: ' (indicami anche se rientra una simile nella mia taglia)' | url_encode }}">
-                Avvisami se torna</a>
+                 href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'prod.sold_msg' | t: titolo: p.title | url_encode }}">
+                {{ 'prod.sold_wa' | t }}</a>
             {%- endif -%}
-            <a class="dz-btn dz-sbghost" href="#dz-simili">Vedi le simili disponibili ↓</a>
+            <a class="dz-btn dz-sbghost" href="#dz-simili">{{ 'prod.sold_simili' | t }}</a>
           </div>
         {%- endunless -%}
         <form method="post" action="{{ routes.cart_add_url }}" id="dz-form" novalidate{% unless p.available %} hidden{% endunless %}>
@@ -163,26 +163,25 @@
           <input type="hidden" name="id" value="{{ p.selected_or_first_available_variant.id }}" data-dz-variante>
 
           <div class="dz-opt" data-dz-blocco-colore hidden>
-            <div class="dz-opt-top"><span>Colore</span><span data-dz-colore-nome></span></div>
+            <div class="dz-opt-top"><span>{{ 'prod.colore' | t }}</span><span data-dz-colore-nome></span></div>
             <div class="dz-swatches" data-dz-colori></div>
           </div>
 
           <div class="dz-opt" data-dz-blocco-taglia hidden>
             <div class="dz-opt-top">
-              <span>Taglia</span>
-              <button type="button" class="dz-help" data-dz-apri-taglie>Trova la mia taglia</button>
+              <span>{{ 'prod.taglia' | t }}</span>
+              <button type="button" class="dz-help" data-dz-apri-taglie>{{ 'prod.trova_taglia' | t }}</button>
             </div>
 
             <div class="dz-adv" data-dz-adv hidden>
-              <label for="dz-altezza">Quanto sei alto?</label>
+              <label for="dz-altezza">{{ 'prod.alto' | t }}</label>
               <div class="dz-adv-row">
                 <input type="number" id="dz-altezza" min="140" max="210" step="1" placeholder="es. 178">
                 <span>cm</span>
-                <button type="button" class="dz-btn dz-sm" data-dz-calcola>Calcola</button>
+                <button type="button" class="dz-btn dz-sm" data-dz-calcola>{{ 'prod.calcola' | t }}</button>
               </div>
               <p class="dz-adv-out" data-dz-adv-out></p>
-              <p class="dz-adv-note">Consigli di taglia della casa madre. Indicativi: per una scelta
-                precisa passa in negozio per il bikefitting.</p>
+              <p class="dz-adv-note">{{ 'prod.adv_note' | t }}</p>
             </div>
 
             <div class="dz-sizes" data-dz-taglie></div>
@@ -192,7 +191,7 @@
             <select name="id" style="width:100%;padding:12px;border-radius:12px;border:1px solid rgba(18,20,42,.18);margin-bottom:12px">
               {%- for v in p.variants -%}
                 <option value="{{ v.id }}"{% unless v.available %} disabled{% endunless %}>
-                  {{ v.title }} · {{ v.price | money }}{% unless v.available %} (non disponibile){% endunless %}
+                  {{ v.title }} · {{ v.price | money }}{% unless v.available %} {{ 'prod.non_disp' | t }}{% endunless %}
                 </option>
               {%- endfor -%}
             </select>
@@ -200,20 +199,20 @@
 
           <div class="dz-buy">
             <div class="dz-qty">
-              <button type="button" data-dz-q="-1" aria-label="Diminuisci">−</button>
-              <input type="number" name="quantity" value="1" min="1" aria-label="Quantità">
-              <button type="button" data-dz-q="1" aria-label="Aumenta">+</button>
+              <button type="button" data-dz-q="-1" aria-label="{{ 'prod.diminuisci' | t }}">−</button>
+              <input type="number" name="quantity" value="1" min="1" aria-label="{{ 'prod.quantita' | t }}">
+              <button type="button" data-dz-q="1" aria-label="{{ 'prod.aumenta' | t }}">+</button>
             </div>
             <button type="submit" class="dz-btn dz-primary" data-dz-aggiungi>
-              Aggiungi al carrello · <span data-dz-prezzo-btn>{{ p.price | money }}</span>
+              {{ 'prod.aggiungi' | t }} · <span data-dz-prezzo-btn>{{ p.price | money }}</span>
             </button>
           </div>
         </form>
 
         {%- if p.available and section.settings.whatsapp != blank -%}
           <a class="dz-btn dz-wa" target="_blank" rel="noopener"
-             href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'Ciao! Sono interessato alla ' | append: p.title | url_encode }}">
-            Chiedi info su WhatsApp
+             href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'prod.wa_msg' | t: titolo: p.title | url_encode }}">
+            {{ 'prod.wa_cta' | t }}
           </a>
         {%- endif -%}
 
@@ -227,33 +226,33 @@
                data-max="{{ section.settings.rate_max }}"
                data-def="{{ section.settings.rate_def }}">
             <div class="dz-fin-top">
-              <span>Paga a rate</span>
-              <span class="dz-tan">TAN fisso {{ section.settings.tan }}%</span>
+              <span>{{ 'prod.rate' | t }}</span>
+              <span class="dz-tan">{{ 'prod.tan' | t: tan: section.settings.tan }}</span>
             </div>
-            <div class="dz-fin-amt"><b data-dz-fin-rata>—</b><span>/mese</span></div>
-            <p class="dz-fin-sub">in <b data-dz-fin-mesi>{{ section.settings.rate_def }}</b> rate mensili</p>
+            <div class="dz-fin-amt"><b data-dz-fin-rata>—</b><span>{{ 'prod.mese' | t }}</span></div>
+            <p class="dz-fin-sub">{{ 'prod.rate_in' | t }} <b data-dz-fin-mesi>{{ section.settings.rate_def }}</b> {{ 'prod.rate_mensili' | t }}</p>
             <input type="range" data-dz-fin-range
                    min="{{ section.settings.rate_min }}" max="{{ section.settings.rate_max }}"
                    step="6" value="{{ section.settings.rate_def }}"
-                   aria-label="Durata del finanziamento in mesi">
+                   aria-label="{{ 'prod.fin_aria' | t }}">
             <div class="dz-fin-ticks">
-              <span>{{ section.settings.rate_min }} mesi</span><span>{{ section.settings.rate_max }} mesi</span>
+              <span>{{ 'prod.mesi' | t: n: section.settings.rate_min }}</span><span>{{ 'prod.mesi' | t: n: section.settings.rate_max }}</span>
             </div>
             <p class="dz-fin-note">{{ section.settings.nota_fin }}</p>
           </div>
         {%- endif -%}
 
         {%- if e_bici and p.available -%}
-        <div class="dz-klarna" aria-label="Paga in 3 rate con Klarna">
+        <div class="dz-klarna" aria-label="{{ 'prod.klarna_aria' | t }}">
           <span class="dz-kb">Klarna.</span>
-          <div><b>Paga in 3 rate senza interessi</b><span class="dz-ksub">3 × {{ p.price | divided_by: 3 | money }}, senza costi aggiuntivi</span></div>
+          {%- assign terzo = p.price | divided_by: 3 | money -%}<div><b>{{ 'prod.klarna_t' | t }}</b><span class="dz-ksub">{{ 'prod.klarna_sub' | t: importo: terzo }}</span></div>
         </div>
         {%- endif -%}
 
         {%- liquid
-          assign sped = 'Spedizione gratuita in Italia'
+          assign sped = 'prod.sped_free' | t
           if e_bici == false and p.price < 9900
-            assign sped = 'Spedizione gratuita in Italia da € 99'
+            assign sped = 'prod.sped_free99' | t
           endif
         -%}
         <div class="dz-trust">
@@ -270,58 +269,57 @@
             <div class="dz-uc-top">
               <span class="dz-uc-badge" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5L19.5 7"/></svg></span>
               <div>
-                <b>Controllata in officina</b>
-                <span>{{ section.settings.usato_punti | default: 30 }} punti verificati prima della messa in vendita</span>
+                <b>{{ 'prod.uc_t' | t }}</b>
+                {%- assign uc_p = section.settings.usato_punti | default: 30 -%}<span>{{ 'prod.uc_sub' | t: punti: uc_p }}</span>
               </div>
             </div>
             <ul class="dz-uc-list">
-              <li>Telaio e forcella: integrità e allineamento</li>
-              <li>Trasmissione: usura di catena e cassetta</li>
-              <li>Freni: pastiglie, dischi e spurgo</li>
-              <li>Ruote: tensione raggi e cuscinetti</li>
-              <li>Cambio e comandi: regolazione completa</li>
-              <li>Tagliando finale con prova su strada</li>
+              <li>{{ 'prod.uc_1' | t }}</li>
+              <li>{{ 'prod.uc_2' | t }}</li>
+              <li>{{ 'prod.uc_3' | t }}</li>
+              <li>{{ 'prod.uc_4' | t }}</li>
+              <li>{{ 'prod.uc_5' | t }}</li>
+              <li>{{ 'prod.uc_6' | t }}</li>
             </ul>
             {%- if section.settings.whatsapp != blank -%}
               <a class="dz-uc-link" target="_blank" rel="noopener"
-                 href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'Ciao! Vorrei la scheda dei controlli della ' | append: p.title | url_encode }}">
-                Chiedici la scheda dei controlli →</a>
+                 href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'prod.uc_msg' | t: titolo: p.title | url_encode }}">
+                {{ 'prod.uc_link' | t }}</a>
             {%- endif -%}
           </div>
         {%- endif -%}
 
         <details class="dz-acc" open>
-          <summary>Descrizione</summary>
+          <summary>{{ 'prod.desc' | t }}</summary>
           <div class="dz-acc-in">{{ p.description }}</div>
         </details>
         <details class="dz-acc">
-          <summary>Spedizione & resi</summary>
+          <summary>{{ 'prod.sped_resi' | t }}</summary>
           <div class="dz-acc-in">
             {%- if e_bici -%}
               {%- assign estero = 99 -%}
               {%- if p.title contains 'eRIDE' or p.title contains 'e-bike' or p.title contains 'E-bike' or p.title contains 'EXe' or p.title contains 'Rail' -%}{%- assign estero = 149 -%}{%- endif -%}
-              Spedizione gratuita e assicurata in tutta Italia entro 3-5 giorni lavorativi.
+              {{ 'prod.sped_bici1' | t }}
               All'estero la spedizione parte da € {{ estero }} a seconda del modello.
-              Ritiro e montaggio gratuiti presso il nostro negozio.
+              {{ 'prod.sped_bici2' | t }}
             {%- else -%}
-              Spedizione gratuita in Italia per ordini da € 99; sotto questa soglia il contributo
-              di spedizione viene calcolato al check-out. Ritiro gratuito in negozio.
+              {{ 'prod.sped_acc' | t }}
             {%- endif -%}
           </div>
         </details>
         {%- if e_bici -%}
         <details class="dz-acc">
-          <summary>Garanzia</summary>
+          <summary>{{ 'prod.garanzia' | t }}</summary>
           <div class="dz-acc-in">
             {%- if p.type == 'USATO' -%}
-              Usato controllato nella nostra officina — chiedici i dettagli su WhatsApp o in negozio.
+              {{ 'prod.gar_usato' | t }}
             {%- else -%}
               {%- if vmin contains 'scott' -%}
-                Telaio garantito 5 anni, componenti 2 anni.
+                {{ 'prod.gar_scott' | t }}
               {%- elsif vmin contains 'trek' or vmin contains 'cannondale' -%}
-                Telaio garantito a vita, componenti 2 anni.
+                {{ 'prod.gar_vita' | t }}
               {%- endif -%}
-              Garanzia ufficiale del produttore, gestita da noi: se serve un intervento parli con il negozio, non con un call center.
+              {{ 'prod.gar_std' | t }}
             {%- endif -%}
           </div>
         </details>
@@ -349,8 +347,8 @@
       {%- endcapture -%}
       {%- if trovate > 0 -%}
         <div class="dz-simili" id="dz-simili">
-          <div class="head"><div><p class="k">Disponibili subito</p><h2>Simili a questa</h2></div>
-            {%- if bc != blank -%}<a class="more" href="{{ bc.url }}">Tutta la categoria</a>{%- endif -%}</div>
+          <div class="head"><div><p class="k">{{ 'prod.simili_k' | t }}</p><h2>{{ 'prod.simili_h' | t }}</h2></div>
+            {%- if bc != blank -%}<a class="more" href="{{ bc.url }}">{{ 'prod.simili_all' | t }}</a>{%- endif -%}</div>
           <div class="prods">{{ simili_html }}</div>
         </div>
       {%- endif -%}

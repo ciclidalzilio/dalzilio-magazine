@@ -4,23 +4,23 @@
   ordinamento e paginazione.
 {%- endcomment -%}
 <div class="wrap">
-  <nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>{{ collection.title }}</b></nav>
+  <nav class="crumb"><a href="{{ routes.root_url }}">{{ 'nav.home' | t }}</a><span>/</span><b>{{ collection.title }}</b></nav>
   <div class="ltop">
-    <div><h1>{{ collection.title }}</h1><div class="sub">{{ collection.products_count }} prodotti</div></div>
+    <div><h1>{{ collection.title }}</h1><div class="sub">{{ 'list.prodotti' | t: n: collection.products_count }}</div></div>
     <select class="sortsel" onchange="location.href=this.value">
       {%- assign base = collection.url | append: '?sort_by=' -%}
-      <option value="{{ base }}manual" {% if collection.sort_by == 'manual' or collection.sort_by == blank %}selected{% endif %}>Ordina: Rilevanza</option>
-      <option value="{{ base }}created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>Più recenti</option>
-      <option value="{{ base }}price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>Prezzo crescente</option>
-      <option value="{{ base }}price-descending" {% if collection.sort_by == 'price-descending' %}selected{% endif %}>Prezzo decrescente</option>
-      <option value="{{ base }}title-ascending" {% if collection.sort_by == 'title-ascending' %}selected{% endif %}>Nome A-Z</option>
+      <option value="{{ base }}manual" {% if collection.sort_by == 'manual' or collection.sort_by == blank %}selected{% endif %}>{{ 'list.ordina_ril' | t }}</option>
+      <option value="{{ base }}created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>{{ 'list.recenti' | t }}</option>
+      <option value="{{ base }}price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>{{ 'list.prezzo_asc' | t }}</option>
+      <option value="{{ base }}price-descending" {% if collection.sort_by == 'price-descending' %}selected{% endif %}>{{ 'list.prezzo_desc' | t }}</option>
+      <option value="{{ base }}title-ascending" {% if collection.sort_by == 'title-ascending' %}selected{% endif %}>{{ 'list.nome_az' | t }}</option>
     </select>
   </div>
 
   {%- comment -%} e-bike: due filtri rapidi a pillola invece delle card grandi {%- endcomment -%}
   {%- if collection.handle == 'ebikes' or collection.handle == 'e-mtb' or collection.handle == 'e-road-e-gravel' -%}
     <div class="fpills">
-      <a class="fpill{% if collection.handle == 'ebikes' %} on{% endif %}" href="{{ collections['ebikes'].url }}">Tutte</a>
+      <a class="fpill{% if collection.handle == 'ebikes' %} on{% endif %}" href="{{ collections['ebikes'].url }}">{{ 'list.tutte' | t }}</a>
       <a class="fpill{% if collection.handle == 'e-mtb' %} on{% endif %}" href="{{ collections['e-mtb'].url }}">E-MTB</a>
       <a class="fpill{% if collection.handle == 'e-road-e-gravel' %} on{% endif %}" href="{{ collections['e-road-e-gravel'].url }}">E-Road / E-Gravel</a>
     </div>
@@ -37,7 +37,7 @@
       {%- for filter in collection.filters -%}
         {%- for v in filter.active_values -%}<a href="{{ v.url_to_remove }}">{{ v.label }}</a>{%- endfor -%}
         {%- if filter.type == 'price_range' and filter.min_value.value != blank or filter.max_value.value != blank -%}
-          <a href="{{ filter.url_to_remove }}">Prezzo</a>
+          <a href="{{ filter.url_to_remove }}">{{ 'list.prezzo' | t }}</a>
         {%- endif -%}
       {%- endfor -%}
     </div>
@@ -47,7 +47,7 @@
     {%- if collection.filters.size > 0 -%}
       <form class="filters" method="get">
         {%- if collection.sort_by != blank -%}<input type="hidden" name="sort_by" value="{{ collection.sort_by }}">{%- endif -%}
-        <h4>Filtri</h4>
+        <h4>{{ 'list.filtri' | t }}</h4>
         {%- liquid
           comment
             Nell'usato conta la categoria (corsa, mtb...), non il brand.
@@ -88,9 +88,9 @@
             {%- case filter.type -%}
               {%- when 'price_range' -%}
                 <div class="fprice">
-                  <input type="number" name="{{ filter.min_value.param_name }}" placeholder="Da €"
+                  <input type="number" name="{{ filter.min_value.param_name }}" placeholder="{{ 'list.da' | t }}"
                          {% if filter.min_value.value %}value="{{ filter.min_value.value | money_without_currency | replace: ',', '.' }}"{% endif %} min="0">
-                  <input type="number" name="{{ filter.max_value.param_name }}" placeholder="A €"
+                  <input type="number" name="{{ filter.max_value.param_name }}" placeholder="{{ 'list.a' | t }}"
                          {% if filter.max_value.value %}value="{{ filter.max_value.value | money_without_currency | replace: ',', '.' }}"{% endif %} min="0">
                 </div>
               {%- else -%}
@@ -104,8 +104,8 @@
             {%- endcase -%}
           </details>
         {%- endfor -%}
-        <button class="btn sm block" type="submit" style="margin-top:14px">Applica filtri</button>
-        {%- if attivi > 0 -%}<a class="btn ghost sm block" style="margin-top:8px" href="{{ collection.url }}">Azzera</a>{%- endif -%}
+        <button class="btn sm block" type="submit" style="margin-top:14px">{{ 'list.applica' | t }}</button>
+        {%- if attivi > 0 -%}<a class="btn ghost sm block" style="margin-top:8px" href="{{ collection.url }}">{{ 'list.azzera' | t }}</a>{%- endif -%}
       </form>
     {%- endif -%}
 
@@ -115,11 +115,11 @@
           {%- for p in collection.products -%}
             {% render 'dz-card', product: p %}
           {%- else -%}
-            <p style="grid-column:1/-1;color:var(--muted);padding:40px 0">Nessun prodotto con questi filtri. <a href="{{ collection.url }}" style="text-decoration:underline">Azzera i filtri</a></p>
+            <p style="grid-column:1/-1;color:var(--muted);padding:40px 0">{{ 'list.vuoto' | t }} <a href="{{ collection.url }}" style="text-decoration:underline">{{ 'list.azzera_filtri' | t }}</a></p>
           {%- endfor -%}
         </div>
         {%- if paginate.pages > 1 -%}
-          <nav class="pagin" aria-label="Pagine">
+          <nav class="pagin" aria-label="{{ 'list.pagine' | t }}">
             {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">←</a>{%- endif -%}
             {%- for part in paginate.parts -%}
               {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>
