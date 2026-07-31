@@ -1,0 +1,24 @@
+name: probe-pin
+on:
+  push:
+    branches: ["claude/**"]
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: fetch images
+        run: |
+          mkdir -p probe/pin
+          curl -sL -o probe/pin/pin8.jpg "https://cdn.shopify.com/s/files/1/0873/6885/9912/files/8_a75f9def-b93d-47c9-a79e-65470b912084.jpg?v=1758100303&width=800"
+          curl -sL -o probe/pin/pindz.jpg "https://cdn.shopify.com/s/files/1/0873/6885/9912/files/ProdottiDalZilio_6f7da292-ab5d-404d-8a65-e188cd299205.jpg?v=1759328209&width=800"
+          ls -la probe/pin
+      - name: commit results
+        run: |
+          git config user.name "probe-bot"
+          git config user.email "probe@local"
+          git add probe/pin
+          git commit -m "probe: foto per anteprima pinarello" || echo "nothing"
+          git push
