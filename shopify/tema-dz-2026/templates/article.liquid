@@ -1,12 +1,12 @@
 {%- comment -%} Articolo del blog — DZ 2026 {%- endcomment -%}
 <div class="wrap">
-  <nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><a href="{{ blog.url }}">{{ blog.title }}</a><span>/</span><b>{{ article.title | truncate: 40 }}</b></nav>
+  <nav class="crumb"><a href="{{ routes.root_url }}">{{ 'nav.home' | t }}</a><span>/</span><a href="{{ blog.url }}">{{ blog.title }}</a><span>/</span><b>{{ article.title | truncate: 40 }}</b></nav>
 
   <article class="art">
     <header class="art-head">
       <p class="art-k">{{ blog.title }}{% if article.tags.size > 0 %} · {{ article.tags.first }}{% endif %}</p>
       <h1>{{ article.title }}</h1>
-      <p class="art-meta">{{ article.published_at | date: '%-d %B %Y' }}{% if article.author != blank %} · di {{ article.author }}{% endif %}</p>
+      <p class="art-meta">{{ article.published_at | date: '%-d %B %Y' }}{% if article.author != blank %} · {{ 'blog.di' | t }} {{ article.author }}{% endif %}</p>
     </header>
 
     {%- if article.image -%}
@@ -16,8 +16,8 @@
     <div class="art-body">{{ article.content }}</div>
 
     <footer class="art-foot">
-      <a class="btn ghost sm" href="{{ blog.url }}">← Tutti gli articoli</a>
-      <a class="btn sm" href="https://wa.me/393457815102?text={{ 'Ciao! Ho letto l’articolo «' | append: article.title | append: '» e vorrei un’informazione.' | url_encode }}">Chiedici info</a>
+      <a class="btn ghost sm" href="{{ blog.url }}">{{ 'blog.tutti' | t }}</a>
+      <a class="btn sm" href="https://wa.me/393457815102?text={{ 'blog.wa_msg' | t: titolo: article.title | url_encode }}">{{ 'blog.chiedi' | t }}</a>
     </footer>
   </article>
 
@@ -27,7 +27,7 @@
   {%- endfor -%}
   {%- if altri > 0 -%}
     <aside class="art-more">
-      <div class="head"><div><p class="k">Dal blog</p><h2>Altri articoli</h2></div></div>
+      <div class="head"><div><p class="k">{{ 'blog.dal_blog' | t }}</p><h2>{{ 'blog.altri' | t }}</h2></div></div>
       <div class="bloggrid">
         {%- assign mostrati = 0 -%}
         {%- for a in blog.articles limit: 6 -%}

@@ -1,8 +1,8 @@
 {%- comment -%} Blog — DZ 2026 {%- endcomment -%}
 <div class="wrap">
-  <nav class="crumb"><a href="{{ routes.root_url }}">Home</a><span>/</span><b>{{ blog.title }}</b></nav>
+  <nav class="crumb"><a href="{{ routes.root_url }}">{{ 'nav.home' | t }}</a><span>/</span><b>{{ blog.title }}</b></nav>
   <div class="ltop">
-    <div><h1>{{ blog.title }}</h1><div class="sub">{{ blog.articles_count }} articol{% if blog.articles_count == 1 %}o{% else %}i{% endif %}</div></div>
+    <div><h1>{{ blog.title }}</h1><div class="sub">{% if blog.articles_count == 1 %}{{ 'blog.uno' | t }}{% else %}{{ 'blog.tanti' | t: n: blog.articles_count }}{% endif %}</div></div>
   </div>
 
   {%- paginate blog.articles by 12 -%}
@@ -19,14 +19,14 @@
           {%- else -%}
             <p>{{ a.content | strip_html | truncate: 120 }}</p>
           {%- endif -%}
-          <span class="bmore">Leggi →</span>
+          <span class="bmore">{{ 'blog.leggi' | t }}</span>
         </a>
       {%- else -%}
-        <p style="grid-column:1/-1;color:var(--muted);padding:40px 0">Ancora nessun articolo.</p>
+        <p style="grid-column:1/-1;color:var(--muted);padding:40px 0">{{ 'blog.nessuno' | t }}</p>
       {%- endfor -%}
     </div>
     {%- if paginate.pages > 1 -%}
-      <nav class="pagin" aria-label="Pagine">
+      <nav class="pagin" aria-label="{{ 'list.pagine' | t }}">
         {%- if paginate.previous -%}<a href="{{ paginate.previous.url }}">←</a>{%- endif -%}
         {%- for part in paginate.parts -%}
           {%- if part.is_link -%}<a href="{{ part.url }}">{{ part.title }}</a>

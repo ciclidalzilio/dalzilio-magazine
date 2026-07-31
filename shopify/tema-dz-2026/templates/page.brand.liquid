@@ -25,82 +25,82 @@
   assign b_t2p = ''
   assign b_t3t = ''
   assign b_t3p = ''
-  assign b_cats = 'bici-da-strada:Corsa,gravel:Gravel,mountain-bike:MTB,ebikes:E-Bike'
+  assign b_cats = 'bici-da-strada:nav.corsa,gravel:nav.gravel,mountain-bike:nav.mtb,ebikes:nav.ebike'
 
   case h
     when 'trek'
       assign b_nome = 'TREK'
       assign b_vendor = 'TREK'
       assign b_img = 'https://cdn.shopify.com/s/files/1/0873/6885/9912/files/TrekDomaneSLR7gen4red.jpg?v=1743781715&width=1100'
-      assign b_tag = 'Le bici di chi non si accontenta.'
-      assign b_desc = 'Da Waterloo, Wisconsin, il marchio che ha portato il carbonio OCLV al Tour de France. Corsa, MTB, e-bike e città: qui trovi la gamma Trek con assistenza ufficiale e garanzia a vita sul telaio.'
+      assign b_tag = 'brand.trek.tag' | t
+      assign b_desc = 'brand.trek.desc' | t
       assign b_f1v = '1976'
-      assign b_f1l = 'Waterloo, USA'
+      assign b_f1l = 'brand.trek.f1l' | t
       assign b_f2v = 'OCLV'
-      assign b_f2l = 'Carbonio proprietario'
-      assign b_f3v = 'A vita'
-      assign b_f3l = 'Garanzia telaio'
-      assign b_t1t = 'Carbonio OCLV 800'
-      assign b_t1p = 'Il composito più leggero mai fatto da Trek: nato in galleria del vento, testato oltre gli standard.'
+      assign b_f2l = 'brand.trek.f2l' | t
+      assign b_f3v = 'brand.trek.f3v' | t
+      assign b_f3l = 'brand.trek.f3l' | t
+      assign b_t1t = 'brand.trek.t1t' | t
+      assign b_t1p = 'brand.trek.t1p' | t
       assign b_t2t = 'IsoSpeed'
-      assign b_t2p = 'Il disaccoppiatore che assorbe le asperità senza togliere rigidità: chilometri senza fatica.'
+      assign b_t2p = 'brand.trek.t2p' | t
       assign b_t3t = 'Project One'
-      assign b_t3p = 'La tua Trek, i tuoi colori: il programma di personalizzazione totale, ordinabile da noi in negozio.'
+      assign b_t3p = 'brand.trek.t3p' | t
     when 'scott'
       assign b_nome = 'SCOTT'
       assign b_vendor = 'SCOTT'
       assign b_img = 'https://cdn.shopify.com/s/files/1/0873/6885/9912/files/4253408086.png?v=1783042506&width=1200'
-      assign b_tag = 'Innovazione svizzera, dal 1958.'
-      assign b_desc = 'Dal primo bastoncino da sci in alluminio alla Foil più veloce del gruppo: Scott è ingegneria leggera. Siamo rivenditore ufficiale con tutta la gamma: Foil, Addict, Scale, Spark, Lumen e le e-bike eRIDE.'
+      assign b_tag = 'brand.scott.tag' | t
+      assign b_desc = 'brand.scott.desc' | t
       assign b_f1v = '1958'
-      assign b_f1l = 'Origini, Sun Valley'
+      assign b_f1l = 'brand.scott.f1l' | t
       assign b_f2v = 'HMX-SL'
-      assign b_f2l = 'Il carbonio più leggero'
+      assign b_f2l = 'brand.scott.f2l' | t
       assign b_f3v = '×4'
-      assign b_f3l = 'Ori olimpici XC'
-      assign b_t1t = 'Carbonio HMX-SL'
-      assign b_t1p = 'Fibre ad altissimo modulo per telai sotto i 900 grammi: la Scale RC e la Addict RC nascono così.'
+      assign b_f3l = 'brand.scott.f3l' | t
+      assign b_t1t = 'brand.scott.t1t' | t
+      assign b_t1p = 'brand.scott.t1p' | t
       assign b_t2t = 'TwinLoc'
-      assign b_t2p = 'Sospensioni e geometria si regolano insieme, dal manubrio, in corsa: tre bici in una.'
-      assign b_t3t = 'Integrazione totale'
-      assign b_t3p = 'Cavi invisibili, cockpit monoscocca, aerodinamica vera: la firma Scott su strada e in montagna.'
+      assign b_t2p = 'brand.scott.t2p' | t
+      assign b_t3t = 'brand.scott.t3t' | t
+      assign b_t3p = 'brand.scott.t3p' | t
     when 'cannondale'
       assign b_nome = 'CANNONDALE'
       assign b_vendor = 'CANNONDALE'
       assign b_img = 'https://cdn.shopify.com/s/files/1/0873/6885/9912/files/9_4a20d348-54be-42ee-ace1-171dc906c3ce.jpg?v=1771578578&width=1100'
-      assign b_tag = 'Da sempre controcorrente.'
-      assign b_desc = 'Il marchio che ha inventato la forcella Lefty e portato l’alluminio dove nessuno credeva possibile. SuperSix, Synapse, Scalpel, Habit e le e-bike Moterra: la gamma Cannondale, con officina che le conosce davvero.'
+      assign b_tag = 'brand.cannondale.tag' | t
+      assign b_desc = 'brand.cannondale.desc' | t
       assign b_f1v = '1971'
-      assign b_f1l = 'Connecticut, USA'
+      assign b_f1l = 'brand.cannondale.f1l' | t
       assign b_f2v = 'Lefty'
-      assign b_f2l = 'La forcella a un braccio'
+      assign b_f2l = 'brand.cannondale.f2l' | t
       assign b_f3v = 'BallisTec'
-      assign b_f3l = 'Carbonio da gara'
+      assign b_f3l = 'brand.cannondale.f3l' | t
       assign b_t1t = 'BallisTec Carbon'
-      assign b_t1p = 'Resina ad alta resistenza e fibre balistiche: telai leggeri che reggono la vita vera.'
+      assign b_t1p = 'brand.cannondale.t1p' | t
       assign b_t2t = 'Lefty Ocho'
-      assign b_t2p = 'Un solo braccio, più rigidità e sensibilità di molte forcelle a due: l’icona Cannondale.'
+      assign b_t2p = 'brand.cannondale.t2p' | t
       assign b_t3t = 'Proportional Response'
-      assign b_t3p = 'Ogni taglia ha cinematica e rigidità dedicate: la bici lavora uguale per ogni altezza.'
+      assign b_t3p = 'brand.cannondale.t3p' | t
     when 'amflow'
       assign b_nome = 'AMFLOW'
       assign b_vendor = 'AMFLOW'
       assign b_img = 'https://cdn.shopify.com/s/files/1/0873/6885/9912/files/5_d9a3f52a-41bd-4c79-b84b-e4d83b1a25b7.jpg?v=1769701791&width=1100'
-      assign b_tag = 'La e-MTB che ha cambiato le regole.'
-      assign b_desc = 'Motore DJI Avinox da 105 Nm, batteria integrata e peso da bici light: Amflow PL è la e-MTB di cui parlano tutti. Noi ce l’abbiamo in negozio, pronta da vedere e toccare.'
+      assign b_tag = 'brand.amflow.tag' | t
+      assign b_desc = 'brand.amflow.desc' | t
       assign b_f1v = '105 Nm'
-      assign b_f1l = 'Coppia DJI Avinox'
+      assign b_f1l = 'brand.amflow.f1l' | t
       assign b_f2v = '850 W'
-      assign b_f2l = 'Picco in Boost'
+      assign b_f2l = 'brand.amflow.f2l' | t
       assign b_f3v = '~19,2 kg'
-      assign b_f3l = 'Peso da light'
-      assign b_t1t = 'Motore DJI Avinox'
-      assign b_t1p = 'Compatto come un light, potente come un full power: 105 Nm e controllo da drone maker.'
-      assign b_t2t = 'Batteria 600/800 Wh'
-      assign b_t2p = 'Ricarica rapida all’80% in un’ora e mezza e autonomia vera in salita.'
-      assign b_t3t = 'Telaio full carbon'
-      assign b_t3p = 'Geometrie moderne, 150 mm di escursione, schermo OLED integrato nel tubo orizzontale.'
-      assign b_cats = 'e-mtb:E-MTB,ebikes:Tutte le E-Bike'
+      assign b_f3l = 'brand.amflow.f3l' | t
+      assign b_t1t = 'brand.amflow.t1t' | t
+      assign b_t1p = 'brand.amflow.t1p' | t
+      assign b_t2t = 'brand.amflow.t2t' | t
+      assign b_t2p = 'brand.amflow.t2p' | t
+      assign b_t3t = 'brand.amflow.t3t' | t
+      assign b_t3p = 'brand.amflow.t3p' | t
+      assign b_cats = 'e-mtb:brand.emtb,ebikes:brand.tutte_ebike'
   endcase
 
   assign vendors_url = '/collections/vendors?q=' | append: b_vendor
@@ -113,12 +113,12 @@
 
 <div class="brand-hero">
   <div class="bh-ghost" aria-hidden="true">{{ b_nome }}</div>
-  <p class="bh-k">Rivenditore ufficiale</p>
+  <p class="bh-k">{{ 'brand.rivenditore' | t }}</p>
   <h1>{{ b_nome }}<span>.</span></h1>
   <p class="bh-tag">{{ b_tag }}</p>
   <div class="bh-ctas">
-    <a class="btn" href="{{ vendors_url }}">Tutte le {{ b_nome }}</a>
-    <a class="btn ghost" href="https://wa.me/393457815102?text={{ 'Ciao! Vorrei informazioni sulla gamma ' | append: b_nome | url_encode }}">Chiedi a noi</a>
+    <a class="btn" href="{{ vendors_url }}">{{ 'brand.tutte' | t: marca: b_nome }}</a>
+    <a class="btn ghost" href="https://wa.me/393457815102?text={{ 'brand.wa' | t: marca: b_nome | url_encode }}">{{ 'brand.chiedi' | t }}</a>
   </div>
   <div class="bh-bike"><span class="bh-glow" aria-hidden="true"></span><span class="bh-shadow" aria-hidden="true"></span><img src="{{ b_img }}" alt="{{ b_nome }}" loading="eager"></div>
 </div>
@@ -132,7 +132,7 @@
 </div>
 
 <section class="wrap brand-sect">
-  <div class="head"><div><p class="k">Il marchio</p><h2>{{ b_desc | split: '.' | first }}.</h2></div></div>
+  <div class="head"><div><p class="k">{{ 'brand.il_marchio' | t }}</p><h2>{{ b_desc | split: '.' | first }}.</h2></div></div>
   <p class="brand-desc">{{ b_desc }}</p>
   <div class="brand-tech">
     <div class="bt-card"><i></i><b>{{ b_t1t }}</b><p>{{ b_t1p }}</p></div>
@@ -142,8 +142,8 @@
 </section>
 
 <section class="wrap brand-sect">
-  <div class="head"><div><p class="k">La gamma</p><h2>{{ b_nome }} da Cicli Dal Zilio</h2></div>
-    <a class="more" href="{{ vendors_url }}">Tutte le {{ b_nome }}</a></div>
+  <div class="head"><div><p class="k">{{ 'brand.la_gamma' | t }}</p><h2>{{ 'brand.da_noi' | t: marca: b_nome }}</h2></div>
+    <a class="more" href="{{ vendors_url }}">{{ 'brand.tutte' | t: marca: b_nome }}</a></div>
   <div class="brand-cats">
     {%- assign cat_list = b_cats | split: ',' -%}
     {%- for c in cat_list -%}
@@ -152,7 +152,7 @@
       {%- assign c_label = parts[1] -%}
       {%- if collections[c_handle] != blank -%}
         <a class="bc-tile" href="{{ collections[c_handle].url }}?filter.p.vendor={{ b_vendor | url_encode }}">
-          <span class="t">{{ c_label }}</span>
+          <span class="t">{{ c_label | t }}</span>
           <span class="n">{{ b_nome | capitalize }} →</span>
         </a>
       {%- endif -%}
@@ -161,12 +161,12 @@
 </section>
 
 <section class="wrap brand-sect" style="padding-bottom:70px">
-  <div class="head"><div><p class="k">Perché da noi</p><h2>Comprarla qui conviene</h2></div></div>
+  <div class="head"><div><p class="k">{{ 'brand.perche' | t }}</p><h2>{{ 'brand.conviene' | t }}</h2></div></div>
   <div class="brand-svc">
-    <div class="bs-x"><b>Consegna con bike fit</b><p>Ogni bici esce regolata sulle tue misure, con posizionamento incluso.</p></div>
-    <div class="bs-x"><b>Officina certificata</b><p>Assistenza ufficiale {{ b_nome | capitalize }}: ricambi, aggiornamenti, garanzia.</p></div>
-    <div class="bs-x"><b>Permuta valorizzata</b><p>La tua bici attuale vale subito come acconto sulla nuova.</p></div>
-    <div class="bs-x"><b>Finanziamento su misura</b><p>Da 6 a 60 rate a TAN fisso, risposta in pochi minuti.</p></div>
+    <div class="bs-x"><b>{{ 'brand.bs1t' | t }}</b><p>{{ 'brand.bs1p' | t }}</p></div>
+    {%- assign marca_cap = b_nome | capitalize -%}<div class="bs-x"><b>{{ 'brand.bs2t' | t }}</b><p>{{ 'brand.bs2p' | t: marca: marca_cap }}</p></div>
+    <div class="bs-x"><b>{{ 'brand.bs3t' | t }}</b><p>{{ 'brand.bs3p' | t }}</p></div>
+    <div class="bs-x"><b>{{ 'brand.bs4t' | t }}</b><p>{{ 'brand.bs4p' | t }}</p></div>
   </div>
 </section>
 
