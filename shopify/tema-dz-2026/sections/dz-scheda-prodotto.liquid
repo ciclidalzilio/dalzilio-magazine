@@ -281,11 +281,6 @@
               <li>{{ 'prod.uc_5' | t }}</li>
               <li>{{ 'prod.uc_6' | t }}</li>
             </ul>
-            {%- if section.settings.whatsapp != blank -%}
-              <a class="dz-uc-link" target="_blank" rel="noopener"
-                 href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'prod.uc_msg' | t: titolo: p.title | url_encode }}">
-                {{ 'prod.uc_link' | t }}</a>
-            {%- endif -%}
           </div>
         {%- endif -%}
 
