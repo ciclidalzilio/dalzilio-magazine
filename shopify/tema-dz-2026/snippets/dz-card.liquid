@@ -20,10 +20,9 @@
     {%- if product.featured_image -%}
       <img src="{{ product.featured_image | image_url: width: 640 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="640" height="480" data-dz-fit>
     {%- endif -%}
+    {%- comment -%} niente etichetta tipo (codici feed tipo "EMF - E-FULL S"): solo Usato {%- endcomment -%}
     {%- if product.type == 'USATO' -%}
       <span class="chip">{{ 'card.usato' | t }}</span>
-    {%- elsif product.type != blank and product.type != 'bike' -%}
-      <span class="chip">{{ product.type | truncate: 14, '' }}</span>
     {%- endif -%}
     {%- if in_sconto -%}
       {%- assign perc = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
