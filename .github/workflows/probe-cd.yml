@@ -1,0 +1,24 @@
+name: probe-cd
+on:
+  push:
+    branches: ["claude/**"]
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: fetch cannondale page
+        run: |
+          mkdir -p probe/cd
+          UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/126.0 Safari/537.36"
+          curl -sL -A "$UA" --compressed -o probe/cd/moterra.html "https://www.cannondale.com/it-it/bikes/electric/e-mountain/moterra-neo/moterra-1-smu" || true
+          ls -la probe/cd
+      - name: commit results
+        run: |
+          git config user.name "probe-bot"
+          git config user.email "probe@local"
+          git add probe/cd
+          git commit -m "probe: cannondale moterra 1 smu" || echo "nothing"
+          git push
