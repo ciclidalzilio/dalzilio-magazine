@@ -13,8 +13,8 @@ jobs:
         run: |
           mkdir -p probe/dealer
           UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36"
-          curl -sL -A "$UA" --compressed -o probe/dealer/dottorbike.json "https://www.dottorbikestore.it/products/amflow-tl-carbon-2026.json" || true
-          curl -sL -A "$UA" --compressed -o probe/dealer/bikecafe.html "https://www.bikecafe.org/product/amflow-tl-carbon/" || true
+          curl -sL -A "$UA" -o probe/dealer/bianco.jpg "https://cdn.shopify.com/s/files/1/0799/4975/8741/files/amflow-tl-carbon-2026-1080x1080-bianco_1a9d3738-542d-4534-bcbc-c959820b4534.jpg?v=1785327865" || true
+          curl -sL -A "$UA" -o probe/dealer/bikecafe.jpg "https://www.bikecafe.org/wp-content/uploads/2026/06/AMFLOW-TL-CARBON.jpg" || true
           ls -la probe/dealer
       - name: commit results
         run: |
