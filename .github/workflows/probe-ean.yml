@@ -1,0 +1,28 @@
+name: probe-ean
+on:
+  push:
+    branches: ["claude/**"]
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: fetch dealer pages for EANs
+        run: |
+          mkdir -p probe/ean
+          UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/126.0 Safari/537.36"
+          curl -sL -A "$UA" --compressed -o probe/ean/rw-1831010.html "https://www.ridewill.it/p/it/x/1831010/" || true
+          curl -sL -A "$UA" --compressed -o probe/ean/rw-1831011.html "https://www.ridewill.it/p/it/x/1831011/" || true
+          curl -sL -A "$UA" --compressed -o probe/ean/rw-1831012.html "https://www.ridewill.it/p/it/x/1831012/" || true
+          curl -sL -A "$UA" --compressed -o probe/ean/ebike24-tl.html "https://www.ebike24.com/amflow-tl-carbon" || true
+          curl -sL -A "$UA" --compressed -o probe/ean/greatebike-tl.html "https://greatebike.eu/amflow-tl-carbon" || true
+          ls -la probe/ean
+      - name: commit results
+        run: |
+          git config user.name "probe-bot"
+          git config user.email "probe@local"
+          git add probe/ean
+          git commit -m "probe: ean amflow" || echo "nothing"
+          git push
