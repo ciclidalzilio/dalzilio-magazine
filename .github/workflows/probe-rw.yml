@@ -1,0 +1,27 @@
+name: probe-rw
+on:
+  push:
+    branches: ["claude/**"]
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: fetch ridewill product images
+        run: |
+          mkdir -p probe/rw
+          UA="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 Chrome/126.0 Safari/537.36"
+          curl -sL -A "$UA" -o probe/rw/verde.jpg "https://img.ridewill.it/public/imgprod2021/big/verde_lat-efd8c0.jpg" || true
+          curl -sL -A "$UA" -o probe/rw/a.webp "https://img.ridewill.it/public/imgprod2021/big/24-dbc3a0.webp" || true
+          curl -sL -A "$UA" -o probe/rw/b.webp "https://img.ridewill.it/public/imgprod2021/big/25-dbc3a1.webp" || true
+          curl -sL -A "$UA" -o probe/rw/c.webp "https://img.ridewill.it/public/imgprod2021/big/26-dbc3a2.webp" || true
+          ls -la probe/rw
+      - name: commit results
+        run: |
+          git config user.name "probe-bot"
+          git config user.email "probe@local"
+          git add probe/rw
+          git commit -m "probe: immagini ridewill pr carbon" || echo "nothing"
+          git push
