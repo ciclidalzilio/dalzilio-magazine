@@ -209,7 +209,8 @@
     "gar_std": "Official manufacturer warranty, handled by us: if anything needs attention you talk to the store, not a call centre.",
     "simili_k": "Available now",
     "simili_h": "Similar to this one",
-    "simili_all": "Whole category"
+    "simili_all": "Whole category",
+    "klarna_over": "Only for orders up to €2,999 — for higher amounts use financing"
   },
   "cart": {
     "h1": "Your cart",

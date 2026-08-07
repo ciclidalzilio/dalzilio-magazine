@@ -209,7 +209,8 @@
     "gar_std": "Garanzia ufficiale del produttore, gestita da noi: se serve un intervento parli con il negozio, non con un call center.",
     "simili_k": "Disponibili subito",
     "simili_h": "Simili a questa",
-    "simili_all": "Tutta la categoria"
+    "simili_all": "Tutta la categoria",
+    "klarna_over": "Solo per ordini fino a 2.999 € — per importi superiori usa il finanziamento"
   },
   "cart": {
     "h1": "Il tuo carrello",

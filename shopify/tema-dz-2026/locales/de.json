@@ -209,7 +209,8 @@
     "gar_std": "Offizielle Herstellergarantie, von uns betreut: falls etwas ist, sprichst du mit dem Geschäft, nicht mit einem Callcenter.",
     "simili_k": "Sofort verfügbar",
     "simili_h": "Ähnlich wie dieses",
-    "simili_all": "Ganze Kategorie"
+    "simili_all": "Ganze Kategorie",
+    "klarna_over": "Nur für Bestellungen bis 2.999 € — für höhere Beträge Finanzierung nutzen"
   },
   "cart": {
     "h1": "Dein Warenkorb",
