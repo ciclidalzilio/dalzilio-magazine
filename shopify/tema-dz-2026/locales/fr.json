@@ -184,7 +184,7 @@
     "fin_aria": "Durée du financement en mois",
     "klarna_aria": "Payer en 3 fois avec Klarna",
     "klarna_t": "Payez en 3 fois sans frais",
-    "klarna_sub": "3 × {{ importo }}, sans frais supplémentaires",
+    "klarna_sub": "3 × {{ importo }}, sans frais supplémentaires · disponible pour les commandes jusqu'à 2 999 €",
     "sped_free": "Livraison gratuite en Italie",
     "sped_free99": "Livraison gratuite en Italie dès € 99",
     "uc_t": "Contrôlé en atelier",

@@ -242,7 +242,8 @@
           </div>
         {%- endif -%}
 
-        {%- if e_bici and p.available -%}
+        {%- comment -%} Klarna 3 rate: disponibile solo fino a 2.999 euro {%- endcomment -%}
+        {%- if e_bici and p.available and p.price <= 299900 -%}
         <div class="dz-klarna" aria-label="{{ 'prod.klarna_aria' | t }}">
           <span class="dz-kb">Klarna.</span>
           {%- assign terzo = p.price | divided_by: 3 | money -%}<div><b>{{ 'prod.klarna_t' | t }}</b><span class="dz-ksub">{{ 'prod.klarna_sub' | t: importo: terzo }}</span></div>

@@ -184,7 +184,7 @@
     "fin_aria": "Financing duration in months",
     "klarna_aria": "Pay in 3 instalments with Klarna",
     "klarna_t": "Pay in 3 interest-free instalments",
-    "klarna_sub": "3 × {{ importo }}, no extra costs",
+    "klarna_sub": "3 × {{ importo }}, no extra costs · available for orders up to €2,999",
     "sped_free": "Free shipping in Italy",
     "sped_free99": "Free shipping in Italy from € 99",
     "uc_t": "Workshop checked",
