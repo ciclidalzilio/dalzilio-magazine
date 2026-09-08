@@ -1,0 +1,23 @@
+name: probe-hero
+on: push
+jobs:
+  scarica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: scarica hero-corsa dal tema live
+        run: |
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+          curl -sS -A "$UA" --compressed "https://www.ciclidalzilio.com/" -o home.html
+          URL=$(grep -o 'http[^"]*hero-corsa\.jpg[^"]*' home.html | head -1)
+          echo "URL trovato: $URL"
+          mkdir -p probe
+          curl -sS -A "$UA" "$URL" -o probe/hero-corsa.jpg
+          ls -la probe/
+      - name: commit risultato
+        run: |
+          git config user.name "probe"
+          git config user.email "probe@local"
+          git add probe/hero-corsa.jpg
+          git commit -m "probe: hero-corsa dal tema live" || echo "niente da committare"
+          git push
