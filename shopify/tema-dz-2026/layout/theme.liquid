@@ -11,6 +11,7 @@
   <title>{{ page_title }}{% unless page_title contains shop.name %} — {{ shop.name }}{% endunless %}</title>
   {% if page_description %}<meta name="description" content="{{ page_description | escape }}">{% endif %}
   <link rel="canonical" href="{{ canonical_url }}">
+  {% render 'dz-schema' %}
   {{ content_for_header }}
   {{ 'dz-tema.css' | asset_url | stylesheet_tag }}
   {{ 'dz-lucidature.css' | asset_url | stylesheet_tag }}
