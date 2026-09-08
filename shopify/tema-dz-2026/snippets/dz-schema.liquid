@@ -22,14 +22,15 @@
 {%- if page_description %}<meta property="og:description" content="{{ page_description | escape }}">{% endif %}
 {%- if template contains 'product' and product -%}
 <meta property="og:type" content="product">
-{%- if product.featured_image %}<meta property="og:image" content="{{ product.featured_image | image_url: width: 1200 }}">{% endif %}
+{%- if product.featured_image %}<meta property="og:image" content="{{ product.featured_image | image_url: width: 1200 | prepend: 'https:' }}">{% endif %}
 <meta property="og:price:amount" content="{{ product.selected_or_first_available_variant.price | divided_by: 100.0 }}">
 <meta property="og:price:currency" content="{{ cart.currency.iso_code }}">
 {%- elsif template contains 'collection' and collection.image -%}
 <meta property="og:type" content="website">
-<meta property="og:image" content="{{ collection.image | image_url: width: 1200 }}">
+<meta property="og:image" content="{{ collection.image | image_url: width: 1200 | prepend: 'https:' }}">
 {%- else -%}
 <meta property="og:type" content="website">
+<meta property="og:image" content="{{ 'logodz-colori.png' | file_url | prepend: 'https:' }}">
 {%- endif %}
 <meta name="twitter:card" content="summary_large_image">
 
@@ -41,8 +42,8 @@
   "@id": {{ shop.url | append: '/#negozio' | json }},
   "name": {{ shop.name | json }},
   "url": {{ shop.url | json }},
-  "logo": {{ 'logodz-colori.png' | file_url | json }},
-  "image": {{ 'logodz-colori.png' | file_url | json }},
+  "logo": {{ 'logodz-colori.png' | file_url | prepend: 'https:' | json }},
+  "image": {{ 'logodz-colori.png' | file_url | prepend: 'https:' | json }},
   "telephone": "+39 345 7815102",
   "email": "info@ciclidalzilio.com",
   "priceRange": "€€",
@@ -111,7 +112,7 @@
   {%- if product.images.size > 0 %}
   "image": [
     {%- for img in product.images limit: 8 -%}
-    {{ img | image_url: width: 1600 | json }}{% unless forloop.last %},{% endunless %}
+    {{ img | image_url: width: 1600 | prepend: 'https:' | json }}{% unless forloop.last %},{% endunless %}
     {%- endfor -%}
   ],
   {%- endif %}
@@ -183,9 +184,9 @@
   "@context": "https://schema.org",
   "@type": "ItemList",
   "name": {{ collection.title | json }},
-  "numberOfItems": {{ collection.products_count }},
+  "numberOfItems": {{ collection.products | size }},
   "itemListElement": [
-    {%- for prodotto in collection.products limit: 48 -%}
+    {%- for prodotto in collection.products limit: 50 -%}
     {
       "@type": "ListItem",
       "position": {{ forloop.index }},

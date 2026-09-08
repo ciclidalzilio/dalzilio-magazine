@@ -14,7 +14,7 @@ jobs:
           T=201529295112
           curl -sSL -A "$UA" --compressed -c c.txt -b c.txt "https://www.ciclidalzilio.com/?preview_theme_id=$T" -o probe/home.html
           curl -sSL -A "$UA" --compressed -c c.txt -b c.txt "https://www.ciclidalzilio.com/collections/usato-1?preview_theme_id=$T" -o probe/collezione.html
-          curl -sSL -A "$UA" --compressed -c c.txt -b c.txt "https://www.ciclidalzilio.com/collections/usato-1/products/cannondale-topstone-tg-m?preview_theme_id=$T" -o probe/prodotto.html
+          curl -sSL -A "$UA" --compressed -c c.txt -b c.txt "https://www.ciclidalzilio.com/collections/ebikes/products/cannondale-moterra-1?preview_theme_id=$T" -o probe/prodotto.html
           curl -sSL -A "$UA" --compressed -c c.txt -b c.txt "https://www.ciclidalzilio.com/products/cannondale-moterra-1?preview_theme_id=$T" -o probe/prodotto2.html
           wc -c probe/*.html
       - name: commit risultato
