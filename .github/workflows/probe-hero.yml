@@ -1,5 +1,7 @@
 name: probe-hero
 on: push
+permissions:
+  contents: write
 jobs:
   scarica:
     runs-on: ubuntu-latest
