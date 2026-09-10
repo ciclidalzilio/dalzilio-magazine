@@ -7,35 +7,24 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: articoli, EAN e foto Fastlane 10 (tutti i colori)
+      - name: EAN tungsten grey per taglia
         shell: bash
         run: |
           set +e
           UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
           mkdir -p probe
-          curl -sSL -A "$UA" --compressed -H "Accept-Language: it-IT,it;q=0.9" "https://www.scott-sports.com/it/it/product/scott-fastlane-10-bike" -o /tmp/p.html
-          grep -oE '4256008[0-9]{6}' /tmp/p.html | sort -u > probe/articoli.txt
-          echo "articoli trovati: $(wc -l < probe/articoli.txt)"; cat probe/articoli.txt
-          # nomi colore: righe che citano il codice colore
-          grep -oiE '.{0,80}(tungsten|cumulus|grey|white).{0,80}' /tmp/p.html | grep -viE 'mapbox|pk\.ey|sk\.ey' | sort -u | head -40 > probe/colori.txt
-          : > probe/ean10.csv
-          while read -r a; do
+          : > probe/ean-grey.csv
+          for a in 4256008350004 4256008350006 4256008350008 4256008350010 4256008350012; do
             curl -sSL -A "$UA" --compressed -H "Accept-Language: it-IT,it;q=0.9" "https://www.scott-sports.com/it/it/product/scott-fastlane-10-bike?article=$a" -o /tmp/a.html
             g=$(grep -oE 'gtin13"[^0-9]{0,6}[0-9]{13}' /tmp/a.html | grep -oE '[0-9]{13}' | head -1)
+            s=$(grep -oE '"sku"[^0-9]{0,6}[0-9]{13}' /tmp/a.html | grep -oE '[0-9]{13}' | head -1)
             c=$(grep -oiE '"color"[^"]{0,6}"[^"]{2,40}"' /tmp/a.html | head -1)
-            echo "$a;$g;$c" | tee -a probe/ean10.csv
-            col="${a:6:4}"
-            if [ "$col" != "8087" ] && [ ! -d "probe/col-$col" ]; then
-              mkdir -p "probe/col-$col"
-              sed 's#\\/#/#g' /tmp/a.html | grep -oE 'https?://static\.scott-sports\.com/image/upload/t_assetformat(zoom|opengraph)/[^"'"'"' <>)]+' | sort -u > "probe/col-$col/immagini.txt"
-              while read -r img; do fmt=$(echo "$img" | sed -E 's#.*t_assetformat([a-z]+)/.*#\1#'); id=$(basename "$img"); curl -sSL -A "$UA" "$img" -o "probe/col-$col/$fmt-$id"; done < "probe/col-$col/immagini.txt"
-              find "probe/col-$col" -type f -size -2k -delete; ls "probe/col-$col"
-            fi
-          done < probe/articoli.txt
+            echo "$a;$g;$s;$c" | tee -a probe/ean-grey.csv
+          done
       - name: commit risultato
         run: |
           git config user.name "probe"
           git config user.email "probe@local"
           git add probe/
-          git commit -m "probe: Fastlane 10 colori" || echo "niente"
+          git commit -m "probe: EAN tungsten grey" || echo "niente"
           git push
