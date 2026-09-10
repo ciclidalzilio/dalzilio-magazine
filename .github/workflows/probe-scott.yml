@@ -32,7 +32,8 @@ jobs:
           }
           scarica premium "https://www.scott-sports.com/it/it/product/scott-fastlane-premium-bike" "https://www.scott-sports.com/us/en/product/scott-fastlane-premium-bike"
           scarica dieci "https://www.scott-sports.com/it/it/product/scott-fastlane-10-bike" "https://www.scott-sports.com/us/en/product/scott-fastlane-10-bike"
-          find probe -type f -size -2k -name 'img-*' -delete
+          find probe -type f -size -2k -name "img-*" -delete
+          rm -f probe/*/pagina-*.html
           du -sh probe
       - name: commit risultato
         run: |
