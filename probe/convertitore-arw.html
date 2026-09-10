@@ -70,7 +70,7 @@ td .dl{padding:5px 10px;font-size:12px;border-radius:7px}
 
 <div class="opts">
   <div class="opt"><label for="qual">Qualità JPG</label><select id="qual"><option value="0.95">95 — massima</option><option value="0.92" selected>92 — alta (consigliata)</option><option value="0.85">85 — web leggera</option></select></div>
-  <div class="opt"><label for="dev">Sviluppo RAW</label><select id="dev"><option value="fast" selected>Veloce — metà risoluzione (3000 px da 24 MP)</option><option value="full">Piena risoluzione — interpolazione rapida</option><option value="best">Piena risoluzione — qualità massima (lento)</option></select><span class="hint">Per il sito basta "Veloce"</span></div>
+  <div class="opt"><label for="dev">Sviluppo RAW</label><select id="dev"><option value="embed" selected>Istantaneo — JPEG della fotocamera (1616 × 1080)</option><option value="fast">Veloce — sviluppo a metà risoluzione (3000 px)</option><option value="full">Piena risoluzione — interpolazione rapida</option><option value="best">Piena risoluzione — qualità massima (lento)</option></select><span class="hint">"Istantaneo" non sviluppa il RAW: prende il JPEG già dentro il file</span></div>
   <div class="opt"><label for="side">Lato lungo massimo</label><select id="side"><option value="0" selected>Originale (piena risoluzione)</option><option value="4000">4000 px</option><option value="3000">3000 px</option><option value="2000">2000 px</option></select></div>
   <div class="opt"><label for="wb">Bilanciamento del bianco</label><select id="wb"><option value="camera" selected>Come impostato in macchina</option><option value="auto">Automatico</option></select></div>
   <div class="opt"><label for="zipsize">File per ZIP</label><select id="zipsize"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="200">200</option></select><span class="hint">ZIP più piccoli si scaricano meglio</span></div>
@@ -86,7 +86,7 @@ td .dl{padding:5px 10px;font-size:12px;border-radius:7px}
   <button class="primary" id="zipbtn" disabled>Scarica tutto in ZIP</button>
   <button id="clearbtn" disabled>Svuota elenco</button>
 </div>
-<div class="note" id="note">I JPG conservano l'orientamento della foto. "Veloce" sviluppa a metà risoluzione (circa 3000 × 2000 px da un sensore da 24 MP), più che sufficiente per il sito e 4–6 volte più rapido; la piena risoluzione dà JPG da 8–12 MB.</div>
+<div class="note" id="note">I JPG conservano l'orientamento della foto. "Istantaneo" estrae il JPEG di anteprima che la fotocamera salva dentro ogni ARW (1616 × 1080, colori e stile della macchina): pochi secondi per 200 foto, ideale per il sito. "Veloce" sviluppa a metà risoluzione (circa 3000 × 2000 px da un sensore da 24 MP), più che sufficiente per il sito e 4–6 volte più rapido; la piena risoluzione dà JPG da 8–12 MB.</div>
 
 <div class="tablewrap"><table id="tbl" hidden>
   <thead><tr><th>#</th><th></th><th>File</th><th class="dim">Dimensioni</th><th class="sz">JPG</th><th>Stato</th><th></th></tr></thead>
@@ -132,7 +132,38 @@ return ret;
     var js = $("libraw-js").textContent, b64 = $("wasm-b64").textContent.trim();
     var head = 'self.__WASM__=(function(){var b=atob("' + b64 + '");var u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;})();\n';
     var tail = '\n' +
+      'function findJpegs(u8){' +
+      '  var out=[],orient=1;try{var le=u8[0]===0x49;if(!((u8[0]===0x49&&u8[1]===0x49)||(u8[0]===0x4D&&u8[1]===0x4D)))return {jpegs:out,orient:1};' +
+      '  var dv=new DataView(u8.buffer,u8.byteOffset,u8.byteLength),seen={};' +
+      '  function r16(o){return dv.getUint16(o,le)} function r32(o){return dv.getUint32(o,le)}' +
+      '  function ifd(off,depth){if(!off||off+2>u8.length||seen[off]||depth>8)return;seen[off]=1;var n=r16(off);if(n>800||off+2+n*12>u8.length)return;' +
+      '    var jo=0,jl=0,so=0,sl=0,comp=0;' +
+      '    for(var i=0;i<n;i++){var e=off+2+i*12,tag=r16(e),type=r16(e+2),cnt=r32(e+4),val=(type===3&&cnt===1)?r16(e+8):r32(e+8);' +
+      '      if(tag===0x0112&&orient===1)orient=val;else if(tag===0x0201)jo=val;else if(tag===0x0202)jl=val;else if(tag===0x0111&&cnt===1)so=val;else if(tag===0x0117&&cnt===1)sl=val;else if(tag===0x0103)comp=val;' +
+      '      else if(tag===0x014A||tag===0x8769){if(cnt===1)ifd(val,depth+1);else for(var k=0;k<Math.min(cnt,8);k++)ifd(r32(val+k*4),depth+1);}}' +
+      '    if(jo&&jl&&jo+jl<=u8.length)out.push([jo,jl]);if(comp===6&&so&&sl&&so+sl<=u8.length)out.push([so,sl]);' +
+      '    ifd(r32(off+2+n*12),depth+1);}' +
+      '  ifd(r32(4),0);}catch(e){}' +
+      '  if(!out.length){for(var i=0;i<u8.length-3&&out.length<6;i++){if(u8[i]===0xFF&&u8[i+1]===0xD8&&u8[i+2]===0xFF){out.push([i,Math.min(u8.length-i,12000000)]);i+=4096;}}}' +
+      '  return {jpegs:out,orient:orient};}' +
+      'async function emit(m,cv,w,h){' +
+      '  var scale=1; if(m.maxSide>0 && Math.max(w,h)>m.maxSide) scale=m.maxSide/Math.max(w,h);' +
+      '  var ow=Math.round(w*scale), oh=Math.round(h*scale);' +
+      '  var out=cv; if(scale!==1){out=new OffscreenCanvas(ow,oh);var ox=out.getContext("2d");ox.imageSmoothingQuality="high";ox.drawImage(cv,0,0,ow,oh);}' +
+      '  var blob=await out.convertToBlob({type:"image/jpeg",quality:m.quality});' +
+      '  var tc=new OffscreenCanvas(144,96);var tx=tc.getContext("2d");tx.fillStyle="#fff";tx.fillRect(0,0,144,96);var r=Math.min(144/w,96/h);tx.drawImage(cv,(144-w*r)/2,(96-h*r)/2,w*r,h*r);var thumb=await tc.convertToBlob({type:"image/jpeg",quality:.7});' +
+      '  self.postMessage({id:m.id,ok:true,blob:blob,thumb:thumb,w:ow,h:oh});}' +
+      'async function embedded(m){' +
+      '  var u8=new Uint8Array(m.buf),f=findJpegs(u8),best=null;' +
+      '  for(var i=0;i<f.jpegs.length&&i<6;i++){var c=f.jpegs[i];if(c[1]<20000)continue;try{var bm=await createImageBitmap(new Blob([u8.subarray(c[0],c[0]+c[1])],{type:"image/jpeg"}));if(!best||bm.width*bm.height>best.width*best.height){if(best)best.close();best=bm;}else bm.close();}catch(e){}}' +
+      '  if(!best) throw new Error("nessuna anteprima JPEG nel file: usa la modalità Veloce");' +
+      '  var w=best.width,h=best.height,o=f.orient,rot=0;' +
+      '  if(w>h){if(o===6)rot=90;else if(o===8)rot=-90;else if(o===3)rot=180;}' +
+      '  var cw=rot===90||rot===-90?h:w,ch=rot===90||rot===-90?w:h;' +
+      '  var cv=new OffscreenCanvas(cw,ch),cx=cv.getContext("2d");cx.translate(cw/2,ch/2);cx.rotate(rot*Math.PI/180);cx.drawImage(best,-w/2,-h/2);best.close();' +
+      '  await emit(m,cv,cw,ch);}' +
       'self.onmessage=async function(e){var m=e.data;try{' +
+      '  if(m.mode==="embed"){await embedded(m);return;}' +
       '  var raw=new self.LibRawClass();' +
       '  await raw.open(new Uint8Array(m.buf), m.settings);' +
       '  var img=await raw.imageData();' +
@@ -142,15 +173,10 @@ return ret;
       '  if(c===3){for(var i=0,j=0;i<n;i++,j+=3){var k=i*4;rgba[k]=src[j];rgba[k+1]=src[j+1];rgba[k+2]=src[j+2];rgba[k+3]=255;}}' +
       '  else if(c===4){for(var i2=0;i2<n*4;i2++)rgba[i2]=src[i2];for(var a=3;a<n*4;a+=4)rgba[a]=255;}' +
       '  else {for(var i3=0;i3<n;i3++){var k3=i3*4,v=src[i3];rgba[k3]=v;rgba[k3+1]=v;rgba[k3+2]=v;rgba[k3+3]=255;}}' +
-      '  var scale=1; if(m.maxSide>0 && Math.max(w,h)>m.maxSide) scale=m.maxSide/Math.max(w,h);' +
-      '  var ow=Math.round(w*scale), oh=Math.round(h*scale);' +
       '  if(typeof OffscreenCanvas!=="undefined"){' +
       '    var cv=new OffscreenCanvas(w,h); var cx=cv.getContext("2d"); cx.putImageData(new ImageData(rgba,w,h),0,0);' +
-      '    var out=cv; if(scale!==1){out=new OffscreenCanvas(ow,oh);var ox=out.getContext("2d");ox.imageSmoothingQuality="high";ox.drawImage(cv,0,0,ow,oh);}' +
-      '    var blob=await out.convertToBlob({type:"image/jpeg",quality:m.quality});' +
-      '    var tc=new OffscreenCanvas(144,96);var tx=tc.getContext("2d");tx.fillStyle="#fff";tx.fillRect(0,0,144,96);var r=Math.min(144/w,96/h);tx.drawImage(cv,(144-w*r)/2,(96-h*r)/2,w*r,h*r);var thumb=await tc.convertToBlob({type:"image/jpeg",quality:.7});' +
-      '    self.postMessage({id:m.id,ok:true,blob:blob,thumb:thumb,w:ow,h:oh});' +
-      '  } else { self.postMessage({id:m.id,ok:true,rgba:rgba.buffer,w:w,h:h,ow:ow,oh:oh},[rgba.buffer]); }' +
+      '    await emit(m,cv,w,h);' +
+      '  } else { var scale=1; if(m.maxSide>0 && Math.max(w,h)>m.maxSide) scale=m.maxSide/Math.max(w,h); self.postMessage({id:m.id,ok:true,rgba:rgba.buffer,w:w,h:h,ow:Math.round(w*scale),oh:Math.round(h*scale)},[rgba.buffer]); }' +
       '}catch(err){var msg=String(err&&err.message||err);if(/^\\d+$/.test(msg)||!msg)msg="file non riconosciuto come RAW (o danneggiato)";self.postMessage({id:m.id,ok:false,error:msg});}};';
     return head + js + tail;
   }
@@ -164,10 +190,10 @@ return ret;
     slot.w.onmessage = function(e){ if(slot.pending && e.data.id===slot.pending.id) slot.pending.resolve(e.data); };
     slot.w.onerror = function(e){ if(slot.pending) slot.pending.resolve({id:slot.pending.id, ok:false, error: e.message||"errore nel worker"}); };
   }
-  function decode(slot, buf, settings, quality, maxSide){
+  function decode(slot, buf, settings, quality, maxSide, mode){
     return new Promise(function(resolve){
       var id = ++reqId; slot.pending = {id:id, resolve:resolve};
-      slot.w.postMessage({id:id, buf:buf, settings:settings, quality:quality, maxSide:maxSide}, [buf]);
+      slot.w.postMessage({id:id, buf:buf, settings:settings, quality:quality, maxSide:maxSide, mode:mode}, [buf]);
     });
   }
   /* fallback: codifica JPG sul thread principale (browser senza OffscreenCanvas nel worker) */
@@ -225,7 +251,7 @@ return ret;
       var settings={ useCameraWb: $("wb").value==="camera", useAutoWb: $("wb").value==="auto", outputColor:1, outputBps:8,
                      halfSize: dev==="fast", userQual: dev==="best" ? 3 : (dev==="full" ? 1 : 0), highlight:0 };
       var q=parseFloat($("qual").value), side=parseInt($("side").value,10);
-      var res=await decode(slot, buf, settings, q, side); slot.jobs++;
+      var res=await decode(slot, buf, settings, q, side, dev==='embed' ? 'embed' : 'raw'); slot.jobs++;
       if(res.ok && res.rgba) res=await encodeMain(res, q);
       if(!res.ok) throw new Error(res.error||"errore");
       it.blob=res.blob; it.w=res.w; it.h=res.h; it.state="ok";
