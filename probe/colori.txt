@@ -1,9 +1,0 @@
-								   data-gtm-item-id="427174" data-gtm-item-variant="white"
-				data-product-url="/it/it/product/sco-sunglasses-stride-ls-white-amp-ls-gold-chrome-s1-3?article=4251160002374" >
-			cumulus white</span>
-			data-variantcode="4256008087004" title="cumulus white" alt="cumulus white">
-			data-variantcode="4256008350004" title="tungsten grey" alt="tungsten grey">
-	"color":"cumulus white",
-                 data-gtm-item-variant="cumulus white"
-            <button class="btn btn-white btn-block btn-close-country-navigation"><i class="fal fa-times fa-2x"></i></but
-  color: white;
