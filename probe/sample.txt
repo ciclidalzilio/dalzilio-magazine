@@ -1,0 +1,2 @@
+link: 
+-rw-r--r-- 1 runner runner 10489 Sep 10 16:25 /tmp/raw/sample.ARW

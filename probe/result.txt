@@ -1,0 +1,3 @@
+elapsed 3.1s
+row: 1 sample.ARW — 10 KB ARW errore file non riconosciuto come RAW (o danneggiato)
+status: 0 JPG pronti · 1 con errore
