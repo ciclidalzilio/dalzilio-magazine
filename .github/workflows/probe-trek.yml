@@ -20,9 +20,9 @@ jobs:
             const b = await chromium.launch(); const ctx = await b.newContext({ locale: 'it-IT', userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36', viewport: { width: 1400, height: 1000 } });
             const p = await ctx.newPage(); const out = { swatches: [], html: [] };
             try {
-              await p.goto('https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/madone/f/F213/madone-sl-7-gen-8/57664/', { waitUntil: 'networkidle', timeout: 90000 });
+              await p.goto('https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/madone/f/F213/madone-sl-7-gen-8/57664/', { waitUntil: 'domcontentloaded', timeout: 90000 });
               for (const t of ['Accetta tutti', 'Accetta', 'Accept All', 'Accept']) { const el = p.getByRole('button', { name: t }).first(); if (await el.count()) { await el.click().catch(()=>{}); break; } }
-              await p.waitForTimeout(2000);
+              await p.waitForTimeout(9000);
               // struttura dello swatch
               const probe = p.getByText('blue-black', { exact: true }).first();
               if (await probe.count()) { out.html.push(await probe.evaluate(e => (e.parentElement && e.parentElement.parentElement ? e.parentElement.parentElement.outerHTML : e.outerHTML).slice(0, 3000))); }
