@@ -1,0 +1,5 @@
+{
+ "swatches": [],
+ "html": [],
+ "error": "TimeoutError: page.goto: Timeout 90000ms exceeded.\nCall log:\n  - navigating to \"https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/madone/f/F213/madone-sl-7-gen-8/57664/\", waiting until \"networkidle\"\n"
+}
