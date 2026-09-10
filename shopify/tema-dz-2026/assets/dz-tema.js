@@ -148,8 +148,15 @@
       var dh = r >= R ? R / r : 1;   /* altezza mostrata / altezza card */
 
       var occW = fw * dw, occH = fh * dh;
-      if (occW > 0.86 && occH > 0.86) return; /* gia' grande: non toccare */
-      var s = Math.max(MINZ, Math.min(MAXZ, Math.min(TARGET / occW, TARGET / occH)));
+      var s;
+      if (occW > 0.86 || occH > 0.86) {
+        /* bici gia' a filo della card (es. foto ufficiali Cannondale):
+           niente zoom, anzi la riduco un filo cosi' le ruote non vengono
+           tagliate nemmeno con l'ingrandimento extra del mobile/hover */
+        s = Math.min(0.94, 0.9 / Math.max(occW, occH));
+      } else {
+        s = Math.max(MINZ, Math.min(MAXZ, Math.min(TARGET / occW, TARGET / occH)));
+      }
       img.style.setProperty("--nz", s.toFixed(3));
       var nx = -((x0 + x1 + 1) / 2 / w - 0.5) * dw * 100;
       var ny = -((y0 + y1 + 1) / 2 / h - 0.5) * dh * 100;
