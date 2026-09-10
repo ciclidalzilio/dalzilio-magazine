@@ -226,6 +226,12 @@ section.block{padding:96px 0 60px}
 .prod.esaurito:hover{transform:none}
 .prod.esaurito:hover .pimg img{transform:scale(var(--nz,1.08)) translate(var(--nx,0%),var(--ny,0%))}
 .prod.esaurito .chip.sale{display:none}
+/* secondo colore: sfuma sopra la foto principale al passaggio del mouse (solo con puntatore) */
+.prod .pimg img.hover,.prod.esaurito .pimg img.hover{opacity:0;transition:opacity .35s ease,transform .4s;z-index:1;background:#fff}
+@media (hover:hover){
+  .prod:hover .pimg img.hover{opacity:1}
+  .prod.esaurito:hover .pimg img.hover{opacity:.42}
+}
 .prod .soldout{position:absolute;left:50%;top:50%;z-index:3;transform:translate(-50%,-50%) rotate(-12deg);
   font-family:var(--font-mono);font-size:13px;letter-spacing:.22em;text-transform:uppercase;font-weight:700;
   color:#15161a;border:2px solid #15161a;border-radius:6px;padding:6px 14px;background:rgba(255,255,255,.72);

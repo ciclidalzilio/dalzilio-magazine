@@ -15,10 +15,26 @@
 -%}
 {%- assign in_sconto = false -%}
 {%- if product.compare_at_price > product.price -%}{%- assign in_sconto = true -%}{%- endif -%}
-<article class="prod{% unless product.available %} esaurito{% endunless %}" data-vendor="{{ product.vendor | escape }}">
+{%- comment -%}
+  Secondo colore al passaggio del mouse: la prima variante collegata a una foto
+  diversa da quella in evidenza (es. Madone nero in copertina -> rosso al hover).
+{%- endcomment -%}
+{%- assign foto_hover = blank -%}
+{%- if product.featured_media -%}
+  {%- for v in product.variants -%}
+    {%- if v.featured_media and v.featured_media.id != product.featured_media.id -%}
+      {%- assign foto_hover = v.featured_media.preview_image -%}
+      {%- break -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endif -%}
+<article class="prod{% unless product.available %} esaurito{% endunless %}{% if foto_hover != blank %} due-colori{% endif %}" data-vendor="{{ product.vendor | escape }}">
   <a class="pimg" href="{{ p_url }}" aria-label="{{ product.title | escape }}">
     {%- if product.featured_image -%}
       <img src="{{ product.featured_image | image_url: width: 640 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="640" height="480" data-dz-fit>
+    {%- endif -%}
+    {%- if foto_hover != blank -%}
+      <img class="hover" src="{{ foto_hover | image_url: width: 640 }}" alt="{{ foto_hover.alt | default: product.title | escape }}" loading="lazy" width="640" height="480" data-dz-fit aria-hidden="true">
     {%- endif -%}
     {%- comment -%} niente etichetta tipo (codici feed tipo "EMF - E-FULL S"): solo Usato {%- endcomment -%}
     {%- if product.type == 'USATO' -%}
