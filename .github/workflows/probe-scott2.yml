@@ -1,0 +1,39 @@
+name: probe-scott2
+on: push
+permissions:
+  contents: write
+jobs:
+  scarica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: dati EAN e immagini Fastlane 20
+        shell: bash
+        run: |
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+          mkdir -p probe/venti
+          for spec in "premium|https://www.scott-sports.com/it/it/product/scott-fastlane-premium-bike?article=4255997958008" "dieci|https://www.scott-sports.com/it/it/product/scott-fastlane-10-bike?article=4256008087008" "venti|https://www.scott-sports.com/it/it/product/scott-fastlane-20-bike?article=4256013020004"; do
+            d="${spec%%|*}"; u="${spec#*|}"
+            curl -sSL -A "$UA" --compressed -H "Accept-Language: it-IT,it;q=0.9" "$u" -o /tmp/$d.html
+            echo "$d: $(wc -c < /tmp/$d.html) byte"
+            # solo righe utili, mai token: estraggo pezzi con ean/gtin/article/sku e i JSON-LD
+            sed 's#\\/#/#g' /tmp/$d.html | grep -oiE '.{0,120}(gtin|"ean|ean"|barcode|"article|articleNumber|"sku).{0,160}' | grep -viE 'mapbox|pk\.ey|sk\.ey' | sort -u > probe/$d-dati.txt || true
+            grep -oE '<script type="application/ld\+json">.*?</script>' /tmp/$d.html | grep -viE 'mapbox|pk\.ey|sk\.ey' | head -c 200000 > probe/$d-ldjson.txt || true
+            echo "  righe dati: $(wc -l < probe/$d-dati.txt), ldjson: $(wc -c < probe/$d-ldjson.txt)"
+          done
+          # immagini Fastlane 20 (zoom/raw/opengraph)
+          sed 's#\\/#/#g' /tmp/venti.html | grep -oE 'https?://static\.scott-sports\.com/image/upload/t_assetformat(zoom|raw|opengraph)/[^"'"'"' <>)]+' | sort -u > probe/venti/immagini.txt
+          echo "immagini venti: $(wc -l < probe/venti/immagini.txt)"
+          while read -r img; do
+            fmt=$(echo "$img" | sed -E 's#.*t_assetformat([a-z]+)/.*#\1#'); id=$(basename "$img"); id="${id%%\?*}"
+            curl -sSL -A "$UA" "$img" -o "probe/venti/$fmt-$id" || true
+          done < probe/venti/immagini.txt
+          find probe/venti -type f -size -2k -delete
+          ls -la probe/venti | head -60
+      - name: commit risultato
+        run: |
+          git config user.name "probe"
+          git config user.email "probe@local"
+          git add probe/
+          git commit -m "probe: dati EAN e immagini Fastlane 20" || echo "niente"
+          git push
