@@ -5,26 +5,44 @@ permissions:
 jobs:
   scarica:
     runs-on: ubuntu-latest
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - name: dati Madone SL 7 Gen 8 da trekbikes.com
+      - name: dati Madone SL 7 Gen 8 (python)
         shell: bash
         run: |
           set +e
           UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
           mkdir -p probe
-          curl -sSL -A "$UA" --compressed -H "Accept-Language: it-IT,it;q=0.9" "https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/madone/madone-sl/madone-sl-7-gen-8/p/5320013/" -o /tmp/t.html
+          timeout 120 curl -sSL -A "$UA" --compressed -H "Accept-Language: it-IT,it;q=0.9" "https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/madone/madone-sl/madone-sl-7-gen-8/p/5320013/" -o /tmp/t.html
           echo "byte: $(wc -c < /tmp/t.html)"
-          # estrai solo pezzi utili (mai token): sku/colori/taglie/prezzo/immagini
-          sed 's#\\/#/#g;s#\\"#"#g' /tmp/t.html > /tmp/t2.html
-          grep -oiE '.{0,100}("code"|"sku"|"colorName"|"colourName"|"colorCode"|"color"|"size"|"sizeName"|"price"|"ean"|"upc"|"gtin").{0,120}' /tmp/t2.html | grep -viE 'mapbox|pk\.ey|sk\.ey|token|apikey|api_key' | sort -u | head -600 > probe/trek-dati.txt
-          grep -oE 'https?://media\.trekbikes\.com/image/upload/[^"'"'"' <>)]+' /tmp/t2.html | sort -u > probe/trek-immagini.txt
-          grep -oE '<script type="application/ld\+json">.{0,20000}?</script>' /tmp/t2.html | grep -viE 'token|apikey' | head -c 60000 > probe/trek-ldjson.txt
-          echo "dati: $(wc -l < probe/trek-dati.txt) righe, immagini: $(wc -l < probe/trek-immagini.txt), ldjson: $(wc -c < probe/trek-ldjson.txt)"
+          python3 - <<'PY'
+          import re, json
+          h = open('/tmp/t.html', encoding='utf-8', errors='replace').read()
+          h = h.replace('\\/', '/').replace('\\"', '"')
+          out = []
+          # JSON-LD
+          for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', h, flags=re.S):
+              if 'token' in b.lower(): continue
+              out.append('LDJSON ' + b[:20000])
+          # codici prodotto 7 cifre e contesto
+          for m in re.finditer(r'"(?:code|sku|skuCode|variantCode)"\s*:\s*"?(53\d{5})', h):
+              ctx = h[max(0, m.start()-300): m.end()+300]
+              names = re.findall(r'"(?:colorName|colourName|color|colour|size|sizeName|name|price|formattedPrice|ean|upc|gtin13)"\s*:\s*"([^"]{1,80})"', ctx)
+              out.append('CODE %s | %s' % (m.group(1), ' | '.join(dict.fromkeys(names))))
+          # nomi colore tipici Trek
+          for c in sorted(set(re.findall(r'"((?:Gloss|Matte|Satin)[^"]{3,70})"', h))):
+              out.append('COLORE ' + c)
+          imgs = sorted(set(re.findall(r'https?://media\.trekbikes\.com/image/upload/[^"\' <>)]+', h)))
+          open('probe/trek-immagini.txt', 'w').write('\n'.join(imgs))
+          open('probe/trek-dati.txt', 'w').write('\n'.join(dict.fromkeys(out)))
+          print('righe dati', len(out), 'immagini', len(imgs))
+          PY
       - name: commit risultato
         run: |
           git config user.name "probe"
           git config user.email "probe@local"
           git add probe/
-          git commit -m "probe: dati Trek Madone SL 7" || echo "niente"
+          git commit -m "probe: dati Trek Madone SL 7 (python)" || echo "niente"
+          git pull --rebase || true
           git push
