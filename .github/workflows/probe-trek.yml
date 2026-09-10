@@ -5,98 +5,25 @@ permissions:
 jobs:
   scarica:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: playwright Domane
+      - name: foto Domane altri colori
         shell: bash
         run: |
           set +e
-          mkdir -p probe/img
-          npm init -y >/dev/null 2>&1; npm i playwright@1.47.0 >/dev/null 2>&1; npx playwright install --with-deps chromium >/dev/null 2>&1
-          cat > pw.js <<'JS'
-          const { chromium } = require('playwright'); const fs = require('fs');
-          const PAGES = [
-            ['sl5', 'https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/domane/f/F221/domane-sl-5-gen-5/77555/5347955'],
-            ['sl6', 'https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/domane/f/F221/domane-sl-6-axs-gen-5/79844/5349697'],
-            ['sl7', 'https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/domane/f/F221/domane-sl-7-axs-1x-gen-5/79818/5349533'],
-          ];
-          const clean = s => (s || '').replace(/(pk|sk)\.[A-Za-z0-9._-]{20,}/g, '[tok]');
-          (async () => {
-            const b = await chromium.launch(); const ctx = await b.newContext({ locale: 'it-IT', userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36', viewport: { width: 1400, height: 1000 } });
-            const out = {};
-            for (const [key, url] of PAGES) {
-              const p = await ctx.newPage(); const o = { url, swatches: [], offers: [], error: null };
-              try {
-                await p.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 });
-                await p.waitForTimeout(9000);
-                for (const t of ['Accetta tutti', 'Accetta', 'Accept All', 'Accept']) { const el = p.getByRole('button', { name: t }).first(); if (await el.count()) { await el.click().catch(()=>{}); break; } }
-                await p.waitForTimeout(1500);
-                o.finalUrl = p.url();
-                const html = await p.content();
-                for (const m of html.matchAll(/"sku":"(\d{7})","name":"([^"]{3,60})","price":(\d+)/g)) o.offers.push({ sku: m[1], name: m[2], price: +m[3] });
-                const md = html.match(/<meta name="description" content="([^"]*)"/); o.metaDesc = md ? md[1] : '';
-                const ld = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => m[1]).filter(s => /"Product"/.test(s));
-                o.ld = ld.map(s => s.slice(0, 6000));
-                o.h1 = await p.locator('h1').first().innerText().catch(()=>'' );
-                const body = await p.locator('body').innerText();
-                fs.writeFileSync('probe/' + key + '.txt', clean(body));
-                const sw = p.locator('[qaid^="color-swatch-label"], label[for^="color-"], input[type=radio][data-color]');
-                const n = await sw.count(); o.nSwatch = n;
-                const seen = new Set();
-                const grab = async (tag) => {
-                  await p.waitForTimeout(2500);
-                  const u = p.url(); const sku = (u.match(/\/(\d{7})\/?$/) || [])[1] || '';
-                  if (!sku || seen.has(sku)) return; seen.add(sku);
-                  const info = await p.evaluate(() => {
-                    const h1 = document.querySelector('h1'); const hy = h1 ? h1.getBoundingClientRect().top + window.scrollY : 0;
-                    const els = [...document.querySelectorAll('body *')].filter(e => e.children.length === 0 && /^\s*Colore\s*\/?/.test(e.textContent || ''));
-                    const cols = els.map(e => ({ t: (e.parentElement ? e.parentElement.innerText : e.innerText).replace(/\s+/g, ' ').trim().slice(0, 120), y: e.getBoundingClientRect().top + window.scrollY }));
-                    const sel = document.querySelector('input[type=radio][data-color]:checked, [aria-checked="true"][data-color], [qaid^="color-swatch-label"] input:checked');
-                    return { cols, hy, selColor: sel ? (sel.getAttribute('data-color') || sel.value || '') : '', title: document.title };
-                  });
-                  const imgs = [...new Set(await p.locator('img').evaluateAll(els => els.map(e => e.currentSrc || e.src).filter(s => s && /Domane/i.test(s) && s.includes('media.trekbikes.com'))))];
-                  o.swatches.push({ tag, sku, ...info, imgs: imgs.slice(0, 14) });
-                  for (const iu of imgs.slice(0, 14)) {
-                    const name = iu.split('/').pop().split('?')[0]; if (!/Primary|Alt/i.test(name)) continue;
-                    const base = name.replace(/-(Primary|Alt\d)$/i, '');
-                    for (const v of ['Primary', 'Alt1', 'Alt2', 'Alt3', 'Alt4', 'Alt5']) {
-                      const fn = 'probe/img/' + base + '-' + v + '.jpg'; if (fs.existsSync(fn)) continue;
-                      try { const r = await ctx.request.get('https://media.trekbikes.com/image/upload/w_1800/' + base + '-' + v); if (r.ok()) fs.writeFileSync(fn, await r.body()); } catch (e) {}
-                    }
-                  }
-                };
-                await grab('initial');
-                for (let k = 0; k < Math.min(n, 8); k++) {
-                  const el = sw.nth(k);
-                  const tag = (await el.getAttribute('qaid')) || (await el.getAttribute('data-color')) || (await el.getAttribute('for')) || ('n' + k);
-                  try { await el.scrollIntoViewIfNeeded(); await el.click({ timeout: 4000, force: true }); } catch (e) { continue; }
-                  await grab(tag);
-                }
-                if (n === 0) {
-                  const names = ['black', 'blue-black', 'purplelight-black', 'red-black', 'white', 'white-black', 'white-blue', 'white-red', 'grey', 'grey-black', 'silver', 'blue', 'red', 'green', 'yellow', 'orange', 'purple', 'pink', 'gold', 'black-red', 'black-white', 'black-blue', 'blue-white', 'darkblue', 'teal', 'brown', 'lightblue', 'greyblack', 'whitegrey', 'purple-black', 'red-white', 'green-black', 'grey-white', 'white-green', 'darkgreen', 'olive', 'navy', 'beige', 'cream'];
-                  for (const nm of names) {
-                    const loc = p.getByText(nm, { exact: true }); const c = await loc.count(); if (!c) continue;
-                    for (let k = 0; k < Math.min(c, 4); k++) {
-                      const el = loc.nth(k);
-                      const clk = el.locator('xpath=ancestor-or-self::*[self::button or self::label or self::a or @role="radio" or @role="button" or @role="option"][1]');
-                      const target = (await clk.count()) ? clk.first() : el;
-                      try { await target.scrollIntoViewIfNeeded(); await target.click({ timeout: 4000, force: true }); } catch (e) { continue; }
-                      await grab(nm);
-                    }
-                  }
-                }
-              } catch (e) { o.error = String(e); }
-              out[key] = o; await p.close();
-            }
-            fs.writeFileSync('probe/pw.json', JSON.stringify(out, null, 1));
-            await b.close();
-          })();
-          JS
-          node pw.js; echo "pw.json: $(wc -c < probe/pw.json)"; ls probe/img | wc -l
-          rm -rf node_modules package.json package-lock.json pw.js
-          find probe/img -type f -size -15k -delete
+          rm -rf probe/img probe/*.txt probe/pw.json; mkdir -p probe/img2
+          for m in "DomaneSL5-27-77555" "DomaneSL6AXS-27-79844" "DomaneSL7AXS1x13-27-79818"; do
+            for L in B C D E F; do
+              for v in Primary Alt1 Alt2 Alt3 Alt4 Alt5; do
+                n="$m-$L-$v"
+                curl -sfL --max-time 60 -A "Mozilla/5.0" -o "probe/img2/$n.jpg" "https://media.trekbikes.com/image/upload/w_1800/$n" && echo "ok $n" || echo "no $n"
+              done
+            done
+          done
+          find probe/img2 -type f -size -15k -delete
+          ls probe/img2 | wc -l
       - name: commit risultato
         run: |
           git config user.name "probe"; git config user.email "probe@local"
-          git add probe/; git commit -m "probe: Trek Domane" || echo "niente"; git pull --rebase || true; git push
+          git add -A probe/; git commit -m "probe: foto Domane B-F" || echo "niente"; git pull --rebase || true; git push
