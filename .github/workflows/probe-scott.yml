@@ -1,0 +1,43 @@
+name: probe-scott
+on: push
+permissions:
+  contents: write
+jobs:
+  scarica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: scarica pagine e immagini Scott Fastlane
+        shell: bash
+        run: |
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+          mkdir -p probe/premium probe/dieci
+          scarica() {  # $1 = cartella, $2... = url pagine
+            d="$1"; shift
+            for u in "$@"; do
+              n=$(echo "$u" | md5sum | cut -c1-6)
+              curl -sSL -A "$UA" --compressed -H "Accept-Language: it-IT,it;q=0.9,en;q=0.8" "$u" -o "probe/$d/pagina-$n.html" || true
+              echo "$u -> $(wc -c < probe/$d/pagina-$n.html) byte"
+            done
+            cat probe/$d/pagina-*.html | sed 's#\\/#/#g' | grep -oE 'https?://[^"'"'"' <>)]+\.(jpg|jpeg|png|webp)(\?[^"'"'"' <>)]*)?' | sort -u > probe/$d/immagini.txt
+            echo "url immagini: $(wc -l < probe/$d/immagini.txt)"
+            i=0
+            while read -r img; do
+              case "$img" in *fastlane*|*Fastlane*|*FASTLANE*|*/product*|*bike*) ;; *) continue;; esac
+              i=$((i+1)); [ $i -gt 80 ] && break
+              ext="${img##*.}"; ext="${ext%%\?*}"
+              curl -sSL -A "$UA" "$img" -o "probe/$d/img-$(printf %03d $i).$ext" || true
+            done < probe/$d/immagini.txt
+            ls -la probe/$d | head -100
+          }
+          scarica premium "https://www.scott-sports.com/it/it/product/scott-fastlane-premium-bike" "https://www.scott-sports.com/us/en/product/scott-fastlane-premium-bike"
+          scarica dieci "https://www.scott-sports.com/it/it/product/scott-fastlane-10-bike" "https://www.scott-sports.com/us/en/product/scott-fastlane-10-bike"
+          find probe -type f -size -2k -name 'img-*' -delete
+          du -sh probe
+      - name: commit risultato
+        run: |
+          git config user.name "probe"
+          git config user.email "probe@local"
+          git add probe/
+          git commit -m "probe: pagine e immagini Scott Fastlane" || echo "niente"
+          git push
