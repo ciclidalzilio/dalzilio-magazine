@@ -1,0 +1,3 @@
+elapsed 15.1s
+row: 1 sample.ARW 3276 × 4920 5.4 MB 12.6 s Scarica
+status: 1 JPG pronti
