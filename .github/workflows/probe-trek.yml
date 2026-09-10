@@ -3,27 +3,58 @@ on: push
 permissions:
   contents: write
 jobs:
-  scarica:
+  specs:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: foto Domane altri colori
+      - name: specifiche Domane
         shell: bash
         run: |
           set +e
-          rm -rf probe/img probe/*.txt probe/pw.json; mkdir -p probe/img2
-          for m in "DomaneSL5-27-77555" "DomaneSL6AXS-27-79844" "DomaneSL7AXS1x13-27-79818"; do
-            for L in B C D E F; do
-              for v in Primary Alt1 Alt2 Alt3 Alt4 Alt5; do
-                n="$m-$L-$v"
-                curl -sfL --max-time 60 -A "Mozilla/5.0" -o "probe/img2/$n.jpg" "https://media.trekbikes.com/image/upload/w_1800/$n" && echo "ok $n" || echo "no $n"
-              done
-            done
-          done
-          find probe/img2 -type f -size -15k -delete
-          ls probe/img2 | wc -l
+          mkdir -p probe
+          npm init -y >/dev/null 2>&1; npm i playwright@1.47.0 >/dev/null 2>&1; npx playwright install --with-deps chromium >/dev/null 2>&1
+          cat > pw.js <<'JS'
+          const { chromium } = require('playwright'); const fs = require('fs');
+          const PAGES = [
+            ['sl5', 'https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/domane/f/F221/domane-sl-5-gen-5/77555/5347955'],
+            ['sl6', 'https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/domane/f/F221/domane-sl-6-axs-gen-5/79844/5349697'],
+            ['sl7', 'https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/domane/f/F221/domane-sl-7-axs-1x-gen-5/79818/5349533'],
+          ];
+          const clean = s => (s || '').replace(/(pk|sk)\.[A-Za-z0-9._-]{20,}/g, '[tok]');
+          (async () => {
+            const b = await chromium.launch(); const ctx = await b.newContext({ locale: 'it-IT', userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36', viewport: { width: 1400, height: 1000 } });
+            const out = {};
+            for (const [key, url] of PAGES) {
+              const p = await ctx.newPage(); const o = { url, error: null };
+              try {
+                await p.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 });
+                await p.waitForTimeout(8000);
+                for (const t of ['Accetta tutti', 'Accetta', 'Accept All', 'Accept']) { const el = p.getByRole('button', { name: t }).first(); if (await el.count()) { await el.click().catch(()=>{}); break; } }
+                await p.waitForTimeout(1000);
+                const tab = p.getByText('Specifiche', { exact: true });
+                const n = await tab.count();
+                for (let k = 0; k < n; k++) { try { await tab.nth(k).scrollIntoViewIfNeeded(); await tab.nth(k).click({ timeout: 3000 }); await p.waitForTimeout(1500); } catch (e) {} }
+                // espandi eventuali "Mostra tutto"
+                for (const t of ['Mostra tutto', 'Vedi tutte le specifiche', 'Mostra di più', 'Espandi']) { const el = p.getByText(t, { exact: false }); const c = await el.count(); for (let k = 0; k < c; k++) { try { await el.nth(k).click({ timeout: 2000 }); } catch (e) {} } }
+                await p.waitForTimeout(1500);
+                o.rows = await p.evaluate(() => {
+                  const rows = [];
+                  document.querySelectorAll('tr').forEach(tr => { const cells = [...tr.querySelectorAll('th,td')].map(c => c.textContent.replace(/\s+/g, ' ').trim()).filter(Boolean); if (cells.length >= 2) rows.push(cells.join(' | ')); });
+                  document.querySelectorAll('dl').forEach(dl => { const dt = [...dl.querySelectorAll('dt')], dd = [...dl.querySelectorAll('dd')]; dt.forEach((t, i) => rows.push((t.textContent || '').replace(/\s+/g, ' ').trim() + ' | ' + ((dd[i] && dd[i].textContent) || '').replace(/\s+/g, ' ').trim())); });
+                  return rows;
+                });
+                o.specText = clean(await p.evaluate(() => { const h = [...document.querySelectorAll('h2,h3')].find(e => /Specifiche/i.test(e.textContent)); let s = h ? h.closest('section,div') : null; return s ? s.textContent.replace(/[ \t]+/g, ' ').replace(/\n\s*\n+/g, '\n').slice(0, 20000) : ''; }));
+              } catch (e) { o.error = String(e); }
+              out[key] = o; await p.close();
+            }
+            fs.writeFileSync('probe/specs.json', JSON.stringify(out, null, 1));
+            await b.close();
+          })();
+          JS
+          node pw.js; wc -c probe/specs.json
+          rm -rf node_modules package.json package-lock.json pw.js
       - name: commit risultato
         run: |
           git config user.name "probe"; git config user.email "probe@local"
-          git add -A probe/; git commit -m "probe: foto Domane B-F" || echo "niente"; git pull --rebase || true; git push
+          git add -A probe/; git commit -m "probe: specifiche Domane" || echo "niente"; git pull --rebase || true; git push
