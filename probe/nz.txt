@@ -1,0 +1,10 @@
+[
+ "Cannondale SuperX 2 nz=1.413",
+ "Cannondale SuperX 3 nz=1.455",
+ "Cannondale Topstone Carbon 3 GRX 1x — De nz=0.900",
+ "Cannondale Topstone Carbon 3 GRX 1x — Mo nz=0.900",
+ "Cannondale Topstone Carbon 3 GRX 2x nz=1.334",
+ "Cannondale Topstone Carbon 3 GRX 2x nz=0.900",
+ "Cannondale Topstone Carbon 4 1x nz=1.455",
+ "Cannondale Topstone CRB 2 AXS 1x nz=1.395"
+]
