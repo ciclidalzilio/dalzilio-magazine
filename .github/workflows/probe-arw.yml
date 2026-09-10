@@ -1,0 +1,47 @@
+name: probe-arw
+on:
+  push:
+    branches: [claude/install-ui-ux-pro-max-cq88gs]
+    paths: [".github/workflows/probe-arw.yml", "probe/**"]
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: sample ARW
+        run: |
+          set -e
+          mkdir -p /tmp/raw
+          curl -sSL "https://raw.pixls.us/" -o /tmp/raw/index.html
+          # first Sony ARW link on the listing
+          LINK=$(grep -o 'getfile.php/[0-9]*/nice/Sony[^"]*\.ARW' /tmp/raw/index.html | head -1 || true)
+          echo "link: $LINK" | tee probe/sample.txt
+          if [ -z "$LINK" ]; then
+            grep -o 'getfile.php/[0-9]*/nice/[^"]*' /tmp/raw/index.html | head -20 >> probe/sample.txt || true
+            LINK=$(grep -o 'getfile.php/[0-9]*/nice/[^"]*\.ARW' /tmp/raw/index.html | head -1)
+          fi
+          curl -sSL "https://raw.pixls.us/$LINK" -o /tmp/raw/sample.ARW
+          ls -la /tmp/raw/sample.ARW | tee -a probe/sample.txt
+      - name: test
+        run: |
+          npm init -y >/dev/null
+          npm i playwright@1.47.0 >/dev/null 2>&1
+          npx playwright install --with-deps chromium >/dev/null 2>&1
+          node probe/test.js /tmp/raw/sample.ARW || true
+          rm -rf node_modules package.json package-lock.json
+      - name: commit
+        run: |
+          git config user.name "probe-bot"
+          git config user.email "probe@users.noreply.github.com"
+          git checkout -- . || true
+          git add -A probe
+          git commit -m "probe arw: risultati test" || exit 0
+          git fetch origin claude/install-ui-ux-pro-max-cq88gs
+          git rebase origin/claude/install-ui-ux-pro-max-cq88gs || (git rebase --abort; git reset --soft origin/claude/install-ui-ux-pro-max-cq88gs; git commit -m "probe arw: risultati test")
+          git push -u origin HEAD:claude/install-ui-ux-pro-max-cq88gs
