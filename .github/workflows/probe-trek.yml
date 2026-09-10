@@ -3,72 +3,30 @@ on: push
 permissions:
   contents: write
 jobs:
-  topstone:
+  c4:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - name: playwright Topstone family
+      - name: C4 e Orange Slice
         shell: bash
         run: |
           set +e
-          mkdir -p probe/img
-          npm init -y >/dev/null 2>&1; npm i playwright@1.47.0 >/dev/null 2>&1; npx playwright install --with-deps chromium >/dev/null 2>&1
-          cat > pw.js <<'JS'
-          const { chromium } = require('playwright'); const fs = require('fs');
-          const clean = s => (s || '').replace(/(pk|sk)\.[A-Za-z0-9._-]{20,}/g, '[tok]');
-          (async () => {
-            const b = await chromium.launch(); const ctx = await b.newContext({ locale: 'it-IT', userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36', viewport: { width: 1400, height: 1000 } });
-            const out = { listing: [], pages: {} };
-            const p = await ctx.newPage();
-            const accept = async () => { for (const t of ['Accetta tutti', 'Accetta', 'Accept All', 'Accept all']) { const el = p.getByRole('button', { name: t }).first(); if (await el.count()) { await el.click().catch(()=>{}); break; } } };
-            // 1) elenco famiglia Topstone
-            for (const lu of ['https://www.cannondale.com/it-it/bikes/road/gravel/topstone-carbon', 'https://www.cannondale.com/it-it/bikes/road/gravel/topstone']) {
-              try { await p.goto(lu, { waitUntil: 'domcontentloaded', timeout: 90000 }); await p.waitForTimeout(6000); await accept();
-                const links = await p.evaluate(() => [...new Set([...document.querySelectorAll('a[href*="/topstone"]')].map(a => a.href.split('?')[0]))]);
-                out.listing.push({ lu, links });
-              } catch (e) { out.listing.push({ lu, err: String(e) }); }
-            }
-            const want = ['topstone-carbon-3-grx-2x-c15345u', 'topstone-carbon-3-grx-2x-c15175u', 'topstone-carbon-2-axs-1x-c15335u'];
-            const all = [...new Set(out.listing.flatMap(l => l.links || []))];
-            const c4 = all.filter(u => /topstone-carbon-4/i.test(u));
-            const targets = [];
-            for (const w of want) { const hit = all.find(u => u.includes(w)) || ('https://www.cannondale.com/it-it/bikes/road/gravel/topstone-carbon/' + w); targets.push(hit); }
-            for (const u of c4) if (!targets.includes(u)) targets.push(u);
-            out.targets = targets;
-            for (const url of targets.slice(0, 6)) {
-              const key = url.split('/').pop(); const o = { url, error: null };
-              try {
-                await p.goto(url, { waitUntil: 'domcontentloaded', timeout: 90000 }); await p.waitForTimeout(8000); await accept(); await p.waitForTimeout(500);
-                o.title = await p.title();
-                const html = await p.content();
-                o.vars = [...new Set([...html.matchAll(/"Sku":"([A-Z0-9]+)","ColorName":"([^"]*)","ColorSwatch":"([A-Z0-9]*)","ColorFilter":\[[^\]]*\],"Size":"([^"]*)","Upc":"(\d*)"/g)].map(m => m.slice(1).join('|')))];
-                o.widen = [...new Set([...html.matchAll(/https:\/\/embed\.widencdn\.net\/img\/dorelrl\/[a-z0-9]+\/[^"'\s\\?]+/g)].map(m => m[0]))];
-                o.model = (html.match(/"Codice Modello"[^A-Z]*([A-Z]\d{5}[A-Z])/) || [])[1] || (url.match(/-(c\d{5}u)$/i) || [])[1] || '';
-                fs.writeFileSync('probe/' + key + '.txt', clean(await p.locator('body').innerText()));
-              } catch (e) { o.error = String(e); }
-              out.pages[key] = o;
-            }
-            fs.writeFileSync('probe/family.json', JSON.stringify(out, null, 1));
-            // 2) scarica foto: per ogni pagina, per ogni colore, PD/3Q/D1..D7 a 2400px jpg
-            let n = 0;
-            for (const [key, o] of Object.entries(out.pages)) {
-              const code = (o.model || key.split('-').pop()).toUpperCase();
-              const bases = new Set();
-              for (const u of (o.widen || [])) { const m = u.match(/^(https:\/\/embed\.widencdn\.net\/img\/dorelrl\/[a-z0-9]+)\/\d+px@1x\/(C\d\d_[A-Z0-9]+_[A-Za-z0-9_]+_(PD|3Q|D\d))\.(png|jpg|webp)$/); if (m && m[2].includes(code)) bases.add(m[1] + '|' + m[2]); }
-              for (const bm of bases) {
-                const [base, name] = bm.split('|');
-                const fn = 'probe/img/' + name + '.jpg'; if (fs.existsSync(fn)) continue;
-                try { const r = await ctx.request.get(base + '/2400px@1x/' + name + '.jpg?color=f8f8f8&q=90', { timeout: 40000 }); if (!r.ok()) continue; const buf = await r.body(); if (buf.length < 20000) continue; fs.writeFileSync(fn, buf); n++; } catch (e) {}
-                if (n >= 90) break;
-              }
-            }
-            await b.close();
-          })();
-          JS
-          node pw.js; ls probe/img | wc -l
-          rm -rf node_modules package.json package-lock.json pw.js; git checkout -- . 2>/dev/null
+          mkdir -p probe/img2
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+          curl -sL -A "$UA" -H "Accept-Language: it-IT" -o /tmp/c4.html "https://www.cannondale.com/it-it/bikes/road/gravel/topstone-carbon/topstone-carbon-4-cues-1x-smu"
+          { echo "bytes $(wc -c < /tmp/c4.html)"; grep -o '"Sku":"C1524GU[^}]\{0,400\}' /tmp/c4.html | grep -o '"Sku":"[^"]*"\|"ColorName":"[^"]*"\|"Size":"[^"]*"\|"Upc":"[0-9]*"' | paste - - - - | sort -u; grep -o 'https://embed.widencdn.net/img/dorelrl/[a-z0-9]*/[0-9]*px@1x/C26_C1524GU[^"?]*' /tmp/c4.html | sort -u; } > probe/c4.txt
+          cat probe/c4.txt
+          for u in $(grep -o 'https://embed.widencdn.net/img/dorelrl/[a-z0-9]*/[0-9]*px@1x/C26_C1524GU[^"?]*\.png' /tmp/c4.html | sort -u); do
+            n=$(basename $u .png); big=$(echo $u | sed 's|/[0-9]*px@1x/|/2400px@1x/|; s|\.png$|.jpg|')
+            curl -sfL -A "$UA" -o "probe/img2/$n.jpg" "$big?color=f8f8f8&q=90" && echo "ok $n"
+          done
+          while read u; do
+            n=$(basename $u .png); big=$(echo $u | sed 's|/[0-9]*px@1x/|/2400px@1x/|; s|\.png$|.jpg|')
+            [ -f "probe/img2/$n.jpg" ] || { curl -sfL -A "$UA" -o "probe/img2/$n.jpg" "$big?color=f8f8f8&q=90" && echo "ok $n"; }
+          done < probe/urls2.txt
+          find probe/img2 -type f -size -15k -delete; ls probe/img2
       - name: commit risultato
         run: |
           git config user.name "probe"; git config user.email "probe@local"
-          git add -A; git commit -qm "probe: famiglia Topstone" || echo "niente"; git fetch -q origin; git rebase origin/claude/install-ui-ux-pro-max-cq88gs || (git rebase --abort; git reset --soft origin/claude/install-ui-ux-pro-max-cq88gs; git commit -qm "probe: famiglia Topstone"); git push -u origin HEAD:claude/install-ui-ux-pro-max-cq88gs
+          git add -A; git commit -qm "probe: C4 e ORS" || echo "niente"; git fetch -q origin; git rebase origin/claude/install-ui-ux-pro-max-cq88gs || (git rebase --abort; git reset --soft origin/claude/install-ui-ux-pro-max-cq88gs; git commit -qm "probe: C4 e ORS"); git push -u origin HEAD:claude/install-ui-ux-pro-max-cq88gs
