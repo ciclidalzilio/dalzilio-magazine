@@ -1,0 +1,30 @@
+name: probe-trek
+on: push
+permissions:
+  contents: write
+jobs:
+  scarica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: dati Madone SL 7 Gen 8 da trekbikes.com
+        shell: bash
+        run: |
+          set +e
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+          mkdir -p probe
+          curl -sSL -A "$UA" --compressed -H "Accept-Language: it-IT,it;q=0.9" "https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/madone/madone-sl/madone-sl-7-gen-8/p/5320013/" -o /tmp/t.html
+          echo "byte: $(wc -c < /tmp/t.html)"
+          # estrai solo pezzi utili (mai token): sku/colori/taglie/prezzo/immagini
+          sed 's#\\/#/#g;s#\\"#"#g' /tmp/t.html > /tmp/t2.html
+          grep -oiE '.{0,100}("code"|"sku"|"colorName"|"colourName"|"colorCode"|"color"|"size"|"sizeName"|"price"|"ean"|"upc"|"gtin").{0,120}' /tmp/t2.html | grep -viE 'mapbox|pk\.ey|sk\.ey|token|apikey|api_key' | sort -u | head -600 > probe/trek-dati.txt
+          grep -oE 'https?://media\.trekbikes\.com/image/upload/[^"'"'"' <>)]+' /tmp/t2.html | sort -u > probe/trek-immagini.txt
+          grep -oE '<script type="application/ld\+json">.{0,20000}?</script>' /tmp/t2.html | grep -viE 'token|apikey' | head -c 60000 > probe/trek-ldjson.txt
+          echo "dati: $(wc -l < probe/trek-dati.txt) righe, immagini: $(wc -l < probe/trek-immagini.txt), ldjson: $(wc -c < probe/trek-ldjson.txt)"
+      - name: commit risultato
+        run: |
+          git config user.name "probe"
+          git config user.email "probe@local"
+          git add probe/
+          git commit -m "probe: dati Trek Madone SL 7" || echo "niente"
+          git push
