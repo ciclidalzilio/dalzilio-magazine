@@ -1,0 +1,27 @@
+name: probe-live
+on: push
+permissions:
+  contents: write
+jobs:
+  scarica:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: immagini CDN e thumbs live
+        run: |
+          mkdir -p probe/img
+          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
+          curl -sSL -A "$UA" --compressed "https://ciclidalzilio.com/products/madone-sl-7-gen-9" -o /tmp/p.html
+          python3 - <<'PY'
+          import re, json
+          h = open('/tmp/p.html', encoding='utf-8', errors='replace').read()
+          thumbs = re.findall(r'data-dz-thumb="(\d+)"\s+data-src="([^"]+)"', h)
+          foto = re.search(r'id="dz-foto" src="([^"]+)"', h)
+          json.dump({'n_thumbs': len(thumbs), 'thumbs': [(i, u.split('/')[-1][:60]) for i, u in thumbs], 'foto': foto.group(1) if foto else None, 'theme_id': re.search(r'Shopify\.theme\s*=\s*(\{[^}]+\})', h).group(1) if re.search(r'Shopify\.theme\s*=\s*(\{[^}]+\})', h) else None}, open('probe/live2.json', 'w'), indent=1)
+          PY
+          for f in trek-madone-sl7-cobalt-01 trek-madone-sl7-cobalt-02 trek-madone-sl7-erawhite-01 trek-madone-sl7-erawhite-02; do curl -sSL -A "$UA" "https://ciclidalzilio.com/cdn/shop/files/$f.jpg?width=600" -o probe/img/$f.jpg; done
+          ls -la probe/img
+      - name: commit
+        run: |
+          git config user.name probe; git config user.email probe@local
+          git add probe/; git commit -m "probe: live2" || true; git pull --rebase || true; git push
