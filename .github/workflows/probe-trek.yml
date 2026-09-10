@@ -5,41 +5,46 @@ permissions:
 jobs:
   scarica:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
-      - name: render pagina Trek con Chrome headless
+      - name: render varianti nuove con Chrome
         shell: bash
         run: |
           set +e
           mkdir -p probe
-          URL="https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/madone/f/F213/madone-sl-7-gen-8/57664/"
-          timeout 150 google-chrome --headless=new --disable-gpu --no-sandbox --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36" --lang=it-IT --virtual-time-budget=20000 --dump-dom "$URL" > /tmp/t.html 2>/dev/null
-          echo "byte dom: $(wc -c < /tmp/t.html)"
+          n=0
+          for U in "https://www.trekbikes.com/it/it_IT/p/5346748/" "https://www.trekbikes.com/it/it_IT/p/5346742/" "https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/madone/madone-sl/madone-sl-7-gen-8/p/57664/"; do
+            n=$((n+1))
+            timeout 150 google-chrome --headless=new --disable-gpu --no-sandbox --user-agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36" --lang=it-IT --virtual-time-budget=25000 --dump-dom "$U" > /tmp/v$n.html 2>/dev/null
+            echo "$n $U -> $(wc -c < /tmp/v$n.html)"
+          done
           python3 - <<'PY'
-          import re, json
-          h = open('/tmp/t.html', encoding='utf-8', errors='replace').read()
-          h2 = h.replace('\\/', '/').replace('\\"', '"').replace('&quot;', '"')
+          import re, glob
           out = []
-          t = re.search(r'<title>(.*?)</title>', h, re.S); out.append('TITLE ' + (t.group(1).strip() if t else ''))
-          for c in sorted(set(re.findall(r'(?:Matte|Gloss|Satin)\s[A-Z][A-Za-z]+(?:\s[A-Za-z]+){0,4}(?:/(?:Matte|Gloss|Satin)?\s?[A-Z][A-Za-z]+(?:\s[A-Za-z]+){0,3})?', h2))):
-              out.append('COLORE ' + c)
-          for m in re.finditer(r'(53\d{5})', h2):
-              ctx = h2[max(0, m.start()-250): m.end()+250]
-              names = re.findall(r'"(?:colorName|colourName|color|colour|size|sizeName|name|code|sku|price|formattedPrice|ean|upc|gtin13|gtin12)"\s*:\s*"?([^",}]{1,80})', ctx)
-              out.append('CODE %s | %s' % (m.group(1), ' | '.join(dict.fromkeys(n.strip() for n in names))[:400]))
-          for i in sorted(set(re.findall(r'https?://media\.trekbikes\.com/image/upload/[^"\' <>)]+', h2))):
-              out.append('IMG ' + i)
-          for m in re.finditer(r'(?:sku|SKU|Codice|codice)[^0-9]{0,30}(53\d{5})', h2):
-              out.append('SKUCTX ' + re.sub(r'\s+', ' ', h2[max(0, m.start()-120):m.end()+120]))
+          for f in sorted(glob.glob('/tmp/v*.html')):
+              h = open(f, encoding='utf-8', errors='replace').read().replace('\\/', '/').replace('\\"', '"').replace('&quot;', '"')
+              t = re.search(r'<title>(.*?)</title>', h, re.S); out.append('=== %s | %s' % (f, (t.group(1).strip() if t else '')))
+              for m in re.finditer(r'"(?:colorName|colourName|colorDisplayName|swatchName|colour|color)"\s*:\s*"([^"]{3,60})"', h):
+                  out.append('COLORNAME ' + m.group(1))
+              for m in re.finditer(r'(?:aria-label|alt|title|data-color(?:-name)?)="([^"]*(?:Matte|Gloss|Satin)[^"]{3,70})"', h):
+                  out.append('SWATCH ' + m.group(1))
+              for m in re.finditer(r'5346(?:74[2-9]|75[0-3])', h):
+                  ctx = h[max(0, m.start()-400): m.end()+400]
+                  names = re.findall(r'"([A-Za-z]+(?:Name|Code|name|code|price|Price|ean|upc|gtin\w*))"\s*:\s*"?([^",}]{1,80})', ctx)
+                  out.append('CTX %s | %s' % (m.group(0), ' | '.join(dict.fromkeys('%s=%s' % (k, v.strip()) for k, v in names))[:500]))
+              for i in sorted(set(re.findall(r'https?://media\.trekbikes\.com/image/upload/[^"\' <>)]+', h))):
+                  out.append('IMG ' + i)
+              for m in re.finditer(r'(?:€|EUR)\s?([0-9.]{4,7})', h):
+                  out.append('PREZZO ' + m.group(1))
           txt = '\n'.join(l for l in dict.fromkeys(out) if 'token' not in l.lower())
-          open('probe/lunar.txt', 'w').write(txt); print('righe', txt.count('\n'))
+          open('probe/varianti.txt', 'w').write(txt); print('righe', txt.count('\n'))
           PY
       - name: commit risultato
         run: |
           git config user.name "probe"
           git config user.email "probe@local"
           git add probe/
-          git commit -m "probe: Trek 57664 via Chrome" || echo "niente"
+          git commit -m "probe: varianti nuove Madone SL 7" || echo "niente"
           git pull --rebase || true
           git push
