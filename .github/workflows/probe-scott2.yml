@@ -10,14 +10,15 @@ jobs:
       - name: EAN per taglia e foto violet pink
         shell: bash
         run: |
+          set +e
           UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
           mkdir -p probe/viola
           : > probe/ean.csv
           for spec in premium:4255997958006 premium:4255997958008 premium:4255997958010 premium:4255997958012 10:4256008087004 10:4256008087006 10:4256008087008 10:4256008087010 10:4256008087012 20:4256013020004 20:4256018352004; do
             m="${spec%%:*}"; a="${spec#*:}"
             curl -sSL -A "$UA" --compressed -H "Accept-Language: it-IT,it;q=0.9" "https://www.scott-sports.com/it/it/product/scott-fastlane-$m-bike?article=$a" -o /tmp/p.html
-            g=$(grep -oE 'gtin13"[^0-9]{0,6}[0-9]{13}' /tmp/p.html | grep -oE '[0-9]{13}' | head -1)
-            s=$(grep -oE '"sku"[^0-9]{0,6}[0-9]{13}' /tmp/p.html | grep -oE '[0-9]{13}' | head -1)
+            g=$(grep -oE 'gtin13"[^0-9]{0,6}[0-9]{13}' /tmp/p.html | grep -oE '[0-9]{13}' | head -1 || true)
+            s=$(grep -oE '"sku"[^0-9]{0,6}[0-9]{13}' /tmp/p.html | grep -oE '[0-9]{13}' | head -1 || true)
             echo "$m;$a;$g;$s" | tee -a probe/ean.csv
             if [ "$a" = "4256018352004" ]; then
               sed 's#\\/#/#g' /tmp/p.html | grep -oE 'https?://static\.scott-sports\.com/image/upload/t_assetformat(zoom|opengraph)/[^"'"'"' <>)]+' | sort -u > probe/viola/immagini.txt
