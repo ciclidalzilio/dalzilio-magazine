@@ -8,13 +8,14 @@ const fs = require('fs');
   p.on('console', m => log.push('console: ' + m.text().slice(0,300)));
   p.on('pageerror', e => log.push('pageerror: ' + e.message.slice(0,300)));
   await p.goto('file://' + process.cwd() + '/probe/convertitore-arw.html');
+  const mode = process.argv[3] || 'fast'; await p.selectOption('#dev', mode); log.push('mode ' + mode + ' cores ' + await p.evaluate(() => navigator.hardwareConcurrency));
   const t0 = Date.now();
-  await p.setInputFiles('#file', arw);
+  await p.setInputFiles('#file', [arw, arw, arw]);
   let txt = '';
   for (let i = 0; i < 60; i++) {
     await p.waitForTimeout(3000);
     txt = (await p.locator('#rows').innerText()).replace(/\s+/g, ' ');
-    if (!/sviluppo|in coda/.test(txt)) break;
+    if (!/sviluppo|in coda/.test(txt) && /Scarica|errore/.test(txt)) break;
   }
   log.push('elapsed ' + ((Date.now()-t0)/1000).toFixed(1) + 's');
   log.push('row: ' + txt);
@@ -25,7 +26,7 @@ const fs = require('fs');
     fs.writeFileSync('probe/thumb.jpg', Buffer.from(b64, 'base64'));
   }
   await p.screenshot({ path: 'probe/shot.png' });
-  fs.writeFileSync('probe/result.txt', log.join('\n') + '\n');
+  fs.appendFileSync('probe/result.txt', log.join('\n') + '\n---\n');
   console.log(log.join('\n'));
   await b.close();
 })().catch(e => { fs.writeFileSync('probe/result.txt', 'ERR ' + e.message); console.log('ERR', e.message); });

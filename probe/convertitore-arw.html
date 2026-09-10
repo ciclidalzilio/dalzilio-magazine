@@ -59,7 +59,7 @@ td .dl{padding:5px 10px;font-size:12px;border-radius:7px}
     <div class="eyebrow">Cicli Dal Zilio · strumenti foto</div>
     <h1>Da <span>ARW</span> a JPG</h1>
   </div>
-  <p>Trascina qui i RAW Sony della fotocamera: vengono sviluppati nel browser, uno alla volta, e ti restituiscono i JPG pronti per il sito. Fino a 200 file per volta, niente viene caricato su internet.</p>
+  <p>Trascina qui i RAW Sony della fotocamera: vengono sviluppati nel browser, più alla volta, e ti restituiscono i JPG pronti per il sito. Fino a 200 file per volta, niente viene caricato su internet.</p>
 </header>
 
 <div class="drop" id="drop" tabindex="0" role="button" aria-label="Scegli i file ARW">
@@ -70,6 +70,7 @@ td .dl{padding:5px 10px;font-size:12px;border-radius:7px}
 
 <div class="opts">
   <div class="opt"><label for="qual">Qualità JPG</label><select id="qual"><option value="0.95">95 — massima</option><option value="0.92" selected>92 — alta (consigliata)</option><option value="0.85">85 — web leggera</option></select></div>
+  <div class="opt"><label for="dev">Sviluppo RAW</label><select id="dev"><option value="fast" selected>Veloce — metà risoluzione (3000 px da 24 MP)</option><option value="full">Piena risoluzione — interpolazione rapida</option><option value="best">Piena risoluzione — qualità massima (lento)</option></select><span class="hint">Per il sito basta "Veloce"</span></div>
   <div class="opt"><label for="side">Lato lungo massimo</label><select id="side"><option value="0" selected>Originale (piena risoluzione)</option><option value="4000">4000 px</option><option value="3000">3000 px</option><option value="2000">2000 px</option></select></div>
   <div class="opt"><label for="wb">Bilanciamento del bianco</label><select id="wb"><option value="camera" selected>Come impostato in macchina</option><option value="auto">Automatico</option></select></div>
   <div class="opt"><label for="zipsize">File per ZIP</label><select id="zipsize"><option value="25">25</option><option value="50" selected>50</option><option value="100">100</option><option value="200">200</option></select><span class="hint">ZIP più piccoli si scaricano meglio</span></div>
@@ -85,14 +86,14 @@ td .dl{padding:5px 10px;font-size:12px;border-radius:7px}
   <button class="primary" id="zipbtn" disabled>Scarica tutto in ZIP</button>
   <button id="clearbtn" disabled>Svuota elenco</button>
 </div>
-<div class="note" id="note">I JPG conservano l'orientamento della foto; le dimensioni originali dei file Sony da 24 MP danno JPG di circa 8–12 MB a qualità 92.</div>
+<div class="note" id="note">I JPG conservano l'orientamento della foto. "Veloce" sviluppa a metà risoluzione (circa 3000 × 2000 px da un sensore da 24 MP), più che sufficiente per il sito e 4–6 volte più rapido; la piena risoluzione dà JPG da 8–12 MB.</div>
 
 <div class="tablewrap"><table id="tbl" hidden>
   <thead><tr><th>#</th><th></th><th>File</th><th class="dim">Dimensioni</th><th class="sz">JPG</th><th>Stato</th><th></th></tr></thead>
   <tbody id="rows"></tbody>
 </table></div>
 
-<p class="foot">Sviluppo RAW con LibRaw (bilanciamento del bianco della fotocamera, spazio colore sRGB, interpolazione AHD). Funziona su Chrome, Edge, Firefox e Safari recenti; su telefono i file grandi possono richiedere molta memoria. I file non lasciano mai il tuo dispositivo.</p>
+<p class="foot">Sviluppo RAW con LibRaw (bilanciamento del bianco della fotocamera, spazio colore sRGB), più foto in parallelo a seconda dei core del computer. Funziona su Chrome, Edge, Firefox e Safari recenti; su telefono i file grandi possono richiedere molta memoria. I file non lasciano mai il tuo dispositivo.</p>
 </div>
 
 <script type="text/plain" id="libraw-js">var ba=(()=>{var Cr=self.location.href;return async function(K={}){var x,c=K,Qr,cr,Le=new Promise((r,e)=>{Qr=r,cr=e}),Ve=!0,Dr=!1,re=Object.assign({},c),Ye=[],qe="./this.program",N="";function Xe(r){return c.locateFile?c.locateFile(r,N):N+r}var Ar,Sr;(Ve||Dr)&&(Dr?N=self.location.href:typeof document<"u"&&document.currentScript&&(N=document.currentScript.src),Cr&&(N=Cr),N.startsWith("blob:")?N="":N=N.substr(0,N.replace(/[?#].*/,"").lastIndexOf("/")+1),Ar=async r=>{var e=await fetch(r,{credentials:"same-origin"});if(e.ok)return e.arrayBuffer();throw new Error(e.status+" : "+e.url)});var Rr=c.print||console.log.bind(console),V=c.printErr||console.error.bind(console);Object.assign(c,re),re=null,c.arguments&&(Ye=c.arguments),c.thisProgram&&(qe=c.thisProgram);var vr=c.wasmBinary,hr,ee=!1,D,S,Y,pr,m,_,te,q,ne,ae,Ge=!1,Ke="data:application/octet-stream;base64,",oe=r=>r.startsWith(Ke);function ie(){var r=hr.buffer;c.HEAP8=D=new Int8Array(r),c.HEAP16=Y=new Int16Array(r),c.HEAPU8=S=new Uint8Array(r),c.HEAPU16=pr=new Uint16Array(r),c.HEAP32=m=new Int32Array(r),c.HEAPU32=_=new Uint32Array(r),c.HEAPF32=te=new Float32Array(r),c.HEAPF64=ae=new Float64Array(r),c.HEAP64=q=new BigInt64Array(r),c.HEAPU64=ne=new BigUint64Array(r)}var se=[],ue=[],le=[];function Ze(){if(c.preRun)for(typeof c.preRun=="function"&&(c.preRun=[c.preRun]);c.preRun.length;)rt(c.preRun.shift());xr(se)}function Je(){Ge=!0,!c.noFSInit&&!a.initialized&&a.init(),a.ignorePermissions=!1,X.init(),xr(ue)}function Qe(){if(c.postRun)for(typeof c.postRun=="function"&&(c.postRun=[c.postRun]);c.postRun.length;)tt(c.postRun.shift());xr(le)}function rt(r){se.unshift(r)}function et(r){ue.unshift(r)}function tt(r){le.unshift(r)}var Z=0,sr=null;function $a(r){return r}function fe(r){Z++,c.monitorRunDependencies?.(Z)}function Or(r){if(Z--,c.monitorRunDependencies?.(Z),Z==0&&sr){var e=sr;sr=null,e()}}function Mr(r){c.onAbort?.(r),r="Aborted("+r+")",V(r),ee=!0,r+=". Build with -sASSERTIONS for more info.";var e=new WebAssembly.RuntimeError(r);throw cr(e),e}var Ur;function nt(){if(c.locateFile){var r="libraw.wasm";return oe(r)?r:Xe(r)}return new URL("libraw.wasm",self.location.href).href}function at(r){if(r==Ur&&vr)return new Uint8Array(vr);if(Sr)return Sr(r);throw"both async and sync fetching of the wasm failed"}async function ot(r){if(!vr)try{var e=await Ar(r);return new Uint8Array(e)}catch{}return at(r)}async function it(r,e){try{var t=await ot(r),n=await WebAssembly.instantiate(t,e);return n}catch(o){V(`failed to asynchronously prepare wasm: ${o}`),Mr(o)}}async function st(r,e,t){if(!r&&typeof WebAssembly.instantiateStreaming=="function"&&!oe(e))try{var n=fetch(e,{credentials:"same-origin"}),o=await WebAssembly.instantiateStreaming(n,t);return o}catch(i){V(`wasm streaming compile failed: ${i}`),V("falling back to ArrayBuffer instantiation")}return it(e,t)}function ut(){return{a:ta}}async function lt(){function r(i,s){return C=i.exports,hr=C.da,ie(),Fe=C.ga,et(C.ea),Or("wasm-instantiate"),C}fe("wasm-instantiate");function e(i){return r(i.instance)}var t=ut();if(c.instantiateWasm)try{return c.instantiateWasm(t,r)}catch(i){V(`Module.instantiateWasm callback failed with error: ${i}`),cr(i)}Ur??=nt();try{var n=await st(vr,Ur,t),o=e(n);return o}catch(i){return cr(i),Promise.reject(i)}}class Pa{name="ExitStatus";constructor(e){this.message=`Program terminated with exit(${e})`,this.status=e}}var xr=r=>{for(;r.length>0;)r.shift()(c)},Ta=c.noExitRuntime||!0,j=r=>oa(r),B=()=>ia(),ft=[],de=0,dt=r=>{var e=new jr(r);return e.get_caught()||(e.set_caught(!0),de--),e.set_rethrown(!1),ft.push(e),sa(r),la(r)},rr=0;class jr{constructor(e){this.excPtr=e,this.ptr=e-24}set_type(e){_[this.ptr+4>>2]=e}get_type(){return _[this.ptr+4>>2]}set_destructor(e){_[this.ptr+8>>2]=e}get_destructor(){return _[this.ptr+8>>2]}set_caught(e){e=e?1:0,D[this.ptr+12]=e}get_caught(){return D[this.ptr+12]!=0}set_rethrown(e){e=e?1:0,D[this.ptr+13]=e}get_rethrown(){return D[this.ptr+13]!=0}init(e,t){this.set_adjusted_ptr(0),this.set_type(e),this.set_destructor(t)}set_adjusted_ptr(e){_[this.ptr+16>>2]=e}get_adjusted_ptr(){return _[this.ptr+16>>2]}}var ct=r=>{throw rr||(rr=r),rr},mr=r=>aa(r),ce=r=>{var e=rr;if(!e)return mr(0),0;var t=new jr(e);t.set_adjusted_ptr(e);var n=t.get_type();if(!n)return mr(0),e;for(var o of r){if(o===0||o===n)break;var i=t.ptr+16;if(ua(o,n,i))return mr(o),e}return mr(n),e},vt=()=>ce([]),ht=r=>ce([r]),pt=(r,e,t)=>{var n=new jr(r);throw n.init(e,t),rr=r,de++,rr},wr=()=>{var r=m[+R.varargs>>2];return R.varargs+=4,r},er=wr,E={isAbs:r=>r.charAt(0)==="/",splitPath:r=>{var e=/^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;return e.exec(r).slice(1)},normalizeArray:(r,e)=>{for(var t=0,n=r.length-1;n>=0;n--){var o=r[n];o==="."?r.splice(n,1):o===".."?(r.splice(n,1),t++):t&&(r.splice(n,1),t--)}if(e)for(;t;t--)r.unshift("..");return r},normalize:r=>{var e=E.isAbs(r),t=r.substr(-1)==="/";return r=E.normalizeArray(r.split("/").filter(n=>!!n),!e).join("/"),!r&&!e&&(r="."),r&&t&&(r+="/"),(e?"/":"")+r},dirname:r=>{var e=E.splitPath(r),t=e[0],n=e[1];return!t&&!n?".":(n&&(n=n.substr(0,n.length-1)),t+n)},basename:r=>r&&r.match(/([^\/]+|\/)\/*$/)[1],join:(...r)=>E.normalize(r.join("/")),join2:(r,e)=>E.normalize(r+"/"+e)},mt=()=>r=>crypto.getRandomValues(r),ve=r=>{(ve=mt())(r)},tr={resolve:(...r)=>{for(var e="",t=!1,n=r.length-1;n>=-1&&!t;n--){var o=n>=0?r[n]:a.cwd();if(typeof o!="string")throw new TypeError("Arguments to path.resolve must be strings");if(!o)return"";e=o+"/"+e,t=E.isAbs(o)}return e=E.normalizeArray(e.split("/").filter(i=>!!i),!t).join("/"),(t?"/":"")+e||"."},relative:(r,e)=>{r=tr.resolve(r).substr(1),e=tr.resolve(e).substr(1);function t(f){for(var d=0;d<f.length&&f[d]==="";d++);for(var v=f.length-1;v>=0&&f[v]==="";v--);return d>v?[]:f.slice(d,v-d+1)}for(var n=t(r.split("/")),o=t(e.split("/")),i=Math.min(n.length,o.length),s=i,u=0;u<i;u++)if(n[u]!==o[u]){s=u;break}for(var l=[],u=s;u<n.length;u++)l.push("..");return l=l.concat(o.slice(s)),l.join("/")}},he=typeof TextDecoder<"u"?new TextDecoder:void 0,nr=(r,e=0,t=NaN)=>{for(var n=e+t,o=e;r[o]&&!(o>=n);)++o;if(o-e>16&&r.buffer&&he)return he.decode(r.subarray(e,o));for(var i="";e<o;){var s=r[e++];if(!(s&128)){i+=String.fromCharCode(s);continue}var u=r[e++]&63;if((s&224)==192){i+=String.fromCharCode((s&31)<<6|u);continue}var l=r[e++]&63;if((s&240)==224?s=(s&15)<<12|u<<6|l:s=(s&7)<<18|u<<12|l<<6|r[e++]&63,s<65536)i+=String.fromCharCode(s);else{var f=s-65536;i+=String.fromCharCode(55296|f>>10,56320|f&1023)}}return i},Br=[],Ir=r=>{for(var e=0,t=0;t<r.length;++t){var n=r.charCodeAt(t);n<=127?e++:n<=2047?e+=2:n>=55296&&n<=57343?(e+=4,++t):e+=3}return e},zr=(r,e,t,n)=>{if(!(n>0))return 0;for(var o=t,i=t+n-1,s=0;s<r.length;++s){var u=r.charCodeAt(s);if(u>=55296&&u<=57343){var l=r.charCodeAt(++s);u=65536+((u&1023)<<10)|l&1023}if(u<=127){if(t>=i)break;e[t++]=u}else if(u<=2047){if(t+1>=i)break;e[t++]=192|u>>6,e[t++]=128|u&63}else if(u<=65535){if(t+2>=i)break;e[t++]=224|u>>12,e[t++]=128|u>>6&63,e[t++]=128|u&63}else{if(t+3>=i)break;e[t++]=240|u>>18,e[t++]=128|u>>12&63,e[t++]=128|u>>6&63,e[t++]=128|u&63}}return e[t]=0,t-o};function pe(r,e,t){var n=t>0?t:Ir(r)+1,o=new Array(n),i=zr(r,o,0,o.length);return e&&(o.length=i),o}var wt=()=>{if(!Br.length){var r=null;if(typeof window<"u"&&typeof window.prompt=="function"&&(r=window.prompt("Input: "),r!==null&&(r+=`
@@ -120,10 +121,11 @@ return ret;
 <script>
 (function(){
   "use strict";
-  var MAX = 200, RESET_EVERY = 10;
+  var MAX = 200, JOBS_PER_WORKER = 40;
+  var POOL = Math.min(4, Math.max(1, (navigator.hardwareConcurrency || 2) - 1));
   var $ = function(id){ return document.getElementById(id); };
   var drop=$("drop"), input=$("file"), rows=$("rows"), tbl=$("tbl"), fill=$("fill"), doneEl=$("done"), totalEl=$("total"), statusEl=$("status"), zipbtn=$("zipbtn"), clearbtn=$("clearbtn"), note=$("note");
-  var items=[], queue=[], running=false, worker=null, workerJobs=0, pending=null, reqId=0, downloads=undefined;
+  var items=[], queue=[], running=false, pool=[], reqId=0, downloads=undefined, srcCache=null;
 
   /* ---- worker con LibRaw dentro (wasm inlinato in base64) ---- */
   function workerSource(){
@@ -152,18 +154,20 @@ return ret;
       '}catch(err){var msg=String(err&&err.message||err);if(/^\\d+$/.test(msg)||!msg)msg="file non riconosciuto come RAW (o danneggiato)";self.postMessage({id:m.id,ok:false,error:msg});}};';
     return head + js + tail;
   }
-  function newWorker(){
-    if(worker){ worker.terminate(); }
-    var blob = new Blob([workerSource()], {type:"text/javascript"});
-    worker = new Worker(URL.createObjectURL(blob));
-    workerJobs = 0;
-    worker.onmessage = function(e){ if(pending && e.data.id===pending.id) pending.resolve(e.data); };
-    worker.onerror = function(e){ if(pending) pending.resolve({id:pending.id, ok:false, error: e.message||"errore nel worker"}); };
+  function workerUrl(){
+    if(!srcCache) srcCache = URL.createObjectURL(new Blob([workerSource()], {type:"text/javascript"}));
+    return srcCache;
   }
-  function decode(buf, settings, quality, maxSide){
+  function newWorker(slot){
+    if(slot.w){ slot.w.terminate(); }
+    slot.w = new Worker(workerUrl()); slot.jobs = 0; slot.pending = null;
+    slot.w.onmessage = function(e){ if(slot.pending && e.data.id===slot.pending.id) slot.pending.resolve(e.data); };
+    slot.w.onerror = function(e){ if(slot.pending) slot.pending.resolve({id:slot.pending.id, ok:false, error: e.message||"errore nel worker"}); };
+  }
+  function decode(slot, buf, settings, quality, maxSide){
     return new Promise(function(resolve){
-      var id = ++reqId; pending = {id:id, resolve:resolve};
-      worker.postMessage({id:id, buf:buf, settings:settings, quality:quality, maxSide:maxSide}, [buf]);
+      var id = ++reqId; slot.pending = {id:id, resolve:resolve};
+      slot.w.postMessage({id:id, buf:buf, settings:settings, quality:quality, maxSide:maxSide}, [buf]);
     });
   }
   /* fallback: codifica JPG sul thread principale (browser senza OffscreenCanvas nel worker) */
@@ -206,33 +210,43 @@ return ret;
     doneEl.textContent=done; fill.style.width=(items.length?done/items.length*100:0)+"%";
     zipbtn.disabled = !items.some(function(i){return i.state==="ok";}) || running;
   }
+  function aggiorna(){
+    var fatti=items.filter(function(i){return i.state==="ok"||i.state==="err";}).length;
+    var attivi=items.filter(function(i){return i.state==="run";}).map(function(i){return i.idx;});
+    statusEl.textContent="sviluppo "+(fatti+1)+"–"+Math.min(items.length,fatti+attivi.length)+" di "+items.length+" · "+POOL+" in parallelo";
+  }
+  async function processa(slot, it){
+    it.state="run"; setState(it,"run","sviluppo…"); aggiorna();
+    var t0=performance.now();
+    try{
+      if(slot.jobs>=JOBS_PER_WORKER) newWorker(slot);
+      var buf=await it.file.arrayBuffer();
+      var dev=$("dev").value;
+      var settings={ useCameraWb: $("wb").value==="camera", useAutoWb: $("wb").value==="auto", outputColor:1, outputBps:8,
+                     halfSize: dev==="fast", userQual: dev==="best" ? 3 : (dev==="full" ? 1 : 0), highlight:0 };
+      var q=parseFloat($("qual").value), side=parseInt($("side").value,10);
+      var res=await decode(slot, buf, settings, q, side); slot.jobs++;
+      if(res.ok && res.rgba) res=await encodeMain(res, q);
+      if(!res.ok) throw new Error(res.error||"errore");
+      it.blob=res.blob; it.w=res.w; it.h=res.h; it.state="ok";
+      it.tr.children[1].firstChild.src=URL.createObjectURL(res.thumb);
+      it.tr.children[3].textContent=res.w+" × "+res.h;
+      it.tr.children[4].textContent=fmt(res.blob.size);
+      setState(it,"ok",((performance.now()-t0)/1000).toFixed(1)+" s");
+      var b=document.createElement("button"); b.className="dl"; b.textContent="Scarica"; b.onclick=function(){ save(jpgName(it.file.name), it.blob); }; it.tr.children[6].appendChild(b);
+    }catch(err){
+      it.state="err"; it.err=String(err.message||err); setState(it,"err","errore"); it.tr.children[6].textContent=it.err.slice(0,80);
+      newWorker(slot);
+    }
+    updateBar();
+  }
+  async function ciclo(slot){
+    while(queue.length){ var it=queue.shift(); await processa(slot, it); }
+  }
   async function run(){
     running=true;
-    if(!worker) newWorker();
-    while(queue.length){
-      var it=queue.shift(); it.state="run"; setState(it,"run","sviluppo…");
-      statusEl.textContent="sviluppo "+it.idx+" di "+items.length+" · "+it.file.name;
-      var t0=performance.now();
-      try{
-        if(workerJobs>=RESET_EVERY) newWorker();
-        var buf=await it.file.arrayBuffer();
-        var settings={ useCameraWb: $("wb").value==="camera", useAutoWb: $("wb").value==="auto", outputColor:1, outputBps:8, userQual:3, highlight:0 };
-        var q=parseFloat($("qual").value), side=parseInt($("side").value,10);
-        var res=await decode(buf, settings, q, side); workerJobs++;
-        if(res.ok && res.rgba) res=await encodeMain(res, q);
-        if(!res.ok) throw new Error(res.error||"errore");
-        it.blob=res.blob; it.w=res.w; it.h=res.h; it.state="ok";
-        it.tr.children[1].firstChild.src=URL.createObjectURL(res.thumb);
-        it.tr.children[3].textContent=res.w+" × "+res.h;
-        it.tr.children[4].textContent=fmt(res.blob.size);
-        setState(it,"ok",((performance.now()-t0)/1000).toFixed(1)+" s");
-        var b=document.createElement("button"); b.className="dl"; b.textContent="Scarica"; b.onclick=function(){ save(jpgName(it.file.name), it.blob); }; it.tr.children[6].appendChild(b);
-      }catch(err){
-        it.state="err"; it.err=String(err.message||err); setState(it,"err","errore"); it.tr.children[6].textContent=it.err.slice(0,80);
-        newWorker();
-      }
-      updateBar();
-    }
+    while(pool.length<POOL){ var slot={w:null,jobs:0,pending:null}; newWorker(slot); pool.push(slot); }
+    await Promise.all(pool.map(function(slot){ return ciclo(slot); }));
     running=false; updateBar();
     var ok=items.filter(function(i){return i.state==="ok";}).length, ko=items.filter(function(i){return i.state==="err";}).length;
     statusEl.textContent=ok+" JPG pronti"+(ko?" · "+ko+" con errore":"");
