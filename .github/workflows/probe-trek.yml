@@ -3,16 +3,16 @@ on: push
 permissions:
   contents: write
 jobs:
-  cannondale:
+  cannondale2:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-      - name: playwright Topstone
+      - name: colori Topstone
         shell: bash
         run: |
           set +e
-          mkdir -p probe/img
+          mkdir -p probe/img2
           npm init -y >/dev/null 2>&1; npm i playwright@1.47.0 >/dev/null 2>&1; npx playwright install --with-deps chromium >/dev/null 2>&1
           cat > pw.js <<'JS'
           const { chromium } = require('playwright'); const fs = require('fs');
@@ -20,66 +20,47 @@ jobs:
           const clean = s => (s || '').replace(/(pk|sk)\.[A-Za-z0-9._-]{20,}/g, '[tok]');
           (async () => {
             const b = await chromium.launch(); const ctx = await b.newContext({ locale: 'it-IT', userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36', viewport: { width: 1400, height: 1000 } });
-            const p = await ctx.newPage(); const o = { url: URL0, swatches: [], error: null, allImgs: [] };
-            const seenNet = new Set();
-            p.on('response', r => { const u = r.url(); if (/widen|cannondale.*(jpg|png|webp)|\.(jpg|jpeg|png|webp)(\?|$)/i.test(u)) seenNet.add(u.split('?')[0]); });
+            const p = await ctx.newPage(); const o = { radios: [], clicks: [], found: {}, search: [], error: null };
             try {
-              await p.goto(URL0, { waitUntil: 'domcontentloaded', timeout: 90000 });
-              await p.waitForTimeout(9000);
-              for (const t of ['Accetta tutti', 'Accetta', 'Accept All', 'Accept all', 'Accetto', 'OK']) { const el = p.getByRole('button', { name: t }).first(); if (await el.count()) { await el.click().catch(()=>{}); break; } }
-              await p.waitForTimeout(1500);
-              o.finalUrl = p.url(); o.title = await p.title();
+              await p.goto(URL0, { waitUntil: 'domcontentloaded', timeout: 90000 }); await p.waitForTimeout(8000);
+              for (const t of ['Accetta tutti', 'Accetta', 'Accept All', 'Accept all']) { const el = p.getByRole('button', { name: t }).first(); if (await el.count()) { await el.click().catch(()=>{}); break; } }
+              await p.waitForTimeout(1000);
               const html = await p.content();
-              o.ld = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map(m => m[1].slice(0, 8000));
-              o.metaDesc = (html.match(/<meta name="description" content="([^"]*)"/) || [])[1] || '';
-              fs.writeFileSync('probe/body.txt', clean(await p.locator('body').innerText()));
-              const grab = async (tag) => {
-                await p.waitForTimeout(2500);
-                const info = await p.evaluate(() => {
-                  const imgs = [...document.querySelectorAll('img, source')].map(e => e.currentSrc || e.src || e.srcset || e.getAttribute('data-src') || '').filter(Boolean);
-                  const sel = [...document.querySelectorAll('[aria-checked="true"],[aria-selected="true"],.selected,.active,input:checked')].map(e => (e.getAttribute('aria-label') || e.getAttribute('title') || e.textContent || '').trim()).filter(Boolean).slice(0, 12);
-                  const colTxt = [...document.querySelectorAll('body *')].filter(e => e.children.length === 0 && /(colore|color)/i.test(e.textContent || '')).map(e => (e.parentElement ? e.parentElement.innerText : e.innerText).replace(/\s+/g, ' ').trim().slice(0, 140)).slice(0, 10);
-                  return { imgs: [...new Set(imgs)].slice(0, 80), sel, colTxt, url: location.href };
-                });
-                o.swatches.push({ tag, ...info });
-              };
-              await grab('initial');
-              // swatch colore: prova vari selettori
-              const sels = ['[class*="swatch"] button', '[class*="swatch"] a', '[class*="swatch"] label', '[class*="color"] button', '[class*="colour"] button', 'button[aria-label*="olor"]', '[data-testid*="color"] button', '[class*="Color"] li', '[class*="color"] li a', 'input[name*="olor"]'];
-              let found = 0;
-              for (const s of sels) {
-                const loc = p.locator(s); const n = await loc.count();
-                if (!n || n > 12) continue;
-                found = n; o.swatchSelector = s;
-                for (let k = 0; k < n; k++) {
-                  const el = loc.nth(k);
-                  const tag = (await el.getAttribute('aria-label')) || (await el.getAttribute('title')) || (await el.innerText().catch(()=>'')) || ('n' + k);
-                  try { await el.scrollIntoViewIfNeeded(); await el.click({ timeout: 4000, force: true }); } catch (e) { continue; }
-                  await grab(tag.trim().slice(0, 60));
-                }
-                break;
+              for (const key of ['Moonrock', 'MNR', 'moonrock', 'C24_C15355U', 'C15355U_Topstone_Crb_3_GRX_1x_']) {
+                const hits = []; let i = -1; while ((i = html.indexOf(key, i + 1)) !== -1 && hits.length < 12) hits.push(clean(html.slice(Math.max(0, i - 150), i + 200)).replace(/\s+/g, ' '));
+                o.found[key] = hits;
               }
-              o.nSwatch = found;
-              o.netImgs = [...seenNet];
+              o.widen = [...new Set([...html.matchAll(/https:\/\/embed\.widencdn\.net\/img\/dorelrl\/[a-z0-9]+\/[^"'\s\\]+/g)].map(m => m[0].split('?')[0]))].filter(u => /C15355U/.test(u));
+              o.radios = await p.evaluate(() => [...document.querySelectorAll('[role="radio"], input[type="radio"], [aria-label*="radio"]')].map(e => ({ tag: e.tagName, label: e.getAttribute('aria-label') || e.getAttribute('title') || e.value || '', cls: (e.className || '').toString().slice(0, 80), checked: e.getAttribute('aria-checked') || e.checked })));
+              // clicca ogni radio dentro l'area colore del prodotto
+              const rad = p.locator('[role="radio"], input[type="radio"]'); const n = await rad.count();
+              for (let k = 0; k < Math.min(n, 10); k++) {
+                const el = rad.nth(k); const lab = (await el.getAttribute('aria-label')) || '';
+                try { await el.scrollIntoViewIfNeeded(); await el.click({ timeout: 3000, force: true }); await p.waitForTimeout(2500); } catch (e) { o.clicks.push({ lab, err: String(e).slice(0, 80) }); continue; }
+                const info = await p.evaluate(() => ({ url: location.href, col: ([...document.querySelectorAll('body *')].find(e => e.children.length === 0 && /^COLORE/i.test((e.textContent || '').trim())) || {}).textContent, imgs: [...new Set([...document.querySelectorAll('img')].map(e => e.currentSrc || e.src).filter(s => /widencdn/.test(s)).map(s => s.split('?')[0]))].slice(0, 20) }));
+                o.clicks.push({ lab, ...info });
+              }
+              // ricerca sito
+              await p.goto('https://www.cannondale.com/it-it/search?q=topstone%20carbon%203', { waitUntil: 'domcontentloaded', timeout: 60000 }).catch(()=>{}); await p.waitForTimeout(6000);
+              o.search = await p.evaluate(() => [...new Set([...document.querySelectorAll('a[href*="topstone-carbon-3"]')].map(a => a.href))]);
+              o.searchText = clean(await p.locator('body').innerText()).slice(0, 3000);
             } catch (e) { o.error = String(e); }
-            // scarica immagini grandi (widen / cannondale media)
-            const all = new Set(); for (const s of o.swatches) for (const u of s.imgs) all.add(u); for (const u of (o.netImgs || [])) all.add(u);
+            // scarica tutte le widen trovate (grandi) che non siano DTE
             let n = 0;
-            for (let u of all) {
-              if (!/^https?:/.test(u)) continue;
-              if (!/widen|cannondale/i.test(u)) continue;
-              if (/logo|icon|flag|svg|sprite|badge/i.test(u)) continue;
-              let big = u.replace(/(\?|&)(w|width)=\d+/g, '').replace(/\/(\d+)px(\/|$)/, '/2000px$2');
-              try { const r = await ctx.request.get(big, { timeout: 30000 }); if (!r.ok()) continue; const buf = await r.body(); if (buf.length < 20000) continue; const name = ('img' + String(n++).padStart(2, '0') + '-' + big.split('/').pop().split('?')[0].replace(/[^A-Za-z0-9._-]/g, '_')).slice(0, 90); fs.writeFileSync('probe/img/' + name + (/(\.jpe?g|\.png|\.webp)$/i.test(name) ? '' : '.jpg'), buf); o.allImgs.push({ big, name, size: buf.length }); } catch (e) {}
-              if (n >= 60) break;
+            const all = new Set(o.widen || []); for (const c of o.clicks) for (const u of (c.imgs || [])) all.add(u);
+            for (const u of all) {
+              if (/_DTE_/.test(u)) continue;
+              const big = u.replace(/\/\d+px@1x\//, '/2400px@1x/').replace(/\.(webp|png)$/, '.jpg');
+              try { const r = await ctx.request.get(big + '?color=f8f8f8&q=90', { timeout: 30000 }); if (!r.ok()) continue; const buf = await r.body(); if (buf.length < 20000) continue; const name = big.split('/').pop().replace(/[^A-Za-z0-9._-]/g, '_'); fs.writeFileSync('probe/img2/' + name, buf); n++; } catch (e) {}
+              if (n >= 30) break;
             }
-            fs.writeFileSync('probe/pw.json', JSON.stringify(o, null, 1));
+            fs.writeFileSync('probe/colori.json', JSON.stringify(o, null, 1));
             await b.close();
           })();
           JS
-          node pw.js; echo "pw.json: $(wc -c < probe/pw.json)"; ls probe/img | wc -l
+          node pw.js; ls probe/img2 | wc -l
           rm -rf node_modules package.json package-lock.json pw.js; git checkout -- . 2>/dev/null
       - name: commit risultato
         run: |
           git config user.name "probe"; git config user.email "probe@local"
-          git add -A; git commit -qm "probe: Cannondale Topstone" || echo "niente"; git fetch -q origin; git rebase origin/claude/install-ui-ux-pro-max-cq88gs || (git rebase --abort; git reset --soft origin/claude/install-ui-ux-pro-max-cq88gs; git commit -qm "probe: Cannondale Topstone"); git push -u origin HEAD:claude/install-ui-ux-pro-max-cq88gs
+          git add -A; git commit -qm "probe: colori Topstone" || echo "niente"; git fetch -q origin; git rebase origin/claude/install-ui-ux-pro-max-cq88gs || (git rebase --abort; git reset --soft origin/claude/install-ui-ux-pro-max-cq88gs; git commit -qm "probe: colori Topstone"); git push -u origin HEAD:claude/install-ui-ux-pro-max-cq88gs
