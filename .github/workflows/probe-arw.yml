@@ -16,24 +16,31 @@ jobs:
           node-version: 20
       - name: sample ARW
         run: |
-          set -e
+          set +e
           mkdir -p /tmp/raw
-          curl -sSL "https://raw.pixls.us/" -o /tmp/raw/index.html
-          # first Sony ARW link on the listing
-          LINK=$(grep -o 'getfile.php/[0-9]*/nice/Sony[^"]*\.ARW' /tmp/raw/index.html | head -1 || true)
-          echo "link: $LINK" | tee probe/sample.txt
-          if [ -z "$LINK" ]; then
-            grep -o 'getfile.php/[0-9]*/nice/[^"]*' /tmp/raw/index.html | head -20 >> probe/sample.txt || true
-            LINK=$(grep -o 'getfile.php/[0-9]*/nice/[^"]*\.ARW' /tmp/raw/index.html | head -1)
+          : > probe/sample.txt
+          try() { curl -sSL -m 300 -A "Mozilla/5.0" "$1" -o /tmp/raw/cand.bin; sz=$(stat -c %s /tmp/raw/cand.bin 2>/dev/null || echo 0); mg=$(head -c 4 /tmp/raw/cand.bin | od -An -c | tr -d ' \n'); echo "$1 -> $sz bytes magic=$mg" >> probe/sample.txt; if [ "$sz" -gt 1000000 ] && head -c 2 /tmp/raw/cand.bin | grep -q 'II'; then mv /tmp/raw/cand.bin /tmp/raw/sample.ARW; return 0; fi; return 1; }
+          # 1) rawsamples.ch: elenco Sony
+          curl -sSL -m 60 -A "Mozilla/5.0" "https://www.rawsamples.ch/index.php/en/sony" -o /tmp/raw/rs.html
+          for L in $(grep -oiE 'https?://[^"'"'"' ]*\.ARW' /tmp/raw/rs.html | sort -u | head -5); do try "$L" && break; done
+          # 2) raw.pixls.us: scopro il JSON dell'elenco
+          if [ ! -f /tmp/raw/sample.ARW ]; then
+            curl -sSL -m 60 -A "Mozilla/5.0" "https://raw.pixls.us/" -o /tmp/raw/px.html
+            echo "pixls index:" >> probe/sample.txt; grep -oE '(href|src)="[^"]*"' /tmp/raw/px.html | head -40 >> probe/sample.txt
+            for J in "https://raw.pixls.us/json/ac.json" "https://raw.pixls.us/data/index.json"; do
+              curl -sSL -m 60 -A "Mozilla/5.0" "$J" -o /tmp/raw/j.json; echo "$J -> $(stat -c %s /tmp/raw/j.json)" >> probe/sample.txt
+              head -c 600 /tmp/raw/j.json >> probe/sample.txt; echo >> probe/sample.txt
+            done
+            for L in $(grep -oE 'getfile.php/[0-9]+/nice/Sony[^"]*\.ARW' /tmp/raw/j.json /tmp/raw/px.html 2>/dev/null | cut -d: -f2- | sort -u | head -3); do try "https://raw.pixls.us/$L" && break; done
           fi
-          curl -sSL "https://raw.pixls.us/$LINK" -o /tmp/raw/sample.ARW
-          ls -la /tmp/raw/sample.ARW | tee -a probe/sample.txt
+          ls -la /tmp/raw >> probe/sample.txt
+          [ -f /tmp/raw/sample.ARW ] || echo "NESSUN CAMPIONE" >> probe/sample.txt
       - name: test
         run: |
           npm init -y >/dev/null
           npm i playwright@1.47.0 >/dev/null 2>&1
           npx playwright install --with-deps chromium >/dev/null 2>&1
-          node probe/test.js /tmp/raw/sample.ARW || true
+          [ -f /tmp/raw/sample.ARW ] && node probe/test.js /tmp/raw/sample.ARW || true
           rm -rf node_modules package.json package-lock.json
       - name: commit
         run: |
