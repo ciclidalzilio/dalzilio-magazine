@@ -1,0 +1,11 @@
+									<div class="article--owl-carousel owl-carousel">
+								<span class="article__discount">-15.0%</span>
+								<span class="article__discount">-50.0%</span>
+							<div class="article__inside">
+						<div class="article">
+					<div class="article">
+			<div id="articles_modal" tabindex="-1" role="dialog"
+		<div id="articles_modal" tabindex="-1" role="dialog"
+	"gtin13":"7616185382027",
+	"sku": "425600"
+<meta property="og:ean" content="7616185382027"/><style type="text/css">
