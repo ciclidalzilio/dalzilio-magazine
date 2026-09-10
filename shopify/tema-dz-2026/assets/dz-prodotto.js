@@ -135,9 +135,9 @@
     }
 
     var skuEl = $("[data-dz-sku]");
-    if (skuEl && v.sku) { skuEl.textContent = v.sku; skuEl.parentElement.hidden = false; }
+    if (skuEl) { skuEl.textContent = v.sku || ""; skuEl.parentElement.hidden = !v.sku; }
     var eanEl = $("[data-dz-ean]");
-    if (eanEl && v.ean) { eanEl.textContent = v.ean; eanEl.parentElement.hidden = false; }
+    if (eanEl) { eanEl.textContent = v.ean || ""; eanEl.parentElement.hidden = !v.ean; }
 
     calcolaRata();
     disegnaTaglie();
