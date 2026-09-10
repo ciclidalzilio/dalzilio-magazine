@@ -1,0 +1,56 @@
+== https://ciclidalzilio.com/collections/bici-da-strada?preview_theme_id=201625075976
+http 200
+tema nell'html: dztema2026-36 (lavoro) — hover secondo colore | theme_id: Shopify.theme = {"name":"dztema2026-36 (lavoro) — hover secondo colore","id":201625075976,"schema_name":"DZ 2026","schema_version":"1.0.0","theme_store_id":nu
+card: 24 | con due colori: 18 | img hover: 18
+esempi hover:
+<article class="prod" data-vendor="SCOTT">
+<article class="prod due-colori" data-vendor="CANNONDALE">
+<article class="prod" data-vendor="CANNONDALE">
+<article class="prod due-colori" data-vendor="CANNONDALE">
+<article class="prod due-colori" data-vendor="CANNONDALE">
+<article class="prod" data-vendor="CANNONDALE">
+<article class="prod due-colori" data-vendor="CANNONDALE">
+<article class="prod" data-vendor="CANNONDALE">
+<article class="prod" data-vendor="CANNONDALE">
+<article class="prod due-colori" data-vendor="TREK">
+<article class="prod due-colori" data-vendor="TREK">
+<article class="prod due-colori" data-vendor="TREK">
+img class="hover"  alt="Cannondale Supersix EVO 1"
+img class="hover"  alt="Cannondale Supersix EVO 2"
+img class="hover"  alt="Cannondale Supersix EVO 3"
+img class="hover"  alt="Cannondale Supersix EVO 5"
+img class="hover"  alt="Domane SL 5 Gen 5 — Buff Beige, vista laterale"
+img class="hover"  alt="Domane SL 6 AXS Gen 5 — Matte Deep Smoke, vista laterale"
+img class="hover"  alt="Domane SL 7 AXS 1x Gen 5 — Buff Beige, vista laterale"
+img class="hover"  alt="Madone SL 5 Gen 8"
+img class="hover"  alt="Madone SL 6 Gen 8"
+img class="hover"  alt="Madone SL 7 Gen 8"
+img class="hover"  alt="Madone SLR 7 AXS"
+img class="hover"  alt="Madone SLR 7 Gen 8"
+css hover: 0
+css url: 
+== https://ciclidalzilio.com/collections/bici-da-strada?preview_theme_id=201625075976&filter.p.vendor=TREK
+http 200
+tema nell'html: dztema2026-36 (lavoro) — hover secondo colore | theme_id: Shopify.theme = {"name":"dztema2026-36 (lavoro) — hover secondo colore","id":201625075976,"schema_name":"DZ 2026","schema_version":"1.0.0","theme_store_id":nu
+card: 9 | con due colori: 9 | img hover: 9
+esempi hover:
+<article class="prod due-colori" data-vendor="TREK">
+<article class="prod due-colori" data-vendor="TREK">
+<article class="prod due-colori" data-vendor="TREK">
+<article class="prod due-colori" data-vendor="TREK">
+<article class="prod due-colori" data-vendor="TREK">
+<article class="prod due-colori" data-vendor="TREK">
+<article class="prod due-colori" data-vendor="TREK">
+<article class="prod due-colori" data-vendor="TREK">
+<article class="prod due-colori" data-vendor="TREK">
+img class="hover"  alt="Domane SL 5 Gen 5 — Buff Beige, vista laterale"
+img class="hover"  alt="Domane SL 6 AXS Gen 5 — Matte Deep Smoke, vista laterale"
+img class="hover"  alt="Domane SL 7 AXS 1x Gen 5 — Buff Beige, vista laterale"
+img class="hover"  alt="Madone SL 5 Gen 8"
+img class="hover"  alt="Madone SL 6 Gen 8"
+img class="hover"  alt="Madone SL 7 Gen 8"
+img class="hover"  alt="Madone SLR 7 AXS"
+img class="hover"  alt="Madone SLR 7 Gen 8"
+img class="hover"  alt="Madone SLR 9 AXS Gen 8"
+css hover: 0
+css url: 
