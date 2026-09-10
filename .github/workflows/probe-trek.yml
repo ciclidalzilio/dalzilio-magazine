@@ -8,55 +8,46 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-      - name: immagini per lettera colore
+      - name: playwright swatch SL 7
         shell: bash
         run: |
           set +e
-          UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
           mkdir -p probe/img
-          for L in A B C D E F G H; do for suf in Primary Portrait Angle Detail1; do
-            u="https://media.trekbikes.com/image/upload/w_1800/MadoneSL7-27-57664-${L}-${suf}"
-            code=$(curl -sSL -A "$UA" -o /tmp/i.bin -w '%{http_code}' "$u"); sz=$(wc -c < /tmp/i.bin)
-            if [ "$code" = "200" ] && [ "$sz" -gt 15000 ]; then cp /tmp/i.bin "probe/img/57664-${L}-${suf}.jpg"; echo "OK $L $suf $sz"; fi
-          done; done
-          ls probe/img
-      - name: playwright
-        shell: bash
-        run: |
-          set +e
           npm init -y >/dev/null 2>&1; npm i playwright@1.47.0 >/dev/null 2>&1; npx playwright install --with-deps chromium >/dev/null 2>&1
           cat > pw.js <<'JS'
           const { chromium } = require('playwright'); const fs = require('fs');
           (async () => {
             const b = await chromium.launch(); const ctx = await b.newContext({ locale: 'it-IT', userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36', viewport: { width: 1400, height: 1000 } });
-            const p = await ctx.newPage(); const out = { colors: [], codes: [], imgs: [], text: '' };
+            const p = await ctx.newPage(); const out = { swatches: [] };
             try {
               await p.goto('https://www.trekbikes.com/it/it_IT/biciclette/biciclette-da-corsa/bici-da-strada-ad-alte-prestazioni/madone/f/F213/madone-sl-7-gen-8/57664/', { waitUntil: 'networkidle', timeout: 90000 });
               for (const t of ['Accetta tutti', 'Accetta', 'Accept All', 'Accept']) { const el = p.getByRole('button', { name: t }).first(); if (await el.count()) { await el.click().catch(()=>{}); break; } }
-              await p.waitForTimeout(3000);
-              out.title = await p.title(); out.url = p.url();
-              out.text = (await p.locator('body').innerText()).slice(0, 20000);
-              const html = await p.content();
-              for (const m of html.matchAll(/5346(?:74[2-9]|75[0-3])/g)) out.codes.push(html.slice(Math.max(0, m.index - 300), m.index + 300).replace(/\s+/g, ' '));
-              const sw = p.locator('[class*="swatch"], [class*="Swatch"], [class*="colour"], [class*="color"] button, button[aria-label*="Matte"], button[aria-label*="Gloss"], [role="radio"]');
-              const n = await sw.count(); out.swatchCount = n;
-              for (let i = 0; i < Math.min(n, 12); i++) {
-                const el = sw.nth(i); const label = (await el.getAttribute('aria-label')) || (await el.getAttribute('title')) || (await el.innerText().catch(()=> '')) ;
-                try { await el.click({ timeout: 3000 }); await p.waitForTimeout(2500); } catch (e) {}
-                const imgs = await p.locator('img').evaluateAll(els => els.map(e => e.currentSrc || e.src).filter(s => s && s.includes('media.trekbikes.com')));
-                const sel = await p.locator('body').innerText();
-                const mcol = sel.match(/(?:Colore|Color)[^\n]{0,5}\n?\s*([^\n]{3,80})/);
-                out.colors.push({ i, label, selected: mcol ? mcol[1].trim() : null, url: p.url(), imgs: [...new Set(imgs)].slice(0, 12) });
+              await p.waitForTimeout(2000);
+              const card = p.locator('xpath=//*[contains(normalize-space(text()),"Madone SL 7 Gen 8")]/ancestor::*[.//img[contains(@src,"57664")]][1]').first();
+              out.cardFound = await card.count();
+              out.cardText = (await card.innerText()).slice(0, 3000);
+              const sw = card.locator('button[aria-label], [role="radio"], [role="option"], label, input[type="radio"]');
+              const n = await sw.count(); out.n = n;
+              for (let i = 0; i < Math.min(n, 20); i++) {
+                const el = sw.nth(i);
+                const label = (await el.getAttribute('aria-label')) || (await el.getAttribute('title')) || (await el.innerText().catch(()=> ''));
+                try { await el.click({ timeout: 3000, force: true }); await p.waitForTimeout(2000); } catch (e) {}
+                const txt = await card.innerText();
+                const m = txt.match(/Colore\s*\/\s*\n?\s*([^\n]{3,80})/);
+                const imgs = await card.locator('img').evaluateAll(els => els.map(e => e.currentSrc || e.src).filter(s => s && s.includes('57664')));
+                const links = await card.locator('a').evaluateAll(els => els.map(e => e.href).filter(h => h && /\d{7}/.test(h)));
+                out.swatches.push({ i, label, colore: m ? m[1].trim() : null, imgs: [...new Set(imgs)], links: [...new Set(links)].slice(0, 5), url: p.url() });
               }
-              out.imgs = [...new Set(await p.locator('img').evaluateAll(els => els.map(e => e.currentSrc || e.src).filter(s => s && s.includes('media.trekbikes.com'))))];
             } catch (e) { out.error = String(e); }
-            fs.mkdirSync('probe', { recursive: true }); fs.writeFileSync('probe/pw.json', JSON.stringify(out, null, 1));
+            fs.writeFileSync('probe/pw2.json', JSON.stringify(out, null, 1));
             await b.close();
           })();
           JS
-          node pw.js; echo "pw.json: $(wc -c < probe/pw.json)"
+          node pw.js; echo "pw2.json: $(wc -c < probe/pw2.json)"
           rm -rf node_modules package.json package-lock.json pw.js
+          # scarica anche le lettere E..L per sicurezza
+          UA="Mozilla/5.0"; for L in E F G H I J K L; do u="https://media.trekbikes.com/image/upload/w_1800/MadoneSL7-27-57664-${L}-Primary"; code=$(curl -sSL -A "$UA" -o /tmp/i.bin -w '%{http_code}' "$u"); sz=$(wc -c < /tmp/i.bin); if [ "$code" = "200" ] && [ "$sz" -gt 15000 ]; then cp /tmp/i.bin "probe/img/57664-${L}-Primary.jpg"; echo "OK $L"; fi; done
       - name: commit risultato
         run: |
           git config user.name "probe"; git config user.email "probe@local"
-          git add probe/; git commit -m "probe: Trek playwright" || echo "niente"; git pull --rebase || true; git push
+          git add probe/; git commit -m "probe: swatch SL 7" || echo "niente"; git pull --rebase || true; git push
