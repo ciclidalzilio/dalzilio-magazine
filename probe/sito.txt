@@ -1,0 +1,38 @@
+== https://ciclidalzilio.com/products/domane-sl-5-gen-6
+http 200 finale https://ciclidalzilio.com/products/domane-sl-5-gen-6
+titolo: <title>Domane SL 5 Gen 5 — Cicli Dal ZIlio
+occorrenze Domane SL 5: 91 | SL 6 AXS: 2 | SL 7 AXS: 2
+link sl5: href="https://ciclidalzilio.com/de/products/domane-sl-5-gen-6"
+href="https://ciclidalzilio.com/en/products/domane-sl-5-gen-6"
+href="https://ciclidalzilio.com/products/domane-sl-5-gen-6"
+card titles: 0 card; primi titoli: alt="Cicli Dal ZIlio" alt="" alt="" alt="" alt="" alt="" alt="" alt="" alt="" alt="" alt="" alt="" 
+== https://ciclidalzilio.com/products/domane-sl-6-axs-gen-5
+http 200 finale https://ciclidalzilio.com/products/domane-sl-6-axs-gen-5
+titolo: <title>Domane SL 6 AXS Gen 5 — Cicli Dal ZIlio
+occorrenze Domane SL 5: 2 | SL 6 AXS: 91 | SL 7 AXS: 2
+link sl5: 
+card titles: 0 card; primi titoli: alt="Cicli Dal ZIlio" alt="" alt="" alt="" alt="" alt="" alt="" alt="" alt="" alt="" alt="" alt="" 
+== https://ciclidalzilio.com/collections/bici-da-strada
+http 200 finale https://ciclidalzilio.com/collections/bici-da-strada
+titolo: <title>Bici da Strada | Bici da Corsa | Cicli Dal Zilio — Cicli Dal ZIlio
+occorrenze Domane SL 5: 30 | SL 6 AXS: 30 | SL 7 AXS: 30
+link sl5: href="/collections/bici-da-strada/products/domane-sl-5-gen-6"
+card titles: 24 card; primi titoli: alt="Cicli Dal ZIlio" alt="Bicicletta SCOTT Addict RC Pro" alt="Cannondale Supersix EVO 1" alt="Cannondale Supersix EVO 1 SL" alt="Cannondale Supersix EVO 2" alt="Cannondale Supersix EVO 3" alt="Cannondale Supersix EVO 4" alt="Cannondale Supersix EVO 5" alt="Cannondale Synapse Carbon 2 RLE" alt="Cannondale Synapse Carbon 4" alt="Domane SL 5 Gen 5 — Matte Deep Smoke, vista laterale" alt="Domane SL 6 AXS Gen 5 — Matte Deep Smoke, vista laterale" 
+== https://ciclidalzilio.com/collections/bici-da-strada?page=2
+http 200 finale https://ciclidalzilio.com/collections/bici-da-strada?page=2
+titolo: <title>Bici da Strada | Bici da Corsa | Cicli Dal Zilio — Cicli Dal ZIlio
+occorrenze Domane SL 5: 0 | SL 6 AXS: 0 | SL 7 AXS: 0
+link sl5: 
+card titles: 24 card; primi titoli: alt="Cicli Dal ZIlio" alt="SCOTT Addict 50" alt="Scott Addict 50" alt="Scott Addict Premium" alt="Scott Addict RC 10" alt="SCOTT Addict RC 20" alt="SCOTT Addict RC 20" alt="Scott Addict RC 20" alt="SCOTT Addict RC 30" alt="SCOTT Addict RC 30" alt="Scott Addict RC 30" alt="Scott Addict RC Pro" 
+== https://ciclidalzilio.com/search?q=domane
+http 200 finale https://ciclidalzilio.com/search?q=domane
+titolo: <title>Ricerca: 244 risultati trovati per &quot;domane&quot; — Cicli Dal ZIlio
+occorrenze Domane SL 5: 0 | SL 6 AXS: 0 | SL 7 AXS: 0
+link sl5: href="/products/domane-sl-5-gen-4?_pos=5&_sid=adfe08d16&_ss=r"
+card titles: 24 card; primi titoli: alt="Cicli Dal ZIlio" alt="Domane+ SLR 7" alt="Domane+ SLR 7 AXS" alt="Domane SL 6 Gen 4" alt="Domane+ SLR 9" alt="Domane SL 5 Gen 4" alt="Domane SL 7 Gen 4" alt="Domane SL 6 Gen 4" alt="Domane+ SLR 6" alt="Domane AL 2 Gen 4" alt="Domane+ AL 5" alt="Trek Domane +SLR 6 tg 56" 
+== https://ciclidalzilio.com/collections/new-arrivals
+http 200 finale https://ciclidalzilio.com/collections/new-arrivals
+titolo: <title>Nuovi Arrivi - Bici, E-Bike e Accessori Ciclismo | Cicli Dal Zilio — Cicli Dal ZIlio
+occorrenze Domane SL 5: 30 | SL 6 AXS: 30 | SL 7 AXS: 30
+link sl5: href="/collections/new-arrivals/products/domane-sl-5-gen-6"
+card titles: 24 card; primi titoli: alt="Cicli Dal ZIlio" alt="Domane SL 7 AXS 1x Gen 5 — Matte Deep Smoke, vista laterale" alt="Domane SL 6 AXS Gen 5 — Matte Deep Smoke, vista laterale" alt="Scott Fastlane 10 — Cumulus White, vista laterale" alt="Scott Fastlane Premium — Chrome Silver, vista laterale" alt="Bicicletta SCOTT Addict 10" alt="Bicicletta SCOTT Scale 960" alt="Bicicletta SCOTT Scale 940 black" alt="Scott Foil RC 20 cumulus white/carbon black" alt="Scott Foil RC 10 champagne pink/carbon black" alt="Scott Foil RC Team tungsten grey" alt="Scott Foil RC Pro rush white/carbon black" 
