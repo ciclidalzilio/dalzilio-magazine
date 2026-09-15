@@ -1,0 +1,36 @@
+200 C25_C65134U_Moterra_LT_1_EU_TSK_D1 361769
+200 C26_C65134U_Moterra_Crb_LT_1_EU_FOR_D1 503534
+200 C25_C65134U_Moterra_LT_1_EU_BLK_D3 719708
+200 C26_C65134U_Moterra_Crb_LT_1_EU_FOR_3Q 771866
+200 C26_C65134U_Moterra_Crb_LT_1_EU_FOR_D5 658252
+200 C25_C65134U_Moterra_LT_1_EU_TSK_D2 526758
+200 C25_C65134U_Moterra_LT_1_EU_TSK_D5 556600
+200 C26_C65134U_Moterra_Crb_LT_1_EU_FOR_D2 675468
+200 C25_C65134U_Moterra_LT_1_EU_TSK_3Q 717294
+200 C25_C65134U_Moterra_LT_1_EU_TSK_D3 675797
+200 C25_C65134U_Moterra_LT_1_EU_BLK_D1 373945
+200 C26_C65134U_Moterra_Crb_LT_1_EU_FOR_D3 713664
+200 C25_C65134U_Moterra_LT_1_EU_BLK_D2 591087
+200 C25_C65134U_Moterra_LT_1_EU_BLK_3Q 699440
+200 C25_C65134U_Moterra_LT_1_EU_BLK_D5 565420
+total 10424
+drwxr-xr-x 2 runner runner   4096 Sep 15 11:00 .
+drwxr-xr-x 3 runner runner   4096 Sep 15 11:00 ..
+-rw-r--r-- 1 runner runner 699440 Sep 15 11:00 C25_C65134U_Moterra_LT_1_EU_BLK_3Q.jpg
+-rw-r--r-- 1 runner runner 373945 Sep 15 11:00 C25_C65134U_Moterra_LT_1_EU_BLK_D1.jpg
+-rw-r--r-- 1 runner runner 591087 Sep 15 11:00 C25_C65134U_Moterra_LT_1_EU_BLK_D2.jpg
+-rw-r--r-- 1 runner runner 719708 Sep 15 11:00 C25_C65134U_Moterra_LT_1_EU_BLK_D3.jpg
+-rw-r--r-- 1 runner runner 565420 Sep 15 11:00 C25_C65134U_Moterra_LT_1_EU_BLK_D5.jpg
+-rw-r--r-- 1 runner runner 492918 Sep 15 10:59 C25_C65134U_Moterra_LT_1_EU_BLK_PD.jpg
+-rw-r--r-- 1 runner runner 717294 Sep 15 11:00 C25_C65134U_Moterra_LT_1_EU_TSK_3Q.jpg
+-rw-r--r-- 1 runner runner 361769 Sep 15 11:00 C25_C65134U_Moterra_LT_1_EU_TSK_D1.jpg
+-rw-r--r-- 1 runner runner 526758 Sep 15 11:00 C25_C65134U_Moterra_LT_1_EU_TSK_D2.jpg
+-rw-r--r-- 1 runner runner 675797 Sep 15 11:00 C25_C65134U_Moterra_LT_1_EU_TSK_D3.jpg
+-rw-r--r-- 1 runner runner 556600 Sep 15 11:00 C25_C65134U_Moterra_LT_1_EU_TSK_D5.jpg
+-rw-r--r-- 1 runner runner 488772 Sep 15 10:59 C25_C65134U_Moterra_LT_1_EU_TSK_PD.jpg
+-rw-r--r-- 1 runner runner 771866 Sep 15 11:00 C26_C65134U_Moterra_Crb_LT_1_EU_FOR_3Q.jpg
+-rw-r--r-- 1 runner runner 503534 Sep 15 11:00 C26_C65134U_Moterra_Crb_LT_1_EU_FOR_D1.jpg
+-rw-r--r-- 1 runner runner 675468 Sep 15 11:00 C26_C65134U_Moterra_Crb_LT_1_EU_FOR_D2.jpg
+-rw-r--r-- 1 runner runner 713664 Sep 15 11:00 C26_C65134U_Moterra_Crb_LT_1_EU_FOR_D3.jpg
+-rw-r--r-- 1 runner runner 658252 Sep 15 11:00 C26_C65134U_Moterra_Crb_LT_1_EU_FOR_D5.jpg
+-rw-r--r-- 1 runner runner 536768 Sep 15 10:59 C26_C65134U_Moterra_Crb_LT_1_EU_FOR_PD.jpg
