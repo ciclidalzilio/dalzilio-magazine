@@ -1,5 +1,6 @@
 import re, json, sys, html
 src = open(sys.argv[1], encoding='utf-8', errors='ignore').read()
+src = src.replace('\\/', '/').replace('\\u002F', '/').replace('&#x2F;', '/')
 out = {}
 # JSON-LD
 out['ld'] = []
@@ -20,7 +21,10 @@ out['prices'] = sorted(set(re.findall(r'"(?:Price|ListPrice|SalePrice|price)":\s
 # swatch
 out['swatches'] = re.findall(r'pdp__color-select[^>]*data-color="([^"]*)"[^>]*aria-label="([^"]*)"', src)
 # immagini widen
-imgs = sorted(set(re.findall(r'https://embed\.widencdn\.net/img/dorelrl/([a-z0-9]+)/[^"\'\s>]*?/([A-Za-z0-9_\-]+\.(?:png|jpg|webp))', src)))
+imgs = sorted(set(re.findall(r'widencdn\.net/img/dorelrl/([a-z0-9]+)/[^"\'\s>]*?/([A-Za-z0-9_\-]+)\.(?:png|jpg|webp)', src)))
+imgs = [(a, f + '.png') for a, f in imgs]
+out['nomi_c65134u'] = sorted(set(re.findall(r'C2[0-9]_C65134U[A-Za-z0-9_\-]+', src)))
+out['dorelrl_count'] = src.count('dorelrl')
 out['images'] = [{'id': a, 'file': f} for a, f in imgs]
 # testo visibile
 t = re.sub(r'<script.*?</script>|<style.*?</style>', ' ', src, flags=re.S)
