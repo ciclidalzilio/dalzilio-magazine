@@ -8,34 +8,31 @@ permissions:
 jobs:
   run:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 14
     steps:
       - uses: actions/checkout@v4
-      - name: pagina e foto
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: galleria
         shell: bash
         run: |
           set +e
+          npm init -y >/dev/null; npm i playwright@1.47.0 >/dev/null 2>&1; npx playwright install --with-deps chromium >/dev/null 2>&1
+          timeout 240 node probe/galleria.js "https://www.cannondale.com/it-it/bikes/electric/e-mountain/moterra-neo-lt/moterra-lt-1"; echo "exit $?" >> probe/gal-log.txt
+          rm -rf node_modules package.json package-lock.json
           UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
           mkdir -p probe/img
-          curl -sL -A "$UA" -H "Accept-Language: it-IT" -o /tmp/lt1.html "https://www.cannondale.com/it-it/bikes/electric/e-mountain/moterra-neo-lt/moterra-lt-1"
-          echo "html $(wc -c < /tmp/lt1.html)" > probe/log.txt
-          python3 probe/estrai.py /tmp/lt1.html probe/lt1.json >> probe/log.txt
-          python3 - <<'PY' > probe/urls.txt
-          import json
-          d=json.load(open('probe/lt1.json'))
-          print('nomi', d.get('nomi_c65134u'), 'dorelrl', d.get('dorelrl_count'), file=open('probe/log.txt','a'))
-          for im in d['images']:
-              n=im['file'].rsplit('.',1)[0]
-              print(f"https://embed.widencdn.net/img/dorelrl/{im['id']}/2400px@1x/{n}.jpg?color=f8f8f8&q=90 {n}")
-          PY
-          while read -r u n; do
-            [ -z "$u" ] && continue
+          : > probe/dl-log.txt
+          grep -oE 'dorelrl/[a-z0-9]+/[^/]+/[A-Za-z0-9_\-]+\.(png|jpg|webp)' probe/urls-all.txt 2>/dev/null | sed -E 's#dorelrl/([a-z0-9]+)/[^/]+/([A-Za-z0-9_\-]+)\.[a-z]+#\1 \2#' | sort -u > probe/lista.txt
+          while read -r id n; do
+            [ -z "$n" ] && continue
             [ -f "probe/img/$n.jpg" ] && continue
-            code=$(curl -sL -A "$UA" -o "probe/img/$n.jpg" -w "%{http_code}" "$u"); echo "$code $n $(wc -c < probe/img/$n.jpg)" >> probe/log.txt
-          done < probe/urls.txt
+            code=$(curl -sL -A "$UA" -o "probe/img/$n.jpg" -w "%{http_code}" "https://embed.widencdn.net/img/dorelrl/$id/2400px@1x/$n.jpg?color=f8f8f8&q=90"); echo "$code $n $(wc -c < probe/img/$n.jpg)" >> probe/dl-log.txt
+          done < probe/lista.txt
           find probe/img -type f -size -15k -delete
           for f in probe/img/*.jpg; do [ -f "$f" ] && ! file "$f" | grep -q JPEG && rm -f "$f"; done
-          ls -la probe/img >> probe/log.txt; cat probe/log.txt
+          ls -la probe/img >> probe/dl-log.txt; cat probe/gal-log.txt probe/dl-log.txt
       - name: commit risultato
         run: |
           git config user.name "probe"; git config user.email "probe@local"
