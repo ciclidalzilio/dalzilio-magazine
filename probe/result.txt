@@ -1,6 +1,0 @@
-pc status 200 final https://ciclidalzilio.com/products/cannondale-superx-4-axs
-pc sezioni correlati: 1
-pc card: Cannondale Topstone CRB 2 AXS 1x €3.099,00 | Scott Addict Gravel 20 €3.399,00 | Checkpoint SL 5 AXS Gen 3 €2.799,00 | Scott Addict Gravel 40 - 2027 €2.799,00
-mobile status 200 final https://ciclidalzilio.com/products/cannondale-superx-4-axs
-mobile sezioni correlati: 1
-mobile card: Cannondale Topstone CRB 2 AXS 1x €3.099,00 | Scott Addict Gravel 20 €3.399,00 | Checkpoint SL 5 AXS Gen 3 €2.799,00 | Scott Addict Gravel 40 - 2027 €2.799,00
