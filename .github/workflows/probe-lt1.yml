@@ -36,4 +36,4 @@ jobs:
       - name: commit risultato
         run: |
           git config user.name "probe"; git config user.email "probe@local"
-          git add -A probe; git commit -qm "probe lt1: risultati" || echo "niente"; git fetch -q origin; git rebase origin/claude/install-ui-ux-pro-max-cq88gs || (git rebase --abort; git reset --soft origin/claude/install-ui-ux-pro-max-cq88gs; git commit -qm "probe lt1: risultati"); git push -u origin HEAD:claude/install-ui-ux-pro-max-cq88gs
+          git checkout -- . 2>/dev/null; git add -A; git commit -qm "probe lt1: risultati" || echo "niente"; git fetch -q origin; git rebase origin/claude/install-ui-ux-pro-max-cq88gs || (git rebase --abort; git reset --soft origin/claude/install-ui-ux-pro-max-cq88gs; git commit -qm "probe lt1: risultati"); git push -u origin HEAD:claude/install-ui-ux-pro-max-cq88gs
