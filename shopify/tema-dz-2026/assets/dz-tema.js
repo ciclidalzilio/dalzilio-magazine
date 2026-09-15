@@ -29,7 +29,9 @@
    Misuriamo il riquadro reale della bici su una miniatura same-origin
    (proxy /cdn/ di Shopify, canvas sempre leggibile, sfondo campionato dai
    bordi) e calcoliamo lo zoom RISPETTO ALLA CARD, tenendo conto del
-   rapporto immagine/contenitore. Fallback per marca se il canvas fallisce. */
+   rapporto immagine/contenitore. Fallback per marca se il canvas fallisce.
+   Le card .usato (foto da studio che riempiono gia' il fotogramma) sono
+   escluse: la foto va a tutta finestrella via CSS, senza misure ne' zoom. */
 (function () {
   var TARGET = 0.9, MAXZ = 1.7, MINZ = 1.02;
   var PER_MARCA = { "SCOTT": 1.32, "SCOTT_SPORTS": 1.32, "CANNONDALE": 1.35, "AMFLOW": 1.15, "TREK": 1.05 };
@@ -170,6 +172,8 @@
   function fit(img) {
     if (img.dataset.dzFitDone) return;
     img.dataset.dzFitDone = "1";
+    /* usato: nessuna misura, la foto riempie la finestrella via CSS */
+    if (img.closest(".prod.usato")) return;
     var pu = probeUrl(img.currentSrc || img.src);
     if (pu) {
       var probe = new Image();

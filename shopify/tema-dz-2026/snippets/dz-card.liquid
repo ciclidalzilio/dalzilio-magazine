@@ -16,28 +16,68 @@
 {%- assign in_sconto = false -%}
 {%- if product.compare_at_price > product.price -%}{%- assign in_sconto = true -%}{%- endif -%}
 {%- comment -%}
+  Foto della card: di norma la prima del prodotto. Se pero' e' disponibile un
+  solo colore (es. un pezzo singolo in negozio), mostra la foto di quel colore:
+  il cliente vede la bici che puo' davvero comprare, non il colore esaurito.
+  Con piu' colori disponibili resta la prima foto.
+{%- endcomment -%}
+{%- assign foto_card = product.featured_image -%}
+{%- assign foto_card_id = 0 -%}
+{%- if product.featured_media -%}{%- assign foto_card_id = product.featured_media.id -%}{%- endif -%}
+{%- if product.available -%}
+  {%- assign foto_disp = blank -%}
+  {%- assign foto_disp_id = 0 -%}
+  {%- assign colori_disp = 0 -%}
+  {%- for v in product.variants -%}
+    {%- if v.available and v.featured_media -%}
+      {%- if colori_disp == 0 -%}
+        {%- assign foto_disp = v.featured_media.preview_image -%}
+        {%- assign foto_disp_id = v.featured_media.id -%}
+        {%- assign colori_disp = 1 -%}
+      {%- elsif v.featured_media.id != foto_disp_id -%}
+        {%- assign colori_disp = 2 -%}
+      {%- endif -%}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if colori_disp == 1 -%}
+    {%- assign foto_card = foto_disp -%}
+    {%- assign foto_card_id = foto_disp_id -%}
+  {%- endif -%}
+{%- endif -%}
+{%- comment -%}
   Secondo colore al passaggio del mouse: la prima variante collegata a una foto
-  diversa da quella in evidenza (es. Madone nero in copertina -> rosso al hover).
+  diversa da quella mostrata nella card (es. Madone nero in copertina -> rosso al hover).
 {%- endcomment -%}
 {%- assign foto_hover = blank -%}
-{%- if product.featured_media -%}
+{%- if foto_card != blank -%}
   {%- for v in product.variants -%}
-    {%- if v.featured_media and v.featured_media.id != product.featured_media.id -%}
+    {%- if v.featured_media and v.featured_media.id != foto_card_id -%}
       {%- assign foto_hover = v.featured_media.preview_image -%}
       {%- break -%}
     {%- endif -%}
   {%- endfor -%}
 {%- endif -%}
-<article class="prod{% unless product.available %} esaurito{% endunless %}{% if foto_hover != blank %} due-colori{% endif %}" data-vendor="{{ product.vendor | escape }}">
+{%- comment -%}
+  Usato: foto da studio con proporzioni miste (16:9, 4:3...). La foto si vede
+  INTERA (nessuna ruota tagliata) sopra una copia sfocata di se stessa che
+  riempie la finestrella: cosi' il colore di fondo e' sempre quello della foto
+  e non resta il riquadro bianco. Vedi dz-usato.css; dz-tema.js la salta.
+{%- endcomment -%}
+{%- assign e_usato = false -%}
+{%- if product.type == 'USATO' -%}{%- assign e_usato = true -%}{%- endif -%}
+<article class="prod{% if e_usato %} usato{% endif %}{% unless product.available %} esaurito{% endunless %}{% if foto_hover != blank %} due-colori{% endif %}" data-vendor="{{ product.vendor | escape }}">
   <a class="pimg" href="{{ p_url }}" aria-label="{{ product.title | escape }}">
-    {%- if product.featured_image -%}
-      <img src="{{ product.featured_image | image_url: width: 640 }}" alt="{{ product.featured_image.alt | default: product.title | escape }}" loading="lazy" width="640" height="480" data-dz-fit>
+    {%- if foto_card != blank -%}
+      {%- if e_usato -%}
+        <img class="usato-bg" src="{{ foto_card | image_url: width: 80 }}" alt="" loading="lazy" width="80" height="60" aria-hidden="true">
+      {%- endif -%}
+      <img src="{{ foto_card | image_url: width: 640 }}" alt="{{ foto_card.alt | default: product.title | escape }}" loading="lazy" width="640" height="480" data-dz-fit>
     {%- endif -%}
     {%- if foto_hover != blank -%}
       <img class="hover" src="{{ foto_hover | image_url: width: 640 }}" alt="{{ foto_hover.alt | default: product.title | escape }}" loading="lazy" width="640" height="480" data-dz-fit aria-hidden="true">
     {%- endif -%}
     {%- comment -%} niente etichetta tipo (codici feed tipo "EMF - E-FULL S"): solo Usato {%- endcomment -%}
-    {%- if product.type == 'USATO' -%}
+    {%- if e_usato -%}
       <span class="chip">{{ 'card.usato' | t }}</span>
     {%- endif -%}
     {%- if in_sconto -%}
@@ -51,7 +91,7 @@
   <div class="pbody">
     <span class="brand">{{ product.vendor | replace: 'scott_sports', 'SCOTT' }}</span>
     <h3><a href="{{ p_url }}">{{ product.title }}</a></h3>
-    {%- if product.type == 'USATO' and product.published_at -%}
+    {%- if e_usato and product.published_at -%}
       {%- assign data_pub = product.published_at | date: '%-d %B %Y' -%}<span class="pdate">{{ 'card.pubblicato' | t: data: data_pub }}</span>
     {%- endif -%}
     <div class="foot">

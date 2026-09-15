@@ -191,10 +191,8 @@
 .dz-findercard .fc-legend{color:#8b8fa2}
 .dz-findercard .fc-note{color:#8b8fa2}
 
-/* --- modelli correlati: bici piu' grandi nelle card --- */
-.dzs-cimg{background:#fff}
-.dzs-cimg img{padding:0!important;transform:scale(1.22);transition:transform .35s}
-.dzs-card:hover .dzs-cimg img{transform:scale(1.28)}
+/* --- modelli correlati: usano le card dz-card (foto misurata come nelle collezioni) --- */
+.dzs-relgrid .prod{height:100%}
 
 /* --- scheda prodotto: innesto GT (mix col concept porsche) --- */
 :root{--gt-rosso:#d5001c}

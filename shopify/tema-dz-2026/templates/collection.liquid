@@ -9,7 +9,8 @@
     <div><h1>{{ collection.title }}</h1><div class="sub">{{ 'list.prodotti' | t: n: collection.products_count }}</div></div>
     <select class="sortsel" onchange="location.href=this.value">
       {%- assign base = collection.url | append: '?sort_by=' -%}
-      <option value="{{ base }}manual" {% if collection.sort_by == 'manual' or collection.sort_by == blank %}selected{% endif %}>{{ 'list.ordina_ril' | t }}</option>
+      {%- assign dsort = collection.default_sort_by | default: 'manual' -%}
+      <option value="{{ base }}{{ dsort }}" {% if collection.sort_by == dsort or collection.sort_by == blank %}selected{% endif %}>{{ 'list.ordina_ril' | t }}</option>
       <option value="{{ base }}created-descending" {% if collection.sort_by == 'created-descending' %}selected{% endif %}>{{ 'list.recenti' | t }}</option>
       <option value="{{ base }}price-ascending" {% if collection.sort_by == 'price-ascending' %}selected{% endif %}>{{ 'list.prezzo_asc' | t }}</option>
       <option value="{{ base }}price-descending" {% if collection.sort_by == 'price-descending' %}selected{% endif %}>{{ 'list.prezzo_desc' | t }}</option>
@@ -110,12 +111,51 @@
     {%- endif -%}
 
     <div>
+      {%- comment -%}
+        Mix "più venduti + novità": la collezione è ordinata per più venduti
+        (impostazione Shopify). In cima alla prima pagina, quando il cliente non
+        ha scelto filtri né un ordinamento, una fascia con le ultime bici arrivate
+        e disponibili di questa collezione (prese da "Tutte le bici", che è per data).
+      {%- endcomment -%}
+      {%- assign trovate = 0 -%}
+      {%- if collection.sort_by == blank and attivi == 0 and current_page == 1 -%}
+        {%- capture novita_html -%}
+          {%- for np in collections['tutte-le-bici'].products limit: 50 -%}
+            {%- if trovate >= 4 -%}{%- break -%}{%- endif -%}
+            {%- if np.available and np.type != 'USATO' -%}
+              {%- assign dentro = false -%}
+              {%- for c in np.collections -%}
+                {%- if c.id == collection.id -%}{%- assign dentro = true -%}{%- break -%}{%- endif -%}
+              {%- endfor -%}
+              {%- if dentro -%}
+                {% render 'dz-card', product: np %}
+                {%- assign trovate = trovate | plus: 1 -%}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endcapture -%}
+        {%- if trovate > 0 -%}
+          <div class="novita">
+            <h2>{{ 'list.recenti' | t }}</h2>
+            <div class="listgrid">{{ novita_html }}</div>
+          </div>
+          <style>
+            .novita{margin:0 0 28px;padding:0 0 24px;border-bottom:1px solid rgba(18,20,42,.1)}
+            .novita h2{font-size:14px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;margin:0 0 14px;color:var(--muted,#6b6f80)}
+          </style>
+        {%- endif -%}
+      {%- endif -%}
       {%- paginate collection.products by 24 -%}
         <div class="listgrid">
-          {%- for p in collection.products -%}
-            {% render 'dz-card', product: p %}
-          {%- else -%}
+          {%- if collection.products.size == 0 -%}
             <p style="grid-column:1/-1;color:var(--muted);padding:40px 0">{{ 'list.vuoto' | t }} <a href="{{ collection.url }}" style="text-decoration:underline">{{ 'list.azzera_filtri' | t }}</a></p>
+          {%- endif -%}
+          {%- comment -%} nella pagina, prima le bici disponibili, poi le esaurite {%- endcomment -%}
+          {%- for p in collection.products -%}
+            {%- if p.available -%}{% render 'dz-card', product: p %}{%- endif -%}
+          {%- endfor -%}
+          {%- for p in collection.products -%}
+            {%- unless p.available -%}{% render 'dz-card', product: p %}{%- endunless -%}
           {%- endfor -%}
         </div>
         {%- if paginate.pages > 1 -%}

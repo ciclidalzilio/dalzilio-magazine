@@ -1,0 +1,21 @@
+/* DZ 2026 — card USATO.
+   Le foto da studio hanno proporzioni miste (16:9, 4:3, 3:2), quindi nessun
+   ritaglio fisso va bene per tutte: la foto resta INTERA (ruote comprese) e
+   dietro c'e' una copia sfocata della stessa foto che riempie la finestrella.
+   Il fondo prende cosi' il grigio dello scatto e il riquadro bianco sparisce.
+   Le card del nuovo (foto ufficiali su bianco) non cambiano. */
+.prod.usato .pimg{background:#e9eaee}
+.prod.usato .pimg img{--nz:1;--nx:0%;--ny:0%;object-fit:contain}
+.prod.usato .pimg img.usato-bg{object-fit:cover;z-index:0;
+  transform:scale(1.2);filter:blur(14px) saturate(.9);opacity:.95;transition:none}
+.prod.usato:hover .pimg img.usato-bg,
+.prod.usato.esaurito:hover .pimg img.usato-bg{transform:scale(1.2)}
+.prod.usato .pimg img[data-dz-fit]{z-index:1}
+.prod.usato .pimg img.hover{z-index:2}
+/* hover: zoom appena percettibile, per non far uscire le ruote dai bordi */
+.prod.usato:hover .pimg img[data-dz-fit]{transform:scale(1.03)}
+@media (max-width:640px){
+  .prod.usato .pimg img[data-dz-fit],
+  .prod.usato:hover .pimg img[data-dz-fit],
+  .prod.usato.esaurito:hover .pimg img[data-dz-fit]{transform:scale(1)}
+}

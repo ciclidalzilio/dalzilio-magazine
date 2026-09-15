@@ -1,52 +1,119 @@
 {%- comment -%}
-  dz-correlati.liquid — altri modelli della stessa collezione.
+  dz-correlati.liquid — modelli della stessa categoria, vicini di prezzo.
+
+  1) Categoria = la collezione "vera" del prodotto (corsa, gravel, mtb, e-bike...),
+     mai quelle automatiche tipo Promozioni o Ultimi arrivi.
+  2) Tra le bici disponibili di quella collezione si prendono le piu' vicine
+     al prezzo di questa (una SuperX da 3.200 euro suggerisce Topstone Carbon
+     e Addict Gravel da 3.000, non Speedster da 1.300).
+  3) Le card sono le stesse delle collezioni (dz-card): foto misurata e
+     centrata, secondo colore al passaggio del mouse, badge sconto.
 {%- endcomment -%}
 
 {%- liquid
-  assign fonte = product.collections | first
   assign quanti = section.settings.quanti | default: 4
+
+  comment
+    Collezione di categoria: la prima, in questo ordine di priorita', tra
+    quelle a cui appartiene il prodotto. Le sotto-categorie e-bike vengono
+    prima del contenitore "ebikes".
+  endcomment
+  assign categorie = 'e-mtb,e-road-e-gravel,ebikes,bici-da-strada,bici-da-corsa,gravel,mountain-bike,mtb,urban,bambino,kids,usato-1,usato' | split: ','
+  assign fonte = blank
+  for h in categorie
+    for c in product.collections
+      if c.handle == h
+        assign fonte = c
+        break
+      endif
+    endfor
+    if fonte != blank
+      break
+    endif
+  endfor
+  if fonte == blank
+    assign escluse = 'promozioni,new-arrivals,tutte-le-bici,frontpage,all,offerte,saldi,novita' | split: ','
+    for c in product.collections
+      if escluse contains c.handle or c.handle contains 'globofilter'
+        continue
+      endif
+      assign fonte = c
+      break
+    endfor
+  endif
+  if fonte == blank
+    assign fonte = product.collections | first
+  endif
+
+  assign e_usato = false
+  if product.type == 'USATO'
+    assign e_usato = true
+  endif
+  assign titolo_mio = product.title | downcase
+  assign e_telaio = false
+  if titolo_mio contains 'telaio' or titolo_mio contains 'frame'
+    assign e_telaio = true
+  endif
 -%}
 
 {%- if fonte != blank -%}
-<section class="dzs dzs-rel">
-  <div class="dzs-in">
-    <div class="dzs-relhead">
-      <div>
-        <p class="dzs-k">{{ section.settings.occhiello }}</p>
-        <h2 class="dzs-h2 dzs-h2s">{{ section.settings.titolo }}</h2>
-      </div>
-      <a class="dzs-more" href="{{ fonte.url }}">Vedi {{ fonte.title | downcase }}</a>
-    </div>
+  {%- paginate fonte.products by 100 -%}
+    {%- assign lista = fonte.products -%}
+    {%- assign mio = product.price -%}
+    {%- comment -%}
+      Chiave "distanza di prezzo|indice" per ogni candidata: ordinando le
+      chiavi come testo (distanza a larghezza fissa) si ottengono prima le
+      bici con il prezzo piu' vicino.
+    {%- endcomment -%}
+    {%- assign chiavi = '' -%}
+    {%- for p in lista -%}
+      {%- if p.id == product.id -%}{%- continue -%}{%- endif -%}
+      {%- unless p.available -%}{%- continue -%}{%- endunless -%}
+      {%- if p.type == 'USATO' and e_usato == false -%}{%- continue -%}{%- endif -%}
+      {%- if e_usato and p.type != 'USATO' -%}{%- continue -%}{%- endif -%}
+      {%- assign pt = p.title | downcase -%}
+      {%- if e_telaio == false -%}
+        {%- if pt contains 'telaio' or pt contains 'frame' -%}{%- continue -%}{%- endif -%}
+      {%- endif -%}
+      {%- assign diff = p.price | minus: mio | abs -%}
+      {%- assign k = diff | prepend: '000000000' | slice: -9, 9 | append: '|' | append: forloop.index0 -%}
+      {%- assign chiavi = chiavi | append: k | append: ',' -%}
+    {%- endfor -%}
+    {%- assign ordinate = chiavi | split: ',' | sort -%}
 
-    <div class="dzs-relgrid">
-      {%- assign mostrati = 0 -%}
-      {%- for p in fonte.products -%}
-        {%- if p.handle == product.handle -%}{%- continue -%}{%- endif -%}
+    {%- assign mostrati = 0 -%}
+    {%- assign titoli = '' -%}
+    {%- capture cards -%}
+      {%- for k in ordinate -%}
+        {%- if k == blank -%}{%- continue -%}{%- endif -%}
         {%- if mostrati >= quanti -%}{%- break -%}{%- endif -%}
+        {%- assign idx = k | split: '|' | last | plus: 0 -%}
+        {%- assign p = lista[idx] -%}
+        {%- if p == blank -%}{%- continue -%}{%- endif -%}
+        {%- comment -%} stesso modello caricato due volte: una sola card {%- endcomment -%}
+        {%- assign tkey = p.title | downcase | append: '|' -%}
+        {%- if titoli contains tkey -%}{%- continue -%}{%- endif -%}
+        {%- assign titoli = titoli | append: tkey -%}
         {%- assign mostrati = mostrati | plus: 1 -%}
-        <a class="dzs-card" href="{{ p.url }}">
-          <div class="dzs-cimg">
-            {%- if p.featured_image -%}
-              <img src="{{ p.featured_image | image_url: width: 600 }}" alt="{{ p.title | escape }}" loading="lazy">
-            {%- endif -%}
-            {%- if p.compare_at_price > p.price -%}
-              {%- assign d = p.compare_at_price | minus: p.price | times: 100.0 | divided_by: p.compare_at_price | round -%}
-              <span class="dzs-off">-{{ d }}%</span>
-            {%- endif -%}
-          </div>
-          <div class="dzs-cbody">
-            <span class="dzs-brand">{{ p.vendor }}</span>
-            <b>{{ p.title }}</b>
-            <div class="dzs-cprice">
-              {%- if p.compare_at_price > p.price -%}<s>{{ p.compare_at_price | money }}</s>{%- endif -%}
-              <span>{{ p.price | money }}</span>
-            </div>
-          </div>
-        </a>
+        {% render 'dz-card', product: p %}
       {%- endfor -%}
-    </div>
-  </div>
-</section>
+    {%- endcapture -%}
+
+    {%- if mostrati > 0 -%}
+    <section class="dzs dzs-rel">
+      <div class="dzs-in">
+        <div class="dzs-relhead">
+          <div>
+            <p class="dzs-k">{{ section.settings.occhiello }}</p>
+            <h2 class="dzs-h2 dzs-h2s">{{ section.settings.titolo }}</h2>
+          </div>
+          <a class="dzs-more" href="{{ fonte.url }}">Vedi {{ fonte.title | downcase }}</a>
+        </div>
+        <div class="dzs-relgrid">{{ cards }}</div>
+      </div>
+    </section>
+    {%- endif -%}
+  {%- endpaginate -%}
 {%- endif -%}
 
 {{ 'dz-sezioni.css' | asset_url | stylesheet_tag }}
