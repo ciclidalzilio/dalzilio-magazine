@@ -62,40 +62,37 @@
   </div>
 </section>
 
-<section class="block wrap fullw brands" style="padding-top:34px;padding-bottom:6px">
+<section class="brands-dark">
   {%- comment -%}
-    I marchi in primo piano: una card per marchio con logo, claim e bici.
-    Foto e claim sono gli stessi delle pagine marchio (page.brand.liquid).
-    Titolo e link cambiano con la lingua qui, senza toccare le traduzioni.
+    I marchi in primo piano, stile Apple: banda nera da bordo a bordo, i quattro
+    loghi in bianco grandi, il claim di ciascuno (lo stesso delle pagine marchio)
+    e il link alla pagina. Titolo e link cambiano con la lingua qui.
   {%- endcomment -%}
   {%- liquid
     case request.locale.iso_code
       when 'en'
         assign brand_h = 'The brands we choose. And know inside out.'
-        assign brand_go = 'Discover the brand'
       when 'de'
         assign brand_h = 'Die Marken, die wir wählen. Und in- und auswendig kennen.'
-        assign brand_go = 'Marke entdecken'
       when 'fr'
         assign brand_h = 'Les marques que nous choisissons. Et que nous connaissons à fond.'
-        assign brand_go = 'Découvrir la marque'
       else
         assign brand_h = 'I marchi che scegliamo. E che conosciamo a fondo.'
-        assign brand_go = 'Scopri il marchio'
     endcase
-    assign marchi = 'trek|TREK|trek.png|brand.trek.tag|https://cdn.shopify.com/s/files/1/0873/6885/9912/files/TrekDomaneSLR7gen4red.jpg?v=1743781715&width=900,scott|SCOTT|scott.png|brand.scott.tag|https://cdn.shopify.com/s/files/1/0873/6885/9912/files/4253408086.png?v=1783042506&width=900,cannondale|CANNONDALE|cnd.png|brand.cannondale.tag|https://cdn.shopify.com/s/files/1/0873/6885/9912/files/9_4a20d348-54be-42ee-ace1-171dc906c3ce.jpg?v=1771578578&width=900,amflow|AMFLOW|amflow.png|brand.amflow.tag|https://cdn.shopify.com/s/files/1/0873/6885/9912/files/5_d9a3f52a-41bd-4c79-b84b-e4d83b1a25b7.jpg?v=1769701791&width=900' | split: ','
+    assign marchi = 'trek|TREK|trek.png|brand.trek.tag,scott|SCOTT|scott.png|brand.scott.tag,cannondale|CANNONDALE|cnd.png|brand.cannondale.tag,amflow|AMFLOW|amflow.png|brand.amflow.tag' | split: ','
   -%}
-  <div class="head"><div><p class="k">{{ 'home.loghi' | t }}</p><h2>{{ brand_h }}</h2></div></div>
-  <div class="brand-grid">
-    {%- for riga in marchi -%}
-      {%- assign c = riga | split: '|' -%}
-      <a class="brand-card" href="/pages/{{ c[0] }}">
-        <img class="bc-logo" src="{{ c[2] | file_url }}" alt="{{ c[1] }}" loading="lazy">
-        <p class="bc-tag">{{ c[3] | t }}</p>
-        <div class="bc-bike" aria-hidden="true"><img src="{{ c[4] }}" alt="" loading="lazy"></div>
-        <span class="bc-go">{{ brand_go }}</span>
-      </a>
-    {%- endfor -%}
+  <div class="wrap">
+    <p class="bd-k">{{ 'home.loghi' | t }}</p>
+    <h2 class="bd-h">{{ brand_h }}</h2>
+    <div class="bd-row">
+      {%- for riga in marchi -%}
+        {%- assign c = riga | split: '|' -%}
+        <a class="bd-cell" href="/pages/{{ c[0] }}">
+          <img class="bd-logo" src="{{ c[2] | file_url }}" alt="{{ c[1] }}" loading="lazy">
+          <span class="bd-tag">{{ c[3] | t }}</span>
+        </a>
+      {%- endfor -%}
+    </div>
   </div>
 </section>
 
