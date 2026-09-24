@@ -62,15 +62,42 @@
   </div>
 </section>
 
-<section class="wrap fullw" style="padding-top:34px"><div class="logowall">
-  <span class="lw-label">{{ 'home.loghi' | t }}</span>
-  <div class="lw-row">
-    <a class="lw-cell" href="/pages/trek"><img src="{{ 'trek.png' | file_url }}" alt="Trek" loading="lazy"></a>
-    <a class="lw-cell" href="/pages/scott"><img src="{{ 'scott.png' | file_url }}" alt="Scott" loading="lazy"></a>
-    <a class="lw-cell" href="/pages/cannondale"><img src="{{ 'cnd.png' | file_url }}" alt="Cannondale" loading="lazy"></a>
-    <a class="lw-cell" href="/pages/amflow"><img src="{{ 'amflow.png' | file_url }}" alt="Amflow" loading="lazy"></a>
+<section class="block wrap fullw brands" style="padding-top:34px;padding-bottom:6px">
+  {%- comment -%}
+    I marchi in primo piano: una card per marchio con logo, claim e bici.
+    Foto e claim sono gli stessi delle pagine marchio (page.brand.liquid).
+    Titolo e link cambiano con la lingua qui, senza toccare le traduzioni.
+  {%- endcomment -%}
+  {%- liquid
+    case request.locale.iso_code
+      when 'en'
+        assign brand_h = 'The brands we choose. And know inside out.'
+        assign brand_go = 'Discover the brand'
+      when 'de'
+        assign brand_h = 'Die Marken, die wir wählen. Und in- und auswendig kennen.'
+        assign brand_go = 'Marke entdecken'
+      when 'fr'
+        assign brand_h = 'Les marques que nous choisissons. Et que nous connaissons à fond.'
+        assign brand_go = 'Découvrir la marque'
+      else
+        assign brand_h = 'I marchi che scegliamo. E che conosciamo a fondo.'
+        assign brand_go = 'Scopri il marchio'
+    endcase
+    assign marchi = 'trek|TREK|trek.png|brand.trek.tag|https://cdn.shopify.com/s/files/1/0873/6885/9912/files/TrekDomaneSLR7gen4red.jpg?v=1743781715&width=900,scott|SCOTT|scott.png|brand.scott.tag|https://cdn.shopify.com/s/files/1/0873/6885/9912/files/4253408086.png?v=1783042506&width=900,cannondale|CANNONDALE|cnd.png|brand.cannondale.tag|https://cdn.shopify.com/s/files/1/0873/6885/9912/files/9_4a20d348-54be-42ee-ace1-171dc906c3ce.jpg?v=1771578578&width=900,amflow|AMFLOW|amflow.png|brand.amflow.tag|https://cdn.shopify.com/s/files/1/0873/6885/9912/files/5_d9a3f52a-41bd-4c79-b84b-e4d83b1a25b7.jpg?v=1769701791&width=900' | split: ','
+  -%}
+  <div class="head"><div><p class="k">{{ 'home.loghi' | t }}</p><h2>{{ brand_h }}</h2></div></div>
+  <div class="brand-grid">
+    {%- for riga in marchi -%}
+      {%- assign c = riga | split: '|' -%}
+      <a class="brand-card" href="/pages/{{ c[0] }}">
+        <img class="bc-logo" src="{{ c[2] | file_url }}" alt="{{ c[1] }}" loading="lazy">
+        <p class="bc-tag">{{ c[3] | t }}</p>
+        <div class="bc-bike" aria-hidden="true"><img src="{{ c[4] }}" alt="" loading="lazy"></div>
+        <span class="bc-go">{{ brand_go }}</span>
+      </a>
+    {%- endfor -%}
   </div>
-</div></section>
+</section>
 
 <section class="block wrap">
   <div class="head"><div><p class="k">{{ 'home.cat_k' | t }}</p><h2>{{ 'home.cat_h' | t }}</h2></div><a class="more" href="/collections/tutte-le-bici">{{ 'home.cat_all' | t }}</a></div>
