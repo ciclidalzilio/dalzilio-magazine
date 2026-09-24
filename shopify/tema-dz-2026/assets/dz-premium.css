@@ -22,9 +22,17 @@
   background:radial-gradient(85% 70% at 50% 38%,#4b4d55 0%,#2c2d33 52%,#1a1b1f 100%)!important;
   border-radius:8px!important;
   box-shadow:0 40px 80px -40px rgba(0,0,0,.9),inset 0 0 0 1px rgba(255,255,255,.06)}
-.dz.dz-premium .dz-main img{mix-blend-mode:normal;transform:scale(1);cursor:zoom-in}
+.dz.dz-premium .dz-main img{mix-blend-mode:normal;transform:scale(1);cursor:zoom-in;object-position:center top}
 .dz.dz-premium .dz-main:hover img{transform:scale(1.035)}
-.dz.dz-premium .dz-ghost{color:transparent;-webkit-text-stroke:1.2px rgba(255,255,255,.10)}
+/* su pc il riquadro segue le foto da studio (16:9) e lascia sotto solo la fascia del LED */
+@media (min-width:961px){
+  [data-dz-prodotto].dz-premium .dz-main{aspect-ratio:16/10.6}
+  .dz.dz-premium .dz-main img{padding:2.5% 2.5% 0}
+}
+/* i bordi della foto sfumano nello studio, cosi' il fondo grigio dello scatto non fa "cornice" */
+.dz.dz-premium .dz-vign{position:absolute;inset:0;pointer-events:none;z-index:2;
+  box-shadow:inset 0 0 70px 26px #1c1d21,inset 0 -40px 60px -10px #1c1d21}
+.dz.dz-premium .dz-ghost{display:none}
 /* la barra LED: linea sottile con alone freddo, sopra il pavimento dello studio */
 .dz.dz-premium .dz-main::after{
   content:"";position:absolute;left:7%;right:7%;bottom:8.5%;height:2px;border-radius:2px;
