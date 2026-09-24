@@ -1,65 +1,140 @@
 {%- comment -%}
-  Home DZ 2026 — hero cinematografico, marchi, categorie, ultimi arrivi (dalla
+  Home DZ 2026 — apertura scenografica (DAL ZILIO), marchi, categorie, ultimi arrivi (dalla
   collezione new-arrivals), usato reale, permuta (solo verso il nuovo), rate.
   Tutto legge dalle collezioni esistenti: nessun dato inventato.
 {%- endcomment -%}
 
-<section class="hero">
-  <div class="backdrop" aria-hidden="true"></div>
-  <svg class="bike" viewBox="0 0 920 620" fill="none" aria-hidden="true">
-    <defs>
-      <linearGradient id="hgFrame" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#FF7A00"/><stop offset=".55" stop-color="#FF2E63"/><stop offset="1" stop-color="#8B2FE6"/></linearGradient>
-      <radialGradient id="hgShadow"><stop offset="0" stop-color="#000" stop-opacity=".5"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
-    </defs>
-    <ellipse cx="240" cy="588" rx="185" ry="17" fill="url(#hgShadow)"/>
-    <ellipse cx="680" cy="588" rx="185" ry="17" fill="url(#hgShadow)"/>
-    <g stroke="rgba(255,255,255,.13)" stroke-width="1.5">
-      <path d="M106 430H374M240 296V564M145.3 335.3 334.7 524.7M145.3 524.7 334.7 335.3"/>
-      <path d="M546 430H814M680 296V564M585.3 335.3 774.7 524.7M585.3 524.7 774.7 335.3"/>
-    </g>
-    <circle cx="240" cy="430" r="148" stroke="rgba(255,255,255,.3)" stroke-width="9"/>
-    <circle cx="240" cy="430" r="134" stroke="rgba(255,255,255,.55)" stroke-width="2.5"/>
-    <circle cx="680" cy="430" r="148" stroke="rgba(255,255,255,.3)" stroke-width="9"/>
-    <circle cx="680" cy="430" r="134" stroke="rgba(255,255,255,.55)" stroke-width="2.5"/>
-    <path d="M432 402 240 412M432 490 240 448" stroke="rgba(255,255,255,.22)" stroke-width="3"/>
-    <circle cx="240" cy="430" r="18" stroke="rgba(255,255,255,.4)" stroke-width="3"/>
-    <path d="M372 270 636 258 654 306M432 446 372 270M432 446 654 306M432 446 240 430 372 270" stroke="url(#hgFrame)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M654 306C664 350 674 392 680 430" stroke="rgba(255,255,255,.8)" stroke-width="8" stroke-linecap="round"/>
-    <circle cx="432" cy="446" r="44" stroke="rgba(255,255,255,.5)" stroke-width="3"/>
-    <circle cx="432" cy="446" r="10" fill="rgba(255,255,255,.8)"/>
-    <path d="M432 446 468 506M450 506H492" stroke="rgba(255,255,255,.85)" stroke-width="7" stroke-linecap="round"/>
-    <path d="M372 270 356 208" stroke="rgba(255,255,255,.85)" stroke-width="8" stroke-linecap="round"/>
-    <path d="M316 202C340 196 372 196 396 202" stroke="rgba(255,255,255,.9)" stroke-width="9" stroke-linecap="round"/>
-    <path d="M636 258 668 242" stroke="rgba(255,255,255,.85)" stroke-width="8" stroke-linecap="round"/>
-    <path d="M668 242c34 -2 50 12 48 34c-2 24 -22 34 -40 30" stroke="rgba(255,255,255,.9)" stroke-width="8" stroke-linecap="round"/>
-    <circle cx="240" cy="430" r="8" fill="rgba(255,255,255,.85)"/>
-    <circle cx="680" cy="430" r="8" fill="rgba(255,255,255,.85)"/>
-  </svg>
+<section class="dzh" data-dzh>
   {%- comment -%}
-    La Foil vera, sfumata nella scena scura: pozza di luce dietro, fusione
-    multiply per far sparire il fondo bianco, maschera radiale sui bordi.
-    Se la foto non carica, torna la bici disegnata.
+    Apertura scenografica (stili in dz-apertura.css). La parola DAL ZILIO e'
+    scritta due volte con lo stesso ciclo: una copia fa da maschera sopra la
+    foto, l'altra porta il riflesso. La I di ZILIO (data-dzh-o) e' il punto in
+    cui si "entra" scorrendo. Titolo h1, pulsanti e numeri restano nel codice
+    della pagina anche prima di comparire.
   {%- endcomment -%}
-  <div class="hero-foil" aria-hidden="true">
-    <img src="{{ 'hero-corsa.jpg' | asset_url }}" alt="" loading="eager"
-         onerror="var b=document.querySelector('.hero .bike');if(b)b.style.display='block';this.closest('.hero-foil').remove()">
-  </div>
-  <div class="veil" aria-hidden="true"></div>
-  <div class="wrap hwrap">
-    {%- assign anno_c = 'now' | date: '%Y' -%}<p class="kicker" style="margin:0 0 18px">{{ 'home.kicker' | t: anno: anno_c }}</p>
-    <h1>{{ 'home.h1a' | t }}<br><span class="g">{{ 'home.h1b' | t }}</span></h1>
-    <p class="lede">{{ 'home.lede' | t }}</p>
-    <div class="cta">
-      <a class="btn" href="/collections/tutte-le-bici">{{ 'home.cta_catalogo' | t }}</a>
-      <a class="btn ghost" href="#bike-finder">{{ 'home.cta_finder' | t }}</a>
-      <a class="btn ghost" href="/collections/new-arrivals">{{ 'home.cta_arrivi' | t }}</a>
+  {%- assign anno_c = 'now' | date: '%Y' -%}
+  {%- case request.locale.iso_code -%}
+    {%- when 'en' -%}{%- assign scorri = 'Scroll' -%}
+    {%- when 'de' -%}{%- assign scorri = 'Scrollen' -%}
+    {%- when 'fr' -%}{%- assign scorri = 'Défiler' -%}
+    {%- else -%}{%- assign scorri = 'Scorri' -%}
+  {%- endcase -%}
+  {%- capture parola -%}
+    <span class="dzh-parola">
+      {%- assign righe = 'DAL,ZILIO' | split: ',' -%}
+      {%- assign n = 0 -%}
+      {%- for riga in righe -%}
+        {%- assign lettere = riga | split: '' -%}
+        <span class="dzh-riga">
+          {%- for x in lettere -%}
+            <span class="dzh-l" style="--d:{{ n }}"{% if forloop.parentloop.index == 2 and forloop.index == 2 %} data-dzh-o{% endif %}>{{ x }}</span>
+            {%- assign n = n | plus: 1 -%}
+          {%- endfor -%}
+        </span>{% unless forloop.last %} {% endunless %}
+      {%- endfor -%}
+    </span>
+  {%- endcapture -%}
+  <div class="dzh-stage">
+    <div class="dzh-foto" aria-hidden="true">
+      <img src="{{ 'hero-corsa.jpg' | asset_url }}" alt="" width="1600" height="685" fetchpriority="high">
     </div>
-    <div class="heroStats">
-      <div><b>{{ collections['tutte-le-bici'].products_count | default: '350+' }}</b><span>{{ 'home.stat_bici' | t }}</span></div>
-      <div><b>{{ 'home.stat_brand_v' | t }}</b><span>{{ 'home.stat_brand_l' | t }}</span></div>
-      <div><b>{{ 'home.stat_off_v' | t }}</b><span>{{ 'home.stat_off_l' | t }}</span></div>
+    <div class="dzh-velo" aria-hidden="true"></div>
+    <div class="dzh-maschera" aria-hidden="true">{{ parola }}</div>
+    <div class="dzh-luce" aria-hidden="true">{{ parola | remove: ' data-dzh-o' }}</div>
+    <div class="dzh-intro">
+      <p class="dzh-k" aria-hidden="true">{{ 'home.kicker' | t: anno: anno_c }}</p>
+      <button class="dzh-giu-cue" type="button" data-dzh-cue>{{ scorri }}<i aria-hidden="true"></i></button>
+    </div>
+    <div class="wrap dzh-testo">
+      <div class="dzh-su">
+        <p class="dzh-k">{{ 'home.kicker' | t: anno: anno_c }}</p>
+        <h1>{{ 'home.h1a' | t }} <span class="g">{{ 'home.h1b' | t }}</span></h1>
+        <p class="dzh-lede">{{ 'home.lede' | t }}</p>
+      </div>
+      <div class="dzh-giu">
+        <div class="dzh-cta">
+          <a class="btn" href="/collections/tutte-le-bici">{{ 'home.cta_catalogo' | t }}</a>
+          <a class="btn ghost" href="#bike-finder">{{ 'home.cta_finder' | t }}</a>
+          <a class="btn ghost" href="/collections/new-arrivals">{{ 'home.cta_arrivi' | t }}</a>
+        </div>
+        <div class="dzh-num">
+          <div><b>{{ collections['tutte-le-bici'].products_count | default: '350+' }}</b><span>{{ 'home.stat_bici' | t }}</span></div>
+          <div><b>{{ 'home.stat_brand_v' | t }}</b><span>{{ 'home.stat_brand_l' | t }}</span></div>
+          <div><b>{{ 'home.stat_off_v' | t }}</b><span>{{ 'home.stat_off_l' | t }}</span></div>
+        </div>
+      </div>
     </div>
   </div>
+  <script>
+    (function(){
+      var sec = document.querySelector('[data-dzh]'); if (!sec) return;
+      var st = sec.querySelector('.dzh-stage'), o = sec.querySelector('[data-dzh-o]');
+      var fascia = document.querySelector('.brands-dark'), testa = document.querySelector('.dz header');
+      var fermo = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      /* menu scuro finche' sotto di lui c'e' l'apertura o la fascia nera dei marchi */
+      function buio(){
+        var lim = testa ? testa.getBoundingClientRect().bottom : 66;
+        var fine = (fascia || sec).getBoundingClientRect().bottom;
+        document.body.classList.toggle('dz-buio', fine > lim);
+      }
+      if (fermo) { buio(); addEventListener('scroll', buio, { passive: true }); return; }
+      sec.classList.add('dzh-js');
+
+      function cl(t){ return t < 0 ? 0 : t > 1 ? 1 : t; }
+      function morbido(t){ return t * t * (3 - 2 * t); }
+      function v(k, x){ st.style.setProperty(k, x); }
+
+      /* punto d'ingresso: il centro della I, misurato sulla parola senza zoom */
+      function origine(){
+        if (!o) return;
+        v('--ox', (o.offsetLeft + o.offsetWidth / 2) + 'px');
+        v('--oy', (o.offsetTop + o.offsetHeight * 0.5) + 'px');
+      }
+      function corsa(){ return Math.max(1, sec.offsetHeight - st.offsetHeight); }
+
+      var S = 40;
+      function disegna(){
+        var p = cl(-sec.getBoundingClientRect().top / corsa());
+        var t = morbido(cl(p / 0.62));
+        v('--s', Math.exp(Math.log(S) * t).toFixed(4));
+        v('--m', (1 - cl((p - 0.4) / 0.2)).toFixed(3));
+        v('--i', (1 - cl(p / 0.14)).toFixed(3));
+        v('--z', (1.22 - 0.22 * t).toFixed(4));
+        var c = morbido(cl((p - 0.48) / 0.3)), c2 = morbido(cl((p - 0.6) / 0.3));
+        v('--c', c.toFixed(3)); v('--c2', c2.toFixed(3));
+        sec.classList.toggle('dzh-pronto', c > 0.6);
+        buio();
+      }
+      var att = false;
+      function chiedi(){ if (!att) { att = true; requestAnimationFrame(function(){ att = false; disegna(); }); } }
+      addEventListener('scroll', chiedi, { passive: true });
+      addEventListener('resize', function(){ origine(); chiedi(); });
+      origine(); disegna();
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ origine(); disegna(); });
+      setTimeout(origine, 1500);
+
+      /* "Scorri" porta alla fine della sequenza; idem se si arriva ai pulsanti con la tastiera */
+      function allaFine(){ scrollTo({ top: sec.getBoundingClientRect().top + scrollY + corsa(), behavior: 'smooth' }); }
+      var cue = sec.querySelector('[data-dzh-cue]'); if (cue) cue.addEventListener('click', allaFine);
+      sec.querySelector('.dzh-testo').addEventListener('focusin', function(){ if (!sec.classList.contains('dzh-pronto')) allaFine(); });
+
+      /* la foto segue appena il mouse */
+      if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        var tx = 0, ty = 0, cx = 0, cy = 0, gira = false;
+        st.addEventListener('mousemove', function(e){
+          var r = st.getBoundingClientRect();
+          tx = ((e.clientX - r.left) / r.width - 0.5) * -22; ty = ((e.clientY - r.top) / r.height - 0.5) * -14;
+          if (!gira) { gira = true; requestAnimationFrame(passo); }
+        });
+        function passo(){
+          cx += (tx - cx) * 0.08; cy += (ty - cy) * 0.08;
+          v('--px', cx.toFixed(2) + 'px'); v('--py', cy.toFixed(2) + 'px');
+          if (Math.abs(tx - cx) > 0.1 || Math.abs(ty - cy) > 0.1) requestAnimationFrame(passo); else gira = false;
+        }
+      }
+    })();
+  </script>
 </section>
 
 <section class="brands-dark" data-bd>

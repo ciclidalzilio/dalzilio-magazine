@@ -21,6 +21,7 @@
   {{ 'dz-tema.css' | asset_url | stylesheet_tag }}
   {{ 'dz-lucidature.css' | asset_url | stylesheet_tag }}
   {{ 'dz-usato.css' | asset_url | stylesheet_tag }}
+  {%- if template.name == 'index' -%}{{ 'dz-apertura.css' | asset_url | stylesheet_tag }}{%- endif -%}
 </head>
 <body class="dz">
 

@@ -1,0 +1,130 @@
+/* DZ 2026 — apertura della home, scenografica.
+   All'arrivo: schermo nero, DAL ZILIO enorme, la foto si vede solo dentro le
+   lettere (maschera in "multiply": bianco = foto, nero = nero). Scorrendo si
+   entra nella I di ZILIO: le lettere crescono fino a riempire lo schermo, la
+   foto resta a tutto schermo e salgono titolo, pulsanti e numeri. In fondo la
+   foto sfuma nel nero della fascia marchi.
+   Senza JavaScript o con "riduci movimento": si vede subito lo stato finale.
+   Le variabili (--s, --m, --i, --c, --c2, --z, --px, --py, --ox, --oy) le
+   scrive lo script in fondo alla sezione. */
+
+.dzh{position:relative;background:#000;color:#fff}
+.dzh-stage{position:relative;min-height:100vh;min-height:100svh;overflow:hidden;isolation:isolate;background:#000;
+  display:flex;flex-direction:column;justify-content:flex-end}
+
+/* foto: zoom lentissimo continuo + leggera parallasse col mouse */
+.dzh-foto{position:absolute;inset:0;z-index:0;animation:dzhkb 24s ease-in-out infinite alternate}
+.dzh-foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:64% 58%;display:block;max-width:none;
+  transform:translate(var(--px,0px),var(--py,0px)) scale(var(--z,1));will-change:transform}
+@keyframes dzhkb{from{transform:scale(1)}to{transform:scale(1.07)}}
+
+/* velo per la leggibilita' del testo e sfumatura nel nero in fondo */
+.dzh-velo{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:var(--c,1);
+  background:
+    linear-gradient(180deg,rgba(0,0,0,.55) 0,rgba(0,0,0,0) 20%),
+    linear-gradient(90deg,rgba(0,0,0,.74) 0,rgba(0,0,0,.4) 36%,rgba(0,0,0,0) 62%),
+    linear-gradient(0deg,#000 0,rgba(0,0,0,.6) 14%,rgba(0,0,0,0) 34%)}
+
+/* la parola: due copie identiche, una fa da maschera, l'altra porta il riflesso */
+.dzh-maschera,.dzh-luce{display:none}
+.dzh-parola{display:inline-block;font-family:"Archivo",var(--font-sans);font-weight:900;font-stretch:112%;
+  font-size:clamp(84px,15.5vw,300px);line-height:.8;letter-spacing:-.025em;text-transform:uppercase;white-space:nowrap;text-align:center}
+.dzh-riga{display:inline}
+.dzh-l{display:inline-block}
+
+/* testo finale */
+.dzh .wrap.dzh-testo{position:relative;z-index:5;width:100%;display:flex;flex-direction:column;gap:30px;padding-top:120px;padding-bottom:clamp(56px,9vh,110px)}
+.dzh-k{margin:0;font-family:"Archivo",var(--font-sans);font-stretch:118%;font-size:12px;font-weight:600;letter-spacing:.34em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+.dzh h1{margin:14px 0 0;font-family:"Archivo",var(--font-sans);font-stretch:86%;font-weight:800;
+  font-size:clamp(3rem,6vw,6rem);line-height:.9;letter-spacing:-.038em;color:#fff;text-wrap:balance;max-width:11ch}
+.dzh h1 .g{display:block;background:linear-gradient(100deg,#FF8A1F,#FF3D6E 52%,#B85CFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+.dzh-lede{margin:22px 0 0;max-width:44ch;font-size:clamp(1rem,1.3vw,1.14rem);line-height:1.6;color:rgba(255,255,255,.76)}
+.dzh-cta{display:flex;flex-wrap:wrap;gap:12px}
+.dzh .btn.ghost{background:rgba(255,255,255,.1);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.34);
+  backdrop-filter:blur(12px) saturate(1.4);-webkit-backdrop-filter:blur(12px) saturate(1.4)}
+.dzh .btn.ghost:hover{background:rgba(255,255,255,.18)}
+.dzh-num{display:flex;flex-wrap:wrap;margin-top:6px}
+.dzh-num div{padding:2px 28px;border-left:1px solid rgba(255,255,255,.22)}
+.dzh-num div:first-child{padding-left:0;border-left:0}
+.dzh-num b{display:block;font-family:"Archivo",var(--font-sans);font-stretch:92%;font-size:1.7rem;font-weight:750;letter-spacing:-.02em}
+.dzh-num span{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:rgba(255,255,255,.55)}
+
+/* ---- con JavaScript: la sequenza guidata dallo scorrimento ---- */
+.dzh.dzh-js{height:calc(100vh + 90vh);height:calc(100svh + 90vh)}
+.dzh-js .dzh-stage{position:sticky;top:0;height:100vh;height:100svh;min-height:0}
+
+.dzh-js .dzh-maschera,.dzh-js .dzh-luce{position:absolute;inset:0;display:grid;place-items:center;padding-top:4vh;
+  transform:scale(var(--s,1));transform-origin:var(--ox,50%) var(--oy,50%);will-change:transform}
+/* maschera: fondo quasi nero (lascia intravedere la scena al 7%), lettere bianche */
+.dzh-js .dzh-maschera{z-index:2;background:#121212;color:#fff;mix-blend-mode:multiply;opacity:var(--m,1)}
+/* riflesso che attraversa le lettere, come sui loghi dei marchi */
+.dzh-js .dzh-luce{z-index:3;pointer-events:none;opacity:var(--i,1)}
+.dzh-js .dzh-luce .dzh-parola{color:transparent;
+  background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.62) 50%,transparent 60%) no-repeat;
+  background-size:280% 100%;background-position:150% 0;-webkit-background-clip:text;background-clip:text;
+  animation:dzhluce 6s cubic-bezier(.45,0,.2,1) 1.7s infinite}
+@keyframes dzhluce{0%{background-position:150% 0}45%,100%{background-position:-50% 0}}
+/* le lettere entrano una a una, dal fuori fuoco */
+.dzh-js .dzh-maschera .dzh-l{animation:dzhin 1.15s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--d) * 70ms + .15s)}
+@keyframes dzhin{from{opacity:0;transform:translateY(.22em) scale(.94);filter:blur(14px)}}
+
+/* etichetta e invito a scorrere, solo all'inizio */
+.dzh-intro{display:none}
+.dzh-js .dzh-intro{display:block;position:absolute;inset:0;z-index:4;pointer-events:none;opacity:var(--i,1)}
+.dzh-intro .dzh-k{position:absolute;left:0;right:0;top:calc(50% + 2vh - clamp(84px,15.5vw,300px)*.5 - 44px);text-align:center}
+.dzh-giu-cue{position:absolute;left:50%;bottom:130px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:12px;
+  font-family:var(--font-mono);font-size:10.5px;letter-spacing:.3em;text-transform:uppercase;color:rgba(255,255,255,.6);pointer-events:auto;cursor:pointer;background:none;border:0}
+.dzh-giu-cue i{position:relative;display:block;width:1px;height:46px;background:rgba(255,255,255,.22);overflow:hidden}
+.dzh-giu-cue i::after{content:"";position:absolute;left:0;top:-40%;width:1px;height:40%;background:#fff;animation:dzhcue 2s ease-in-out infinite}
+@keyframes dzhcue{to{top:100%}}
+
+.dzh-js .dzh-testo{opacity:var(--c,0);transform:translateY(calc((1 - var(--c,0)) * 46px));pointer-events:none}
+.dzh-js .dzh-giu{opacity:var(--c2,0);transform:translateY(calc((1 - var(--c2,0)) * 30px))}
+.dzh-js.dzh-pronto .dzh-testo{pointer-events:auto}
+
+/* grana da pellicola, leggerissima */
+.dzh-stage::after{content:"";position:absolute;inset:0;z-index:6;pointer-events:none;opacity:.09;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+
+/* ---- telefono: parola su due righe, titolo in alto, pulsanti in basso, ciclista in mezzo ---- */
+@media (max-width:760px){
+  .dzh.dzh-js{height:calc(100vh + 70vh);height:calc(100svh + 70vh)}
+  .dzh-foto{inset:-20% 0 22% 0}
+  .dzh-foto img{object-position:63% 50%}
+  .dzh-velo{background:
+    linear-gradient(180deg,rgba(0,0,0,.82) 0,rgba(0,0,0,.45) 26%,rgba(0,0,0,0) 40%),
+    linear-gradient(0deg,#000 0,#000 30%,rgba(0,0,0,.5) 42%,rgba(0,0,0,0) 54%)}
+  .dzh-parola{font-size:31vw;line-height:.8}
+  .dzh-riga{display:block}
+  .dzh-intro .dzh-k{top:calc(50% - 31vw - 36px);font-size:10.5px;letter-spacing:.28em}
+  .dzh .wrap.dzh-testo{flex:1 1 auto;justify-content:space-between;gap:18px;padding-top:84px;padding-bottom:calc(64px + 18px)}
+  .dzh h1{font-size:clamp(2.5rem,12vw,3.4rem);max-width:none}
+  .dzh-lede{display:none}
+  .dzh-cta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .dzh-cta .btn{padding:13px 12px;font-size:14.5px}
+  .dzh-cta .btn:first-child{grid-column:1 / -1}
+  .dzh-num{display:grid;grid-template-columns:repeat(3,1fr);margin-top:4px}
+  .dzh-num div{padding:0 10px}
+  .dzh-num b{font-size:1.2rem}
+  .dzh-num span{font-size:8.5px;letter-spacing:.08em}
+  .dzh-giu-cue{bottom:calc(64px + 110px)}
+}
+
+/* la fascia marchi parte dallo stesso nero in cui sfuma l'apertura */
+.brands-dark{background:#000}
+
+/* ---- menu scuro finche' si e' sopra l'apertura e la fascia marchi ---- */
+.dz header{transition:background .45s ease,border-color .45s ease}
+.menu a,.icb,.burger,.locform select,.logo .reallogo,.logo .wm{transition:color .45s ease,background .2s,filter .45s ease}
+body.dz-buio header{background:linear-gradient(to bottom,rgba(6,6,8,.72),rgba(6,6,8,.42));border-bottom-color:rgba(255,255,255,.08)}
+body.dz-buio .menu a{color:rgba(255,255,255,.84)}
+body.dz-buio .menu a:hover{color:#fff;background:rgba(255,255,255,.08)}
+body.dz-buio .menu a.sale{color:#ff5c85}
+body.dz-buio .icb,body.dz-buio .burger,body.dz-buio .locform select{color:#fff}
+body.dz-buio .icb:hover,body.dz-buio .locform select:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.12)}
+body.dz-buio .locform select option{color:#111319}
+/* logo: nero -> bianco, rosso e blu restano rosso e blu */
+body.dz-buio .logo .reallogo{filter:invert(1) hue-rotate(180deg)}
+body.dz-buio .logo .wm{color:#fff}
+
+@media (prefers-reduced-motion:reduce){.dzh-foto{animation:none}}
