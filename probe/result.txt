@@ -1,0 +1,4 @@
+pc status 200
+pc premium: 1 led: 0
+mobile status 200
+mobile premium: 1 led: 0
