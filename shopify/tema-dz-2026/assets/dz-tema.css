@@ -94,6 +94,13 @@ section.block{padding:96px 0 60px}
 .head h2{font-size:clamp(1.7rem,3.6vw,2.6rem);letter-spacing:-.032em;font-weight:740;margin:0;text-wrap:balance}
 .head .more{font-size:14px;font-weight:600;padding:9px 15px;border-radius:11px;border:1px solid var(--line-strong);white-space:nowrap}
 .head .more::after{content:" →"}
+/* intestazione "Il catalogo": carattere dedicato (Archivo), titolo grande e stretto, kicker largo e sottile */
+.after-dark .head{margin-bottom:36px}
+.after-dark .head .k{font-family:"Archivo",var(--font-sans);font-stretch:118%;font-weight:500;font-size:11.5px;letter-spacing:.32em;color:var(--muted-2);margin:0 0 12px}
+.after-dark .head .k::before{display:none}
+.after-dark .head h2{font-family:"Archivo",var(--font-sans);font-stretch:86%;font-weight:800;font-size:clamp(2.4rem,5.6vw,4.4rem);letter-spacing:-.035em;line-height:.96;color:var(--ink)}
+.after-dark .head .more{font-family:"Archivo",var(--font-sans);font-stretch:100%;font-weight:600;letter-spacing:.01em}
+@media (max-width:700px){.after-dark .head{flex-direction:column;align-items:flex-start;gap:16px;margin-bottom:26px}.after-dark .head h2{font-size:clamp(2.2rem,11vw,3rem)}}
 
 /* hero home — scena studio con bici disegnata */
 .hero{position:relative;overflow:hidden;background:#0b0c12;color:#fff;isolation:isolate}
