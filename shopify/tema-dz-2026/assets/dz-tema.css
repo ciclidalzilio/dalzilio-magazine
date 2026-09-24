@@ -155,27 +155,41 @@ section.block{padding:96px 0 60px}
 .lw-cell img{max-height:72px;max-width:82%;width:auto;object-fit:contain}
 @media (max-width:600px){.lw-row{grid-template-columns:repeat(2,1fr);gap:10px 14px}.lw-cell::before{display:none!important}}
 
-/* marchi in primo piano (home), stile Apple: banda nera da bordo a bordo,
-   loghi in bianco grandi, claim in grigio, link azzurro. Niente foto. */
-.brands-dark{background:#0b0b0d;color:#fff;margin-top:34px;padding:clamp(48px,6vw,84px) 0 clamp(44px,5vw,72px);
+/* marchi in home, stile Apple: banda nera, solo i loghi, enormi. Si accendono
+   a scalare quando entrano nello schermo, un riflesso attraversa ogni logo,
+   dietro un fascio di luce che si muove piano. */
+.brands-dark{position:relative;overflow:hidden;background:#000;color:#fff;margin-top:34px;padding:clamp(56px,7vw,104px) 0;isolation:isolate;
   font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Inter,system-ui,sans-serif}
-.bd-k{margin:0 0 12px;font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.55);font-weight:600}
-.bd-h{margin:0 0 clamp(30px,4vw,52px);font-size:clamp(1.7rem,3.4vw,2.7rem);letter-spacing:-.035em;font-weight:600;line-height:1.08;max-width:24ch;text-wrap:balance;color:#fff}
-.bd-row{display:grid;grid-template-columns:repeat(4,1fr)}
-.bd-cell{display:flex;flex-direction:column;gap:14px;padding:8px 28px 10px;border-left:1px solid rgba(255,255,255,.14);color:#fff;text-decoration:none}
-.bd-cell:first-child{border-left:0;padding-left:0}
-.bd-logo{height:clamp(30px,3.2vw,44px);width:auto;max-width:100%;object-fit:contain;object-position:left center;display:block;
-  filter:brightness(0) invert(1);opacity:.92;transition:opacity .25s,transform .35s cubic-bezier(.2,.8,.2,1)}
-.bd-cell:hover .bd-logo{opacity:1;transform:translateY(-2px)}
-.bd-tag{font-size:14.5px;line-height:1.35;color:rgba(255,255,255,.62);max-width:22ch;transition:color .25s}
-.bd-cell:hover .bd-tag{color:rgba(255,255,255,.85)}
+.bd-beam{position:absolute;inset:-20% -10%;z-index:0;pointer-events:none;
+  background:radial-gradient(28% 55% at 20% 50%,rgba(255,255,255,.13),transparent 70%);
+  animation:bdbeam 16s ease-in-out infinite alternate}
+@keyframes bdbeam{from{transform:translateX(0)}to{transform:translateX(60%)}}
+/* niente z-index qui: il logo deve fondersi (screen) anche col fascio di luce dietro */
+.brands-dark .wrap{position:relative}
+.bd-k{margin:0 0 clamp(30px,4vw,54px);text-align:center;font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:rgba(255,255,255,.45);font-weight:600}
+.bd-row{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(20px,4vw,56px);align-items:center}
+.bd-cell{display:block;color:#fff;text-decoration:none;--h:clamp(46px,6vw,92px)}
+.bd-l{position:relative;display:block;height:var(--h);width:100%}
+.bd-logo{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:100%;width:auto;max-width:100%;object-fit:contain;display:block;
+  filter:invert(1) brightness(1.35) contrast(1.15);mix-blend-mode:screen;opacity:.82;
+  transition:opacity .5s ease,transform .5s cubic-bezier(.2,.8,.2,1)}
+.bd-cell:hover .bd-logo{opacity:1;transform:translate(-50%,-50%) scale(1.04)}
+/* riflesso: la copia sopra, piena luce, ritagliata da una fascia obliqua che scorre da sinistra a destra */
+.bd-glint{opacity:1;filter:invert(1) brightness(1.9) contrast(1.15);
+  clip-path:polygon(-40% 0,-16% 0,-46% 100%,-70% 100%);
+  animation:bdglint 6s cubic-bezier(.45,0,.2,1) infinite;animation-delay:calc(var(--i) * .45s + 1.2s)}
+.bd-cell:hover .bd-glint{opacity:1;transform:translate(-50%,-50%) scale(1.04)}
+@keyframes bdglint{0%{clip-path:polygon(-40% 0,-16% 0,-46% 100%,-70% 100%)}38%,100%{clip-path:polygon(140% 0,164% 0,134% 100%,110% 100%)}}
+/* accensione a scalare all'ingresso nello schermo (solo con JS: senza, tutto visibile) */
+.brands-dark.bd-js .bd-cell{opacity:0;transform:translateY(18px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.8,.2,1);transition-delay:calc(var(--i) * .14s)}
+.brands-dark.bd-js.on .bd-cell{opacity:1;transform:none}
 @media (max-width:700px){
-  .bd-row{grid-template-columns:1fr 1fr;row-gap:28px}
-  .bd-cell{gap:10px;padding:0 8px 0 0;border-left:0}
-  .bd-cell:nth-child(even){padding:0 0 0 16px;border-left:1px solid rgba(255,255,255,.14)}
-  .bd-logo{height:26px}
-  .bd-tag{font-size:13px}
+  .brands-dark{padding:44px 0 46px}
+  .bd-k{margin-bottom:26px}
+  .bd-row{grid-template-columns:1fr 1fr;gap:34px 22px}
+  .bd-cell{--h:40px}
 }
+@media (prefers-reduced-motion:reduce){.bd-beam,.bd-glint{animation:none}.bd-glint{display:none}}
 
 /* bento categorie */
 .cats{display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:184px;gap:14px}

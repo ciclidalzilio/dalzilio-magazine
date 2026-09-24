@@ -62,38 +62,40 @@
   </div>
 </section>
 
-<section class="brands-dark">
+<section class="brands-dark" data-bd>
   {%- comment -%}
-    I marchi in primo piano, stile Apple: banda nera da bordo a bordo, i quattro
-    loghi in bianco grandi, il claim di ciascuno (lo stesso delle pagine marchio)
-    e il link alla pagina. Titolo e link cambiano con la lingua qui.
+    I marchi, stile Apple: banda nera da bordo a bordo, solo i quattro loghi,
+    enormi e in bianco. Si accendono uno dopo l'altro quando la fascia entra
+    nello schermo; un riflesso di luce attraversa ogni logo (il logo e' doppio:
+    la copia sopra viene ritagliata da una fascia che scorre); dietro, un
+    fascio di luce che si muove piano. Nessun testo oltre l'etichetta.
+    I loghi sono i PNG del negozio: invertiti e fusi in "screen" restano
+    bianchi sia con sfondo trasparente sia con sfondo bianco.
   {%- endcomment -%}
-  {%- liquid
-    case request.locale.iso_code
-      when 'en'
-        assign brand_h = 'The brands we choose. And know inside out.'
-      when 'de'
-        assign brand_h = 'Die Marken, die wir wählen. Und in- und auswendig kennen.'
-      when 'fr'
-        assign brand_h = 'Les marques que nous choisissons. Et que nous connaissons à fond.'
-      else
-        assign brand_h = 'I marchi che scegliamo. E che conosciamo a fondo.'
-    endcase
-    assign marchi = 'trek|TREK|trek.png|brand.trek.tag,scott|SCOTT|scott.png|brand.scott.tag,cannondale|CANNONDALE|cnd.png|brand.cannondale.tag,amflow|AMFLOW|amflow.png|brand.amflow.tag' | split: ','
-  -%}
+  {%- assign marchi = 'trek|TREK|trek.png,scott|SCOTT|scott.png,cannondale|CANNONDALE|cnd.png,amflow|AMFLOW|amflow.png' | split: ',' -%}
+  <i class="bd-beam" aria-hidden="true"></i>
   <div class="wrap">
     <p class="bd-k">{{ 'home.loghi' | t }}</p>
-    <h2 class="bd-h">{{ brand_h }}</h2>
     <div class="bd-row">
       {%- for riga in marchi -%}
         {%- assign c = riga | split: '|' -%}
-        <a class="bd-cell" href="/pages/{{ c[0] }}">
-          <img class="bd-logo" src="{{ c[2] | file_url }}" alt="{{ c[1] }}" loading="lazy">
-          <span class="bd-tag">{{ c[3] | t }}</span>
+        <a class="bd-cell" href="/pages/{{ c[0] }}" style="--i:{{ forloop.index0 }}">
+          <span class="bd-l">
+            <img class="bd-logo" src="{{ c[2] | file_url }}" alt="{{ c[1] }}" loading="lazy">
+            <img class="bd-logo bd-glint" src="{{ c[2] | file_url }}" alt="" aria-hidden="true" loading="lazy">
+          </span>
         </a>
       {%- endfor -%}
     </div>
   </div>
+  <script>
+    (function(){
+      var s = document.querySelector('[data-bd]'); if (!s) return;
+      s.classList.add('bd-js');
+      if (!('IntersectionObserver' in window)) { s.classList.add('on'); return; }
+      new IntersectionObserver(function(v, io){ if (v[0].isIntersecting) { s.classList.add('on'); io.disconnect(); } }, { threshold: .25 }).observe(s);
+    })();
+  </script>
 </section>
 
 <section class="block wrap">
