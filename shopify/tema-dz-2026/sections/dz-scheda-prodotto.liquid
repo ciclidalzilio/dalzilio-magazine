@@ -63,7 +63,7 @@
       assign ph_claim = 'Progettata per chi non accetta compromessi.'
     endif
   -%}
-  <header class="dz-ph">
+  <div class="dz-ph">
     <p class="dz-ph-eye" data-reveal="1">{{ p.vendor | replace: 'scott_sports', 'SCOTT' }}{% if p.type == 'USATO' %} · Usato garantito{% else %} · Nuovo{% endif %}</p>
     <div class="dz-ph-title" data-reveal="1">{{ ph_nome }}</div>
     <p class="dz-ph-sub" data-reveal="2">{{ ph_claim }}</p>
@@ -79,7 +79,7 @@
       <img src="{{ p.featured_media | image_url: width: 2000 }}" alt="{{ p.featured_media.alt | default: p.title | escape }}" width="2000" height="1500" fetchpriority="high">
     </div>
     {%- endif -%}
-  </header>
+  </div>
   {%- endif -%}
 
   <div class="dz-wrap">
