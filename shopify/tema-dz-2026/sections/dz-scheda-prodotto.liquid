@@ -26,8 +26,24 @@
 {%- capture bici_txt -%}{%- render 'dz-e-bici', product: p -%}{%- endcapture -%}
 {%- assign e_bici = false -%}
 {%- if bici_txt contains 'si' -%}{%- assign e_bici = true -%}{%- endif -%}
+{%- comment -%}
+  Scheda PREMIUM (stile Apple, pulsanti in vetro, vedi dz-premium.css).
+  Dal personalizzatore si sceglie: tutte le schede, solo Pinarello e tag
+  "premium", oppure spenta. I dati strutturati per Google (dz-schema.liquid,
+  nell'head) e i ganci data-dz-* per il JavaScript restano identici.
+{%- endcomment -%}
+{%- assign premium = false -%}
+{%- assign modo_premium = section.settings.premium_mode | default: 'tutte' -%}
+{%- if modo_premium == 'tutte' -%}
+  {%- assign premium = true -%}
+{%- elsif modo_premium == 'tag' -%}
+  {%- assign v_prem = p.vendor | downcase -%}
+  {%- if v_prem contains 'pinarello' or p.tags contains 'premium' or p.tags contains 'Premium' -%}{%- assign premium = true -%}{%- endif -%}
+{%- endif -%}
+{%- assign usato = false -%}
+{%- if p.type == 'USATO' -%}{%- assign usato = true -%}{%- endif -%}
 
-<section class="dz" data-dz-prodotto>
+<section class="dz{% if premium %} dz-premium{% if usato %} dz-premium-usato{% endif %}{% endif %}" data-dz-prodotto>
 
   {%- comment -%} barra che resta fissa scorrendo: modello, prezzo, aggiungi {%- endcomment -%}
   <div class="dz-pdpbar" data-dz-pdpbar>
@@ -61,7 +77,7 @@
       <b>{{ p.title }}</b>
     </nav>
 
-    <div class="dz-grid">
+    <div class="dz-grid" id="dz-acquisto">
 
       {%- comment -%} ---------- galleria ---------- {%- endcomment -%}
       <div class="dz-gallery">
@@ -135,6 +151,24 @@
           <p class="dz-pubdate">Annuncio pubblicato il {{ p.published_at | date: '%-d %B %Y' }}</p>
         {%- endif -%}
 
+        {%- if premium -%}
+        {%- comment -%}
+          Prezzo in evidenza: filo rosso a sinistra, cifra rossa, sotto listino
+          barrato e sconto. Listino e sconto restano nel DOM anche senza
+          sconto (nascosti): il JS li mostra se la variante scelta e' in offerta.
+        {%- endcomment -%}
+        <div class="dz-price dz-price-d{% if sconto > 0 %} sale{% endif %}">
+          <i class="dz-pbar" aria-hidden="true"></i>
+          <div class="dz-pin">
+            <b data-dz-prezzo>{{ p.price | money }}</b>
+            <small class="dz-psub">
+              <span class="dz-old" data-dz-listino{% unless sconto > 0 %} hidden{% endunless %}>{% if sconto > 0 %}{{ p.compare_at_price | money }}{% endif %}</span>
+              <span class="dz-off" data-dz-sconto{% unless sconto > 0 %} hidden{% endunless %}>{% if sconto > 0 %}−{{ sconto }}%{% endif %}</span>
+            </small>
+            {%- if e_bici -%}<span class="dz-from">{{ 'prod.o_da' | t }} <b data-dz-rata>—</b>{{ 'prod.mese' | t }}</span>{%- endif -%}
+          </div>
+        </div>
+        {%- else -%}
         <div class="dz-price{% if sconto > 0 %} sale{% endif %}">
           <b data-dz-prezzo>{{ p.price | money }}</b>
           {%- if sconto > 0 -%}
@@ -145,6 +179,7 @@
           {%- endif -%}
           {%- if e_bici -%}<span class="dz-from">{{ 'prod.o_da' | t }} <b data-dz-rata>—</b>{{ 'prod.mese' | t }}</span>{%- endif -%}
         </div>
+        {%- endif -%}
 
         {%- assign v0 = p.selected_or_first_available_variant -%}
         <p class="dz-codici">
@@ -225,9 +260,13 @@
               <input type="number" name="quantity" value="1" min="1" aria-label="{{ 'prod.quantita' | t }}">
               <button type="button" data-dz-q="1" aria-label="{{ 'prod.aumenta' | t }}">+</button>
             </div>
+            {%- if premium -%}
+            <button type="submit" class="dz-btn dz-primary" data-dz-aggiungi><span class="dz-btxt">{{ 'prod.aggiungi' | t }}</span><i class="dz-sep" aria-hidden="true"></i><span data-dz-prezzo-btn>{{ p.price | money }}</span></button>
+            {%- else -%}
             <button type="submit" class="dz-btn dz-primary" data-dz-aggiungi>
               {{ 'prod.aggiungi' | t }} · <span data-dz-prezzo-btn>{{ p.price | money }}</span>
             </button>
+            {%- endif -%}
           </div>
         </form>
 
@@ -377,6 +416,67 @@
     {%- endunless -%}
   </div>
 
+  {%- if premium and usato == false and e_bici -%}
+  {%- comment -%}
+    Panoramica: nome del modello grande, claim (metacampo custom.claim o
+    prima frase della descrizione), bici in scena. Poi la galleria a nastro.
+    Solo sulle bici nuove: l'usato resta sobrio.
+  {%- endcomment -%}
+  {%- liquid
+    assign ph_nome = p.title | remove_first: 'Scott' | remove_first: 'SCOTT' | remove_first: 'Trek' | remove_first: 'TREK' | remove_first: 'Cannondale' | remove_first: 'CANNONDALE' | remove_first: 'Pinarello' | remove_first: 'PINARELLO' | remove_first: 'Amflow' | remove_first: 'AMFLOW' | remove_first: 'Bicicletta' | strip
+    if ph_nome == blank
+      assign ph_nome = p.title
+    endif
+    assign ph_claim = p.metafields.custom.claim | default: ''
+    if ph_claim == blank
+      assign ph_descr = p.description | strip_html | remove_first: p.title | strip
+      assign ph_frasi = ph_descr | split: '. '
+      assign ph_claim = ph_frasi[0] | strip | truncate: 130, ''
+      if ph_frasi.size > 1 and ph_claim != blank
+        assign ph_claim = ph_claim | append: '.'
+      endif
+    endif
+    if ph_claim == blank
+      assign ph_claim = section.settings.claim_default
+    endif
+  -%}
+  <div class="dz-ph" id="dz-panoramica">
+    <h2 class="dz-ph-title" data-reveal="1">{{ ph_nome }}</h2>
+    <p class="dz-ph-claim" data-reveal="2">{{ ph_claim }}</p>
+    {%- if section.settings.claim_sub != blank -%}<p class="dz-ph-claim2" data-reveal="2">{{ section.settings.claim_sub }}</p>{%- endif -%}
+    <div class="dz-ph-cta" data-reveal="3">
+      <span class="dz-ph-price">{{ p.price | money }}{% if sconto > 0 %} <s>{{ p.compare_at_price | money }}</s>{% endif %}</span>
+      <a class="dz-pill" href="#dz-acquisto">{% if p.available %}Acquista{% else %}Avvisami{% endif %}</a>
+      {%- if section.settings.whatsapp != blank -%}
+        <a class="dz-link" target="_blank" rel="noopener" href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'prod.wa_msg' | t: titolo: p.title | url_encode }}">Chiedi su WhatsApp</a>
+      {%- endif -%}
+    </div>
+    {%- if p.featured_media -%}
+    <div class="dz-ph-stage" data-reveal="3">
+      <img src="{{ p.featured_media | image_url: width: 2000 }}" alt="{{ p.featured_media.alt | default: p.title | escape }}" width="2000" height="1500" loading="lazy">
+    </div>
+    {%- endif -%}
+  </div>
+
+  {%- if p.media.size > 1 -%}
+  <div class="dz-chap" id="dz-galleria">
+    <div class="dz-chap-head" data-reveal="1">
+      <h2>{{ section.settings.gal_h2 }}</h2>
+      <span class="dz-chap-n">{{ p.media.size }} foto</span>
+    </div>
+    <div class="dz-rail" data-reveal="2">
+      {%- for media in p.media limit: 14 -%}
+        {%- if media.media_type != 'image' -%}{%- continue -%}{%- endif -%}
+        <figure>
+          <img src="{{ media | image_url: width: 1200 }}" alt="{{ media.alt | default: p.title | escape }}" loading="lazy" width="1200" height="900">
+          {%- if media.alt != blank and media.alt != p.title -%}<figcaption>{{ media.alt }}</figcaption>{%- endif -%}
+        </figure>
+      {%- endfor -%}
+    </div>
+  </div>
+  {%- endif -%}
+  {%- endif -%}
+
   {%- comment -%}
     Dati varianti per il JavaScript. La taglia è ricavata dal titolo:
     nessuna modifica al catalogo, il feed FTP resta intatto.
@@ -429,6 +529,16 @@
 
 {{ 'dz-prodotto.css' | asset_url | stylesheet_tag }}
 {{ 'dz-galleria.css' | asset_url | stylesheet_tag }}
+{%- if premium -%}{{ 'dz-premium.css' | asset_url | stylesheet_tag }}
+<script>
+  (function(){
+    if (!('IntersectionObserver' in window)) return;
+    document.documentElement.classList.add('dz-js');
+    var els = document.querySelectorAll('.dz-premium [data-reveal]');
+    var io = new IntersectionObserver(function(en){ en.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    els.forEach(function(el){ io.observe(el); });
+  })();
+</script>{%- endif -%}
 <script src="{{ 'dz-prodotto.js' | asset_url }}" defer></script>
 <script src="{{ 'dz-galleria.js' | asset_url }}" defer></script>
 
@@ -437,6 +547,17 @@
   "name": "DZ · Scheda prodotto",
   "tag": "section",
   "settings": [
+    { "type": "header", "content": "Scheda premium" },
+    { "type": "select", "id": "premium_mode", "label": "Veste premium (stile Apple, pulsanti in vetro)",
+      "options": [
+        { "value": "tutte", "label": "Su tutte le schede" },
+        { "value": "tag", "label": "Solo Pinarello e prodotti con tag \"premium\"" },
+        { "value": "off", "label": "Spenta" }
+      ], "default": "tutte" },
+    { "type": "text", "id": "gal_h2", "label": "Titolo galleria", "default": "Ogni dettaglio, da vicino." },
+    { "type": "text", "id": "claim_default", "label": "Claim di riserva (se manca il metacampo custom.claim)", "default": "Progettata per chi non accetta compromessi." },
+    { "type": "text", "id": "claim_sub", "label": "Seconda riga sotto il claim (facoltativa)", "default": "" },
+
     { "type": "header", "content": "Finanziamento" },
     { "type": "number", "id": "tan", "label": "TAN fisso (%). 0 per nascondere il riquadro", "default": 6 },
     { "type": "number", "id": "rate_min", "label": "Durata minima (mesi)", "default": 6 },
