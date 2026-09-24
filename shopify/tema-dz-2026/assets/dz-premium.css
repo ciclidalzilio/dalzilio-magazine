@@ -1,0 +1,141 @@
+/* dz-premium.css — Cicli Dal Zilio · scheda prodotto PREMIUM (Pinarello)
+   Studio grigio antracite con barra LED sotto la bici, tipografia leggera,
+   colonna acquisto scura. Si attiva con la classe .dz-premium sulla sezione:
+   vendor Pinarello oppure tag "premium" sul prodotto. Le altre marche non
+   cambiano. */
+
+.dz.dz-premium{
+  --dz-ink:#f3f3f5;--dz-muted:#a9adb8;--dz-muted2:#7d8190;
+  --dz-line:rgba(255,255,255,.12);--dz-line2:rgba(255,255,255,.22);
+  --dz-surf:#24252a;--dz-canvas:#1c1d21;
+  --led:#e9f2ff;--led-soft:rgba(150,190,255,.75);--led-dim:rgba(120,170,255,.35);
+  color:var(--dz-ink);
+  background:
+    radial-gradient(70% 40% at 50% 0%,rgba(255,255,255,.07),transparent 70%),
+    linear-gradient(180deg,#232428 0%,#1b1c20 45%,#141518 100%);
+  padding-bottom:58px}
+.dz.dz-premium .dz-crumb{color:var(--dz-muted2)}
+.dz.dz-premium .dz-crumb a:hover{color:#fff}
+
+/* ---------- studio: fondo grigio con barra LED ---------- */
+.dz.dz-premium .dz-main{
+  background:radial-gradient(85% 70% at 50% 38%,#4b4d55 0%,#2c2d33 52%,#1a1b1f 100%)!important;
+  border-radius:8px!important;
+  box-shadow:0 40px 80px -40px rgba(0,0,0,.9),inset 0 0 0 1px rgba(255,255,255,.06)}
+.dz.dz-premium .dz-main img{mix-blend-mode:normal;transform:scale(1);cursor:zoom-in}
+.dz.dz-premium .dz-main:hover img{transform:scale(1.035)}
+.dz.dz-premium .dz-ghost{color:transparent;-webkit-text-stroke:1.2px rgba(255,255,255,.10)}
+/* la barra LED: linea sottile con alone freddo, sopra il pavimento dello studio */
+.dz.dz-premium .dz-main::after{
+  content:"";position:absolute;left:7%;right:7%;bottom:8.5%;height:2px;border-radius:2px;
+  background:linear-gradient(90deg,transparent,var(--led) 18%,#fff 50%,var(--led) 82%,transparent);
+  box-shadow:0 0 5px #d6e4ff,0 0 16px var(--led-soft),0 0 40px var(--led-dim),0 18px 70px var(--led-dim);
+  filter:none;opacity:.95;pointer-events:none;z-index:2}
+/* riflesso del LED sul pavimento */
+.dz.dz-premium .dz-main::before{
+  content:"";position:absolute;left:14%;right:14%;bottom:0;height:9%;
+  background:radial-gradient(50% 100% at 50% 100%,rgba(160,195,255,.28),transparent 75%);
+  pointer-events:none;z-index:0}
+/* scia di luce che percorre la barra */
+.dz.dz-premium .dz-led{
+  position:absolute;left:7%;bottom:calc(8.5% - 3px);width:22%;height:8px;border-radius:8px;z-index:3;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.95),transparent);
+  filter:blur(2px);opacity:.9;pointer-events:none;
+  animation:dz-led-sweep 3.4s cubic-bezier(.45,0,.55,1) infinite alternate}
+@keyframes dz-led-sweep{from{transform:translateX(0)}to{transform:translateX(calc(86vw * .72))}}
+@media (min-width:961px){@keyframes dz-led-sweep{from{transform:translateX(0)}to{transform:translateX(300%)}}}
+.dz.dz-premium .dz-zoom{background:rgba(20,21,25,.7);color:#cfd3dd;border-color:rgba(255,255,255,.18)}
+.dz.dz-premium .dz-arrow{background:rgba(255,255,255,.14);color:#fff}
+.dz.dz-premium .dz-arrow:hover{background:rgba(255,255,255,.3)}
+
+/* miniature: scure, la scelta si accende come un LED */
+.dz.dz-premium .dz-thumb{background:#202126;border-color:rgba(255,255,255,.1)}
+.dz.dz-premium .dz-thumb img{opacity:.85;transition:opacity .2s}
+.dz.dz-premium .dz-thumb:hover img{opacity:1}
+.dz.dz-premium .dz-thumb.on{border-color:#dbe7ff;box-shadow:0 0 0 1px #dbe7ff,0 0 14px var(--led-soft)}
+.dz.dz-premium .dz-thumb.on img{opacity:1}
+
+/* ---------- colonna acquisto ---------- */
+.dz.dz-premium .dz-eye{color:#cfe0ff;letter-spacing:.3em;display:flex;align-items:center;gap:10px}
+.dz.dz-premium .dz-eye::before{content:"";width:6px;height:6px;border-radius:50%;background:#eef4ff;flex:none;
+  box-shadow:0 0 6px #d6e4ff,0 0 14px var(--led-soft);animation:dz-led-pulse 2.6s ease-in-out infinite}
+@keyframes dz-led-pulse{0%,100%{opacity:1}50%{opacity:.45}}
+.dz.dz-premium .dz-brandlogo{filter:brightness(0) invert(1)}
+.dz.dz-premium .dz-title{font-weight:250;letter-spacing:-.02em;color:#fff}
+.dz.dz-premium .dz-pubdate{color:var(--dz-muted2)}
+.dz.dz-premium .dz-price{position:relative;padding-bottom:16px}
+.dz.dz-premium .dz-price::after{content:"";position:absolute;left:0;bottom:0;width:120px;height:1px;
+  background:linear-gradient(90deg,var(--led),transparent);box-shadow:0 0 10px var(--led-soft)}
+.dz.dz-premium .dz-price b[data-dz-prezzo]{color:#fff;font-weight:300;letter-spacing:-.03em}
+.dz.dz-premium .dz-price.sale b[data-dz-prezzo]{color:#fff}
+.dz.dz-premium .dz-old{color:var(--dz-muted2)}
+.dz.dz-premium .dz-save{background:rgba(18,185,129,.16);color:#5fe3b0}
+.dz.dz-premium .dz-from b{color:#fff}
+.dz.dz-premium .dz-codici{color:var(--dz-muted)}
+.dz.dz-premium .dz-figs b{color:#fff;font-weight:300}
+
+/* taglie e colori: chip antracite, la scelta si illumina */
+.dz.dz-premium .dz-size{background:#2a2b31!important;color:#f3f3f5!important;
+  border:1px solid rgba(255,255,255,.16)!important;font-weight:500;font-style:normal;box-shadow:none}
+.dz.dz-premium .dz-size:hover{border-color:#dbe7ff!important;transform:none;box-shadow:0 0 12px var(--led-dim)}
+.dz.dz-premium .dz-size.on{background:#f3f3f5!important;color:#111214!important;border-color:#fff!important;
+  box-shadow:0 0 0 1px #fff,0 0 18px var(--led-soft)}
+.dz.dz-premium .dz-size.off{background:#1c1d21!important;color:var(--dz-muted2)!important;opacity:.5!important}
+.dz.dz-premium .dz-sw{background:#2a2b31;color:#f3f3f5;border-color:rgba(255,255,255,.16)}
+.dz.dz-premium .dz-sw:hover{border-color:#dbe7ff}
+.dz.dz-premium .dz-sw.on{background:#f3f3f5;color:#111214;border-color:#fff;box-shadow:0 0 14px var(--led-soft)}
+.dz.dz-premium .dz-help{color:#cfe0ff}
+.dz.dz-premium .dz-adv{background:#202126;border-color:rgba(255,255,255,.14)}
+.dz.dz-premium .dz-adv-row input{background:#16171b;color:#fff;border-color:rgba(255,255,255,.2)}
+.dz.dz-premium .dz-pill{background:#f3f3f5;color:#111214}
+
+/* acquisto */
+.dz.dz-premium .dz-qty{border-color:rgba(255,255,255,.2);background:#202126}
+.dz.dz-premium .dz-qty button{background:#202126;color:#fff}
+.dz.dz-premium .dz-qty input,.dz.dz-premium .dz-qty span{background:#202126;color:#fff}
+.dz.dz-premium .dz-primary{background:#f3f3f5!important;color:#111214!important;
+  box-shadow:0 0 0 1px rgba(255,255,255,.4),0 10px 30px -10px rgba(190,215,255,.55)}
+.dz.dz-premium .dz-primary:hover{box-shadow:0 0 0 1px #fff,0 0 22px var(--led-soft)}
+.dz.dz-premium .dz-wa{box-shadow:0 12px 28px -12px rgba(37,211,102,.5)}
+
+/* finanziamento, klarna, fiducia */
+.dz.dz-premium .dz-fin{background:linear-gradient(150deg,rgba(255,255,255,.06),rgba(150,190,255,.06));border-color:rgba(255,255,255,.12)}
+.dz.dz-premium .dz-tan{background:#16171b;color:#fff;border-color:rgba(255,255,255,.2)}
+.dz.dz-premium .dz-fin-amt b{background:none;-webkit-background-clip:initial;background-clip:initial;color:#fff;font-weight:300}
+.dz.dz-premium .dz-fin input[type=range]{accent-color:#dbe7ff}
+.dz.dz-premium .dz-klarna{background:#2a2b31;color:#fff}
+.dz.dz-premium .dz-kb{background:#FFB3C7;color:#17120F}
+.dz.dz-premium .dz-trust span{background:#202126;color:#d6d8e0;border-color:rgba(255,255,255,.12)}
+.dz.dz-premium .dz-trust svg{color:#cfe0ff}
+
+/* usato controllato e bici esaurita: pannelli antracite */
+.dz.dz-premium .dz-usatochk,.dz.dz-premium .dz-soldbox{
+  background:radial-gradient(80% 120% at 85% 0%,rgba(255,255,255,.08),transparent 60%),#202126;
+  border-color:rgba(255,255,255,.12)}
+.dz.dz-premium .dz-uc-top span,.dz.dz-premium .dz-soldbox>p{color:var(--dz-muted)}
+.dz.dz-premium .dz-uc-list li{color:#d6d8e0}
+.dz.dz-premium .dz-uc-link{color:#fff;border-bottom-color:rgba(255,255,255,.4)}
+.dz.dz-premium .dz-uc-link:hover{border-bottom-color:#fff}
+.dz.dz-premium .dz-sbghost{background:#2a2b31;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.3)}
+
+/* descrizione e spedizioni */
+.dz.dz-premium .dz-acc{border-top-color:var(--dz-line)}
+.dz.dz-premium .dz-acc summary{color:#fff}
+.dz.dz-premium .dz-acc-in{color:#c3c6cf}
+.dz.dz-premium .dz-acc-in a{color:#cfe0ff}
+.dz.dz-premium .dz-acc-in table td{border-color:rgba(255,255,255,.12)}
+
+/* barra fissa in cima: vetro scuro */
+.dz.dz-premium .dz-pdpbar{background:rgba(22,23,27,.82);border-bottom-color:rgba(255,255,255,.12);color:#fff}
+.dz.dz-premium .dz-pdpbar .nm>span{color:#a9adb8}
+.dz.dz-premium .dz-pdpbar .dz-btn{background:#f3f3f5!important;color:#111214!important;box-shadow:none}
+
+@media (max-width:960px){
+  .dz.dz-premium .dz-main{border-radius:0!important}
+  .dz.dz-premium .dz-main::after{left:5%;right:5%;bottom:7%}
+  .dz.dz-premium .dz-led{bottom:calc(7% - 3px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .dz.dz-premium .dz-led{animation:none;opacity:0}
+  .dz.dz-premium .dz-eye::before{animation:none}
+}
