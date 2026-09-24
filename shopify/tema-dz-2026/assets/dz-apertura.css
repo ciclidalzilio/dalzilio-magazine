@@ -31,16 +31,19 @@
 .dzh-num b{display:block;font-family:"Archivo",var(--font-sans);font-stretch:92%;font-size:1.7rem;font-weight:750;letter-spacing:-.02em}
 .dzh-num span{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.12em;color:rgba(255,255,255,.58)}
 
-/* telefono: titolo in alto sul nero, foto in mezzo meno ingrandita (piu' nitida),
-   pulsanti e numeri in basso sul nero. I bordi della foto sfumano nel nero. */
+/* telefono: in colonna, ognuno col suo spazio. Titolo sul nero, poi la foto in
+   un riquadro suo (il ciclista intero, la foto poco ingrandita quindi nitida,
+   bordi sfumati nel nero), poi pulsanti e numeri. */
 @media (max-width:760px){
-  .dzh-stage{min-height:max(600px,calc(100vh - 95px));min-height:max(600px,calc(100svh - 95px))}
-  .dzh-foto{inset:auto 0 auto 0;top:4%;height:60%;
-    -webkit-mask-image:linear-gradient(180deg,#000 0,#000 80%,transparent 100%);
-    mask-image:linear-gradient(180deg,#000 0,#000 80%,transparent 100%)}
+  .dzh-stage{display:flex;flex-direction:column;justify-content:flex-start;min-height:0}
+  .dzh .wrap.dzh-testo{display:contents}
+  .dzh-su{order:1;position:relative;z-index:2;padding:30px 20px 0}
+  .dzh-foto{order:2;position:relative;inset:auto;width:100%;aspect-ratio:10/9;margin-top:-34px;z-index:1;
+    -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 20%,#000 80%,transparent 100%);
+    mask-image:linear-gradient(180deg,transparent 0,#000 20%,#000 80%,transparent 100%)}
   .dzh-foto img{object-position:63% 50%}
-  .dzh-velo{background:linear-gradient(180deg,#000 0,rgba(0,0,0,.72) 12%,rgba(0,0,0,.3) 30%,rgba(0,0,0,0) 40%)}
-  .dzh .wrap.dzh-testo{flex:1 1 auto;justify-content:space-between;gap:18px;padding-top:26px;padding-bottom:calc(64px + 18px)}
+  .dzh-velo{display:none}
+  .dzh-giu{order:3;position:relative;z-index:2;display:flex;flex-direction:column;gap:18px;padding:0 20px 30px;margin-top:-30px}
   .dzh h1{font-size:clamp(2.4rem,11.5vw,3.3rem);max-width:none}
   .dzh-lede{display:none}
   .dzh-cta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -49,7 +52,9 @@
   .dzh-num{display:grid;grid-template-columns:repeat(3,1fr);margin-top:4px}
   .dzh-num div{padding:0 10px}
   .dzh-num b{font-size:1.2rem}
-  .dzh-num span{font-size:8.5px;letter-spacing:.08em}
+  .dzh-num span{font-size:8.5px;letter-spacing:.08em;line-height:1.5;display:block;margin-top:2px}
+  /* meno nero tra l'apertura e i marchi */
+  .brands-dark{padding-top:36px}
 }
 
 /* la fascia marchi parte dallo stesso nero in cui sfuma l'apertura */
