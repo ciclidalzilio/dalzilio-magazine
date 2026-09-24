@@ -1,0 +1,4 @@
+pc status 404
+pc premium: 0 led: 0
+mobile status 404
+mobile premium: 0 led: 0
