@@ -12,8 +12,7 @@ const fs = require('fs');
     await p.waitForTimeout(2500);
     log.push(name + ' premium: ' + await p.locator('.dz.dz-premium').count() + ' led: ' + await p.locator('.dz-led').count());
     await p.screenshot({ path: 'probe/prem-' + name + '-top.png' });
-    await p.evaluate(() => window.scrollBy(0, 700)); await p.waitForTimeout(800);
-    await p.screenshot({ path: 'probe/prem-' + name + '-mid.png' });
+    for (const [k,y] of [['mid',900],['low',1800]]) { await p.evaluate(v => window.scrollTo(0, v), y); await p.waitForTimeout(1200); await p.screenshot({ path: 'probe/prem-' + name + '-' + k + '.png' }); }
     await p.close();
   }
   fs.writeFileSync('probe/result.txt', log.join('\n') + '\n');
