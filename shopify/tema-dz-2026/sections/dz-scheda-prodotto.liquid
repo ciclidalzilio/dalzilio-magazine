@@ -53,6 +53,50 @@
     </div>
   </div>
 
+  {%- if premium and usato == false and e_bici -%}
+  {%- comment -%}
+    Apertura scenografica: nome del modello grande, claim (metacampo
+    custom.claim o prima frase della descrizione), prezzo e bici in scena.
+    Sotto arriva la scheda vera e propria. Solo sulle bici nuove: l'usato
+    resta sobrio. L'h1 resta il titolo nella colonna acquisto.
+  {%- endcomment -%}
+  {%- liquid
+    assign ph_nome = p.title | remove_first: 'Scott' | remove_first: 'SCOTT' | remove_first: 'Trek' | remove_first: 'TREK' | remove_first: 'Cannondale' | remove_first: 'CANNONDALE' | remove_first: 'Pinarello' | remove_first: 'PINARELLO' | remove_first: 'Amflow' | remove_first: 'AMFLOW' | remove_first: 'Bicicletta' | strip
+    if ph_nome == blank
+      assign ph_nome = p.title
+    endif
+    assign ph_claim = p.metafields.custom.claim | default: ''
+    if ph_claim == blank
+      assign ph_descr = p.description | strip_html | remove_first: p.title | strip
+      assign ph_frasi = ph_descr | split: '. '
+      assign ph_claim = ph_frasi[0] | strip | truncate: 130, ''
+      if ph_frasi.size > 1 and ph_claim != blank
+        assign ph_claim = ph_claim | append: '.'
+      endif
+    endif
+    if ph_claim == blank
+      assign ph_claim = section.settings.claim_default
+    endif
+  -%}
+  <div class="dz-ph" id="dz-panoramica">
+    <p class="dz-ph-title">{{ ph_nome }}</p>
+    <p class="dz-ph-claim">{{ ph_claim }}</p>
+    {%- if section.settings.claim_sub != blank -%}<p class="dz-ph-claim2">{{ section.settings.claim_sub }}</p>{%- endif -%}
+    <div class="dz-ph-cta">
+      <span class="dz-ph-price">{{ p.price | money }}{% if sconto > 0 %} <s>{{ p.compare_at_price | money }}</s>{% endif %}</span>
+      <a class="dz-pill" href="#dz-acquisto">{% if p.available %}Acquista{% else %}Avvisami{% endif %}</a>
+      {%- if section.settings.whatsapp != blank -%}
+        <a class="dz-link" target="_blank" rel="noopener" href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'prod.wa_msg' | t: titolo: p.title | url_encode }}">Chiedi su WhatsApp</a>
+      {%- endif -%}
+    </div>
+    {%- if p.featured_media -%}
+    <div class="dz-ph-stage">
+      <img src="{{ p.featured_media | image_url: width: 2000 }}" alt="{{ p.featured_media.alt | default: p.title | escape }}" width="2000" height="1500" fetchpriority="high">
+    </div>
+    {%- endif -%}
+  </div>
+  {%- endif -%}
+
   <div class="dz-wrap">
 
     {%- liquid
@@ -417,47 +461,6 @@
   </div>
 
   {%- if premium and usato == false and e_bici -%}
-  {%- comment -%}
-    Panoramica: nome del modello grande, claim (metacampo custom.claim o
-    prima frase della descrizione), bici in scena. Poi la galleria a nastro.
-    Solo sulle bici nuove: l'usato resta sobrio.
-  {%- endcomment -%}
-  {%- liquid
-    assign ph_nome = p.title | remove_first: 'Scott' | remove_first: 'SCOTT' | remove_first: 'Trek' | remove_first: 'TREK' | remove_first: 'Cannondale' | remove_first: 'CANNONDALE' | remove_first: 'Pinarello' | remove_first: 'PINARELLO' | remove_first: 'Amflow' | remove_first: 'AMFLOW' | remove_first: 'Bicicletta' | strip
-    if ph_nome == blank
-      assign ph_nome = p.title
-    endif
-    assign ph_claim = p.metafields.custom.claim | default: ''
-    if ph_claim == blank
-      assign ph_descr = p.description | strip_html | remove_first: p.title | strip
-      assign ph_frasi = ph_descr | split: '. '
-      assign ph_claim = ph_frasi[0] | strip | truncate: 130, ''
-      if ph_frasi.size > 1 and ph_claim != blank
-        assign ph_claim = ph_claim | append: '.'
-      endif
-    endif
-    if ph_claim == blank
-      assign ph_claim = section.settings.claim_default
-    endif
-  -%}
-  <div class="dz-ph" id="dz-panoramica">
-    <h2 class="dz-ph-title" data-reveal="1">{{ ph_nome }}</h2>
-    <p class="dz-ph-claim" data-reveal="2">{{ ph_claim }}</p>
-    {%- if section.settings.claim_sub != blank -%}<p class="dz-ph-claim2" data-reveal="2">{{ section.settings.claim_sub }}</p>{%- endif -%}
-    <div class="dz-ph-cta" data-reveal="3">
-      <span class="dz-ph-price">{{ p.price | money }}{% if sconto > 0 %} <s>{{ p.compare_at_price | money }}</s>{% endif %}</span>
-      <a class="dz-pill" href="#dz-acquisto">{% if p.available %}Acquista{% else %}Avvisami{% endif %}</a>
-      {%- if section.settings.whatsapp != blank -%}
-        <a class="dz-link" target="_blank" rel="noopener" href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'prod.wa_msg' | t: titolo: p.title | url_encode }}">Chiedi su WhatsApp</a>
-      {%- endif -%}
-    </div>
-    {%- if p.featured_media -%}
-    <div class="dz-ph-stage" data-reveal="3">
-      <img src="{{ p.featured_media | image_url: width: 2000 }}" alt="{{ p.featured_media.alt | default: p.title | escape }}" width="2000" height="1500" loading="lazy">
-    </div>
-    {%- endif -%}
-  </div>
-
   {%- if p.media.size > 1 -%}
   <div class="dz-chap" id="dz-galleria">
     <div class="dz-chap-head" data-reveal="1">
@@ -536,11 +539,30 @@
 {%- if premium -%}{{ 'dz-premium.css' | asset_url | stylesheet_tag }}
 <script>
   (function(){
+    /* dissolvenze allo scorrimento: scheda, galleria a nastro e sezioni sotto.
+       Ogni gruppo entra a scaglioni; finita l'animazione l'elemento torna
+       "normale" (cosi' i passaggi del mouse restano rapidi). */
     if (!('IntersectionObserver' in window)) return;
     document.documentElement.classList.add('dz-js');
-    var els = document.querySelectorAll('.dz-premium [data-reveal]');
-    var io = new IntersectionObserver(function(en){ en.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+    var gruppi = ['.dz-premium .dz-gallery', '.dz-premium .dz-info',
+      '.dzs-figs .dzs-fig', '.dzs-auto .dzs-featimg', '.dzs-auto .dzs-feattxt',
+      '.dzs-why .dzs-why-grid > div:first-child', '.dzs-why .dzs-witem', '.dzs-why .dzs-wfoot',
+      '.dzs-rel .dzs-relhead', '.dzs-rel .prod',
+      '.dzs-feat.dzs-rev .dzs-featimg', '.dzs-feat.dzs-rev .dzs-feattxt',
+      '.dz-faq .head', '.dz-faq details'];
+    gruppi.forEach(function(sel){
+      document.querySelectorAll(sel).forEach(function(el, i){
+        if (el.hasAttribute('data-reveal')) return;
+        el.setAttribute('data-reveal', '1');
+        el.style.animationDelay = (Math.min(i, 8) * 70) + 'ms';
+      });
+    });
+    var els = document.querySelectorAll('[data-reveal]');
+    var fine = function(e){ var el = e.currentTarget; el.classList.remove('in'); el.removeAttribute('data-reveal'); el.style.animationDelay = ''; el.removeEventListener('animationend', fine); };
+    var io = new IntersectionObserver(function(en){ en.forEach(function(e){ if (e.isIntersecting) { e.target.addEventListener('animationend', fine); e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
     els.forEach(function(el){ io.observe(el); });
+    /* elementi gia' in vista al caricamento: partono subito */
+    setTimeout(function(){ els.forEach(function(el){ if (el.hasAttribute('data-reveal') && el.getBoundingClientRect().top < window.innerHeight) { el.addEventListener('animationend', fine); el.classList.add('in'); io.unobserve(el); } }); }, 120);
   })();
   (function(){
     /* galleria a nastro: frecce, trascinamento col mouse, tasti freccia */

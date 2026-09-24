@@ -160,8 +160,11 @@
 .dz.dz-premium .dz-pdpbar .dz-primary{height:38px;padding:0 18px!important;font-size:13.5px!important;border-radius:980px!important;gap:8px}
 
 /* ---------- panoramica: nome grande, claim, bici in scena ---------- */
-.dz-ph{position:relative;text-align:center;padding:clamp(56px,7vw,110px) 24px 0;overflow:hidden;background:#fff}
+.dz-ph{position:relative;text-align:center;padding:clamp(36px,5vw,72px) 24px 0;overflow:hidden;background:#fff}
 .dz-ph-title{margin:0;font-size:clamp(46px,8.2vw,124px);font-weight:600;letter-spacing:-.055em;line-height:.94;color:var(--ink);text-wrap:balance}
+.dz.dz-premium .dz-ph + .dz-wrap .dz-crumb{padding-top:clamp(28px,4vw,56px)}
+.dz-ph-stage img{transition:transform 1.4s cubic-bezier(.2,.8,.2,1)}
+.dz-ph-stage:hover img{transform:scale(1.015)}
 .dz-ph-claim{margin:20px auto 0;max-width:800px;font-size:clamp(19px,2.2vw,30px);font-weight:500;letter-spacing:-.025em;line-height:1.22;color:var(--ink);text-wrap:balance}
 .dz-ph-claim2{margin:10px auto 0;max-width:720px;font-size:clamp(16px,1.6vw,21px);color:var(--sub);line-height:1.35;text-wrap:balance}
 .dz-ph-cta{display:flex;justify-content:center;align-items:center;gap:22px;flex-wrap:wrap;margin-top:30px}
@@ -294,12 +297,20 @@ body:has(.dz.dz-premium) .dz-faq .faqlist details{border-bottom-color:rgba(0,0,0
 body:has(.dz.dz-premium) .dz-faq .faqlist summary{font-weight:600}
 body:has(.dz.dz-premium) .dz-faq .faqlist p{color:#6e6e73}
 
-/* ---------- apparizione morbida allo scorrimento ---------- */
-html.dz-js .dz.dz-premium [data-reveal]{opacity:0;transform:translateY(22px);
-  transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
-html.dz-js .dz.dz-premium [data-reveal].in{opacity:1;transform:none}
-html.dz-js .dz.dz-premium [data-reveal="2"]{transition-delay:.12s}
-html.dz-js .dz.dz-premium [data-reveal="3"]{transition-delay:.24s}
+/* ---------- dissolvenze ---------- */
+@keyframes dzUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes dzStage{from{opacity:0;transform:translateY(28px) scale(.985)}to{opacity:1;transform:none}}
+/* apertura: entra in sequenza al caricamento */
+.dz.dz-premium .dz-ph-title{animation:dzUp .9s cubic-bezier(.2,.8,.2,1) both}
+.dz.dz-premium .dz-ph-claim{animation:dzUp .9s cubic-bezier(.2,.8,.2,1) .12s both}
+.dz.dz-premium .dz-ph-claim2{animation:dzUp .9s cubic-bezier(.2,.8,.2,1) .18s both}
+.dz.dz-premium .dz-ph-cta{animation:dzUp .9s cubic-bezier(.2,.8,.2,1) .26s both}
+.dz.dz-premium .dz-ph-stage{animation:dzStage 1.3s cubic-bezier(.2,.8,.2,1) .3s both}
+/* tutto il resto: compare scorrendo, a scaglioni */
+html.dz-js body:has(.dz.dz-premium) [data-reveal]{opacity:0}
+html.dz-js body:has(.dz.dz-premium) [data-reveal].in{animation:dzUp .9s cubic-bezier(.2,.8,.2,1) both}
+html.dz-js body:has(.dz.dz-premium) [data-reveal="2"].in{animation-delay:.12s}
+html.dz-js body:has(.dz.dz-premium) [data-reveal="3"].in{animation-delay:.24s}
 
 /* ---------- schermi piccoli ---------- */
 @media (max-width:960px){
@@ -307,7 +318,7 @@ html.dz-js .dz.dz-premium [data-reveal="3"]{transition-delay:.24s}
   [data-dz-prodotto].dz-premium .dz-main{border:0!important;border-radius:0!important;background:#fff!important}
   .dz.dz-premium .dz-thumbs{justify-content:flex-start}
   .dz.dz-premium .dz-crumb{padding-top:14px;font-size:12.5px}
-  .dz-ph{padding-top:44px}
+  .dz-ph{padding-top:28px}
   .dz-ph-title{font-size:clamp(40px,11vw,56px)}
   .dz-ph-claim{font-size:18px}
   .dz-ph-cta{gap:14px}
@@ -327,7 +338,9 @@ html.dz-js .dz.dz-premium [data-reveal="3"]{transition-delay:.24s}
   .dz.dz-premium .dz-pdpbar .dz-primary{height:36px;padding:0 14px!important;font-size:13px!important}
 }
 @media (prefers-reduced-motion:reduce){
-  html.dz-js .dz.dz-premium [data-reveal]{opacity:1;transform:none;transition:none}
+  html.dz-js body:has(.dz.dz-premium) [data-reveal]{opacity:1}
+  html.dz-js body:has(.dz.dz-premium) [data-reveal].in{animation:none}
+  .dz.dz-premium .dz-ph-title,.dz.dz-premium .dz-ph-claim,.dz.dz-premium .dz-ph-claim2,.dz.dz-premium .dz-ph-cta,.dz.dz-premium .dz-ph-stage{animation:none}
   .dz.dz-premium .dz-primary,.dz.dz-premium .dz-pill,.dz.dz-premium .dz-wa,.dz.dz-premium .dz-thumb{transition:none}
   .dz.dz-premium .dz-primary::before,.dz.dz-premium .dz-pill::before,.dz.dz-premium .dz-wa::after,body:has(.dz.dz-premium) .dzs-btn::before{transition:none}
 }
