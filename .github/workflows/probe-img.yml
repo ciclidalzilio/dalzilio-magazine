@@ -1,0 +1,29 @@
+name: probe-img
+on:
+  push:
+    branches: [claude/install-ui-ux-pro-max-cq88gs]
+    paths: [".github/workflows/probe-img.yml"]
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 6
+    steps:
+      - uses: actions/checkout@v4
+      - name: scarica foto usato
+        run: |
+          mkdir -p probe/usato
+          B="https://cdn.shopify.com/s/files/1/0873/6885/9912/files"
+          i=1; for f in DSC06424.jpg DSC06413.jpg DSC06430.jpg DSC06415.jpg DSC06416.jpg DSC06417.jpg DSC06431.jpg DSC06418.jpg; do curl -sL -o "probe/usato/x9-$(printf %02d $i).jpg" "$B/$f?width=1600"; i=$((i+1)); done
+          curl -sL -o probe/usato/paris.jpg "$B/IMG_6133.jpg?width=1000"
+          curl -sL -o probe/usato/moterra3.jpg "$B/780EE7D5-04BF-4F6C-BA39-2E59371E5CA7.jpg?width=1000"
+          curl -sL -o probe/usato/crb2.jpg "$B/DSC06460.jpg?width=1000"
+          ls -la probe/usato
+      - name: commit
+        run: |
+          git config user.name "probe-bot"; git config user.email "probe@users.noreply.github.com"
+          git add -A probe; git commit -m "probe img: foto usato" || exit 0
+          git fetch origin claude/install-ui-ux-pro-max-cq88gs
+          git rebase origin/claude/install-ui-ux-pro-max-cq88gs || (git rebase --abort; git reset --soft origin/claude/install-ui-ux-pro-max-cq88gs; git commit -m "probe img: foto usato")
+          git push -u origin HEAD:claude/install-ui-ux-pro-max-cq88gs
