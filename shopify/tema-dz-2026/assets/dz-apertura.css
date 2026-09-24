@@ -18,9 +18,10 @@
 
 .dzh .wrap.dzh-testo{position:relative;z-index:2;width:100%;display:flex;flex-direction:column;gap:30px;padding-top:64px;padding-bottom:clamp(48px,8vh,96px)}
 .dzh-k{margin:0;font-family:"Archivo",var(--font-sans);font-stretch:118%;font-size:12px;font-weight:600;letter-spacing:.34em;text-transform:uppercase;color:rgba(255,255,255,.72)}
-.dzh h1{margin:14px 0 0;font-family:"Archivo",var(--font-sans);font-stretch:86%;font-weight:800;
-  font-size:clamp(3rem,6vw,6rem);line-height:.9;letter-spacing:-.038em;color:#fff;text-wrap:balance;max-width:11ch}
-.dzh h1 .g{display:block;background:linear-gradient(100deg,#FF8A1F,#FF3D6E 52%,#B85CFF);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* titolo come nell'apertura originale: prima riga sottile, "inizia qui." in grassetto sfumato */
+.dzh h1{margin:14px 0 0;font-family:var(--font-sans);font-weight:300;
+  font-size:clamp(2.5rem,5.6vw,4.5rem);line-height:1.01;letter-spacing:-.04em;color:#fff;text-wrap:balance}
+.dzh h1 .g{display:block;background:var(--grad-text);-webkit-background-clip:text;background-clip:text;color:transparent;font-weight:760}
 .dzh-lede{margin:22px 0 0;max-width:44ch;font-size:clamp(1rem,1.3vw,1.14rem);line-height:1.6;color:rgba(255,255,255,.78)}
 .dzh-cta{display:flex;flex-wrap:wrap;gap:12px}
 .dzh .btn.ghost{background:rgba(255,255,255,.12);color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.36)}
@@ -44,7 +45,7 @@
   .dzh-foto img{object-position:63% 50%}
   .dzh-velo{display:none}
   .dzh-giu{order:3;position:relative;z-index:2;display:flex;flex-direction:column;gap:18px;padding:0 20px 30px;margin-top:-30px}
-  .dzh h1{font-size:clamp(2.4rem,11.5vw,3.3rem);max-width:none}
+  .dzh h1{font-size:clamp(2.4rem,10.8vw,3.2rem)}
   .dzh-lede{display:none}
   .dzh-cta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   .dzh-cta .btn{padding:13px 12px;font-size:14.5px}
