@@ -1,0 +1,25 @@
+name: probe-img
+on:
+  push:
+    branches: [claude/install-ui-ux-pro-max-cq88gs]
+    paths: [".github/workflows/probe-img.yml"]
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: scarica loghi
+        run: |
+          mkdir -p probe/logo
+          for f in trek.png scott.png cnd.png logodz-colori.png logodz.png logodz.svg; do curl -sL -o "probe/logo/$f" -w "%{http_code} $f\n" "https://cdn.shopify.com/s/files/1/0873/6885/9912/files/$f"; done
+          find probe/logo -type f -size -2k -delete; ls -la probe/logo; file probe/logo/* || true
+      - name: commit
+        run: |
+          git config user.name "probe-bot"; git config user.email "probe@users.noreply.github.com"
+          git add -A probe; git commit -m "probe img: loghi" || exit 0
+          git fetch origin claude/install-ui-ux-pro-max-cq88gs
+          git rebase origin/claude/install-ui-ux-pro-max-cq88gs || (git rebase --abort; git reset --soft origin/claude/install-ui-ux-pro-max-cq88gs; git commit -m "probe img: loghi")
+          git push -u origin HEAD:claude/install-ui-ux-pro-max-cq88gs
