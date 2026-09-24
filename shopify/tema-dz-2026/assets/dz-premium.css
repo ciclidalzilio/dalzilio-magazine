@@ -170,26 +170,37 @@
 .dz.dz-premium .dz-pdpbar .dz-primary{height:38px;padding:0 18px!important;font-size:13.5px!important;border-radius:980px!important;gap:8px}
 
 /* ---------- panoramica: nome grande, claim, bici in scena ---------- */
-.dz-ph{position:relative;text-align:center;padding:clamp(36px,5vw,72px) 24px 0;overflow:hidden;background:#fff}
-.dz-ph-title{margin:0;font-size:clamp(46px,8.2vw,124px);font-weight:600;letter-spacing:-.055em;line-height:.94;color:var(--ink);text-wrap:balance}
+.dz-ph{position:relative;text-align:center;padding:clamp(36px,5vw,72px) 0 0;overflow:hidden;background:#fff}
+.dz-ph-title{margin:0;padding:0 24px;font-size:clamp(46px,8.2vw,124px);font-weight:600;letter-spacing:-.055em;line-height:.94;color:var(--ink);text-wrap:balance}
 .dz.dz-premium .dz-ph + .dz-wrap .dz-crumb{padding-top:clamp(28px,4vw,56px)}
-.dz-ph-stage img{transition:transform 1.4s cubic-bezier(.2,.8,.2,1)}
-.dz-ph-stage:hover img{transform:scale(1.015)}
-.dz-ph-claim{margin:20px auto 0;max-width:800px;font-size:clamp(19px,2.2vw,30px);font-weight:500;letter-spacing:-.025em;line-height:1.22;color:var(--ink);text-wrap:balance}
-.dz-ph-claim2{margin:10px auto 0;max-width:720px;font-size:clamp(16px,1.6vw,21px);color:var(--sub);line-height:1.35;text-wrap:balance}
-.dz-ph-cta{display:flex;justify-content:center;align-items:center;gap:22px;flex-wrap:wrap;margin-top:30px}
+.dz-ph-claim{margin:20px auto 0;padding:0 24px;max-width:800px;font-size:clamp(19px,2.2vw,30px);font-weight:500;letter-spacing:-.025em;line-height:1.22;color:var(--ink);text-wrap:balance}
+.dz-ph-claim2{margin:10px auto 0;padding:0 24px;max-width:720px;font-size:clamp(16px,1.6vw,21px);color:var(--sub);line-height:1.35;text-wrap:balance}
+.dz-ph-cta{display:flex;justify-content:center;align-items:center;gap:22px;flex-wrap:wrap;margin-top:30px;padding:0 24px}
 .dz-ph-price{font-size:17px;color:var(--red);font-weight:600;display:flex;align-items:baseline;gap:10px;font-variant-numeric:tabular-nums}
 .dz-ph-price s{color:var(--sub2);font-size:14px;font-weight:400}
 .dz.dz-premium .dz-pill{display:inline-flex;align-items:center;justify-content:center;height:46px;padding:0 26px!important;font-size:15px;text-decoration:none;border-radius:980px!important}
 .dz.dz-premium .dz-link{color:var(--blue)!important;font-size:15px;text-decoration:none}
 .dz.dz-premium .dz-link:hover{text-decoration:underline}
 .dz.dz-premium .dz-link::after{content:" ›";font-weight:600}
-.dz-ph-stage{position:relative;max-width:1600px;margin:clamp(24px,3vw,44px) auto 0;
-  padding:clamp(28px,4vw,64px) clamp(16px,3vw,48px) clamp(40px,5vw,80px);
-  background:radial-gradient(70% 55% at 50% 100%,#e2e3e8 0%,#f0f0f3 45%,#fafafa 100%);border-radius:32px;overflow:hidden}
-.dz-ph-stage img{position:relative;z-index:1;width:100%;height:auto;max-height:800px;object-fit:contain;display:block;mix-blend-mode:multiply}
-.dz-ph-stage::after{content:"";position:absolute;left:16%;right:16%;bottom:clamp(26px,4vw,52px);height:46px;z-index:0;
-  background:radial-gradient(50% 100% at 50% 50%,rgba(0,0,0,.14),transparent 72%);filter:blur(10px)}
+/* scena a tutto schermo: da bordo a bordo, senza riquadro. Il JS della scheda
+   misura il bianco attorno alla bici e la ingrandisce (classe dz-fit-ok). */
+.dz-ph-stage{position:relative;max-width:none;margin:clamp(24px,3vw,44px) 0 0;
+  padding:clamp(20px,3vw,48px) 0 clamp(44px,5vw,84px);
+  background:radial-gradient(60% 60% at 50% 100%,#dfe0e5 0%,#eeeef1 40%,#fafafa 100%);border-radius:0;overflow:hidden}
+.dz-ph-stage img{position:relative;z-index:1;width:100%;height:auto;max-height:80vh;object-fit:contain;object-position:50% 100%;display:block;mix-blend-mode:multiply;
+  opacity:0;transition:opacity .8s ease}
+.dz-ph-stage.dz-fit img{opacity:1}
+.dz-ph-stage.dz-fit-ok img{max-width:none;max-height:none;object-fit:fill}
+.dz-ph-stage::after{content:"";position:absolute;left:14%;right:14%;bottom:clamp(30px,4vw,56px);height:52px;z-index:0;
+  background:radial-gradient(50% 100% at 50% 50%,rgba(0,0,0,.16),transparent 72%);filter:blur(12px)}
+/* in breve: numeri chiave in nero bold, sopra la galleria */
+.dz-keys{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:28px 24px}
+.dz-keys + .dz-chap{padding-top:clamp(44px,5vw,80px)}
+.dz-key{display:block;min-width:0;padding-top:16px;border-top:1px solid var(--ink);color:var(--ink);text-decoration:none}
+.dz-key b{display:block;font-size:clamp(28px,3.2vw,48px);font-weight:700;letter-spacing:-.045em;line-height:1;color:var(--ink);white-space:nowrap}
+.dz-key b em{font-style:normal;font-size:.42em;font-weight:600;letter-spacing:-.01em;color:var(--sub);margin-left:3px}
+.dz-key > span{display:block;margin-top:9px;font-size:14px;font-weight:500;color:var(--sub);line-height:1.3}
+.dz-key-link:hover span{color:var(--blue)}
 
 /* ---------- galleria a nastro ---------- */
 .dz-chap{max-width:1600px;margin:0 auto;padding:clamp(56px,7vw,110px) clamp(16px,3vw,48px) 0}
@@ -244,19 +255,9 @@ body:has(.dz.dz-premium) .dzs-wa:hover::after{left:140%;transform:skewX(-22deg)}
 body:has(.dz.dz-premium) .dzs-ghost{background:rgba(255,255,255,.62);color:#1d1d1f;border-color:rgba(0,0,0,.09);box-shadow:inset 0 1px 0 rgba(255,255,255,.95)}
 body:has(.dz.dz-premium) .dzs-ghost::after{display:none}
 
-/* numeri chiave: bianco e hairline */
-body:has(.dz.dz-premium) .dzs-figs{background:#fff;border-top:1px solid rgba(0,0,0,.08);border-bottom:1px solid rgba(0,0,0,.08)}
-body:has(.dz.dz-premium) .dzs-fig b{color:#1d1d1f;font-weight:600;letter-spacing:-.04em}
-body:has(.dz.dz-premium) .dzs-fig b em{color:#a1a1a6}
-body:has(.dz.dz-premium) .dzs-fig span{color:#6e6e73}
-
-/* banda del modello: resta scura, senza sfumature colorate */
-body:has(.dz.dz-premium) .dzs-auto{background:#0b0b0c}
-body:has(.dz.dz-premium) .dzs-auto .dzs-k{color:rgba(255,255,255,.55)}
-body:has(.dz.dz-premium) .dzs-auto .dzs-h2f b{background:none;-webkit-background-clip:initial;background-clip:initial;color:#fff}
-body:has(.dz.dz-premium) .dzs-auto .dzs-feattxt::before{display:none}
-body:has(.dz.dz-premium) .dzs-auto .dzs-flist svg{color:#fff}
-body:has(.dz.dz-premium) .dzs-studio{background:radial-gradient(95% 130% at 50% 26%,#fff 0%,#f0f0f3 46%,#d7d8de 100%)}
+/* sezione "Il modello" (numeri chiave + banda scura): sulle schede premium
+   non serve, i numeri chiave stanno nella striscia "in breve" sopra la galleria */
+body:has(.dz.dz-premium) .dzs-figs,body:has(.dz.dz-premium) .dzs-auto{display:none}
 
 /* servizi inclusi: card con medaglione a gradiente e icona bianca */
 body:has(.dz.dz-premium) .dzs-why{border:0;padding:clamp(56px,7vw,100px) 0}
@@ -343,8 +344,11 @@ html.dz-js body:has(.dz.dz-premium) [data-dz-rev]{will-change:opacity,transform}
   .dz-ph-title{font-size:clamp(40px,11vw,56px)}
   .dz-ph-claim{font-size:18px}
   .dz-ph-cta{gap:14px}
-  .dz-ph-stage{border-radius:22px;padding:22px 12px 34px}
+  .dz-ph-stage{border-radius:0;padding:12px 0 30px}
   .dz-chap{padding-top:48px}
+  .dz-keys{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 18px}
+  .dz-key-link{grid-column:1 / -1}
+  .dz-key b{font-size:30px}
   .dz-rail figure{flex-basis:78vw}
   .dz-rail-btn{width:38px;height:38px}
   body:has(.dz.dz-premium) .dzs-wlist{grid-template-columns:1fr}

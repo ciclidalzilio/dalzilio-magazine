@@ -461,6 +461,28 @@
   </div>
 
   {%- if premium and usato == false and e_bici -%}
+  {%- comment -%}
+    In breve: i numeri chiave della bici (garanzia, colorazioni, taglie, rata,
+    permuta) in nero bold sopra la galleria. Sostituiscono la sezione
+    "Il modello", che sulle schede premium resta nascosta. Colorazioni,
+    taglie e rata vengono riempite da dz-prodotto.js.
+  {%- endcomment -%}
+  {%- liquid
+    assign vmarca_k = p.vendor | downcase
+    assign gar_k = 'Ufficiale'
+    if vmarca_k contains 'scott'
+      assign gar_k = '5 anni'
+    elsif vmarca_k contains 'trek' or vmarca_k contains 'cannondale'
+      assign gar_k = 'A vita'
+    endif
+  -%}
+  <div class="dz-chap dz-keys" id="dz-in-breve" aria-label="In breve">
+    <div class="dz-key"><b>{{ gar_k }}</b><span>Garanzia sul telaio</span></div>
+    <div class="dz-key"><b data-dz-fig-colori>2 anni</b><span data-dz-fig-colori-label>Sui componenti</span></div>
+    <div class="dz-key"><b data-dz-fig-taglie>{{ p.variants.size }}</b><span>Taglie</span></div>
+    <div class="dz-key"><b><span data-dz-fig-rata>—</span><em>/mese</em></b><span>In <span data-dz-fig-mesi>48</span> rate</span></div>
+    <a class="dz-key dz-key-link" href="#shopify-section-permuta"><b>Permuta</b><span>La tua usata vale, ovunque tu sia ›</span></a>
+  </div>
   {%- if p.media.size > 1 -%}
   <div class="dz-chap" id="dz-galleria">
     <div class="dz-chap-head" data-reveal="1">
@@ -546,8 +568,7 @@
     function avvia(){
       document.documentElement.classList.add('dz-js');
       var riduci = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      var gruppi = ['.dz-premium .dz-gallery', '.dz-premium .dz-info', '.dz-premium .dz-chap-head', '.dz-premium .dz-rail',
-        '.dzs-figs .dzs-fig', '.dzs-auto .dzs-featimg', '.dzs-auto .dzs-feattxt',
+      var gruppi = ['.dz-premium .dz-gallery', '.dz-premium .dz-info', '.dz-premium .dz-key', '.dz-premium .dz-chap-head', '.dz-premium .dz-rail',
         '.dzs-why .dzs-why-grid > div:first-child', '.dzs-why .dzs-witem', '.dzs-why .dzs-wfoot',
         '.dzs-rel .dzs-relhead', '.dzs-rel .prod',
         '.dzs-feat.dzs-rev .dzs-featimg', '.dzs-feat.dzs-rev .dzs-feattxt',
@@ -603,6 +624,63 @@
     }
     if (!('requestAnimationFrame' in window)) return;
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', avvia); else avvia();
+  })();
+  (function(){
+    /* Apertura a tutto schermo: legge la foto in un piccolo canvas, trova il
+       rettangolo che contiene la bici (tutto ciò che non è bianco) e la
+       ingrandisce finché riempie la scena, tagliando il bianco attorno.
+       Se la lettura fallisce (es. CORS) la foto resta com'è. Nessun dato cambia. */
+    var scena = document.querySelector('.dz-premium .dz-ph-stage');
+    var img = scena ? scena.querySelector('img') : null;
+    if (!scena || !img) return;
+    var box = null, mostrato = false;
+    function mostra(){ if (!mostrato) { mostrato = true; scena.classList.add('dz-fit'); } }
+    function misura(cb){
+      var src = img.currentSrc || img.src;
+      if (!src) { cb(null); return; }
+      var s = new Image(); s.crossOrigin = 'anonymous';
+      s.onload = function(){
+        try {
+          var W = 160, H = Math.max(1, Math.round(W * s.naturalHeight / s.naturalWidth));
+          var c = document.createElement('canvas'); c.width = W; c.height = H;
+          var ctx = c.getContext('2d', { willReadFrequently: true });
+          ctx.drawImage(s, 0, 0, W, H);
+          var d = ctx.getImageData(0, 0, W, H).data, l = W, t = H, r = -1, b = -1;
+          for (var y = 0; y < H; y++) for (var x = 0; x < W; x++) {
+            var i = (y * W + x) * 4;
+            if (d[i + 3] > 40 && (d[i] < 232 || d[i + 1] < 232 || d[i + 2] < 232)) {
+              if (x < l) l = x; if (x > r) r = x; if (y < t) t = y; if (y > b) b = y;
+            }
+          }
+          if (r < 0 || (r - l) < W * 0.2) { cb(null); return; }
+          cb({ l: l / W, t: t / H, r: (r + 1) / W, b: (b + 1) / H, ar: s.naturalWidth / s.naturalHeight });
+        } catch (e) { cb(null); }
+      };
+      s.onerror = function(){ cb(null); };
+      s.src = src.replace(/([?&])width=\d+/, '$1width=320');
+    }
+    function applica(){
+      if (!box) { mostra(); return; }
+      var cw = scena.clientWidth || window.innerWidth || 1200, vh = window.innerHeight || 800;
+      var grande = window.innerWidth > 960;
+      var bw = box.r - box.l, bh = box.b - box.t;
+      /* z: larghezza della foto in rapporto alla scena, perché la bici occupi
+         ~86% della larghezza (96% su mobile) senza superare ~74% dell'altezza dello schermo */
+      var z = Math.min((grande ? 0.86 : 0.96) / bw, (grande ? 0.74 : 0.52) * vh * box.ar / (cw * bh));
+      z = Math.max(0.6, Math.min(2.4, z));
+      var dw = z * cw, dh = dw / box.ar;
+      img.style.width = dw.toFixed(1) + 'px';
+      img.style.marginLeft = ((cw - dw) / 2).toFixed(1) + 'px';          /* centrata anche se più larga della scena */
+      img.style.transform = 'translateX(' + ((0.5 - (box.l + box.r) / 2) * dw).toFixed(1) + 'px)';
+      img.style.marginTop = (-(box.t * dh)).toFixed(1) + 'px';            /* via il bianco sopra */
+      img.style.marginBottom = (-((1 - box.b) * dh)).toFixed(1) + 'px';   /* e sotto */
+      scena.classList.add('dz-fit-ok');
+      mostra();
+    }
+    misura(function(b){ box = b; applica(); });
+    setTimeout(mostra, 2500);
+    var rz;
+    window.addEventListener('resize', function(){ clearTimeout(rz); rz = setTimeout(applica, 120); });
   })();
   (function(){
     /* galleria a nastro: frecce, trascinamento col mouse, tasti freccia */

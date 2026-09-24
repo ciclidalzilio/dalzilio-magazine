@@ -371,10 +371,9 @@
     if (da) da.textContent = euro(Math.round(rata));
     var barRata = $("[data-dz-bar-rata]");
     if (barRata) barRata.textContent = euro(Math.round(rata));
-    var figRata = document.querySelector("[data-dz-fig-rata]");
-    if (figRata) figRata.textContent = euro(Math.round(rata));
-    var figMesi = document.querySelector("[data-dz-fig-mesi]");
-    if (figMesi) figMesi.textContent = mesi;
+    /* numeri chiave: possono stare in due punti (scheda premium e sezione "Il modello") */
+    document.querySelectorAll("[data-dz-fig-rata]").forEach(function (el) { el.textContent = euro(Math.round(rata)); });
+    document.querySelectorAll("[data-dz-fig-mesi]").forEach(function (el) { el.textContent = mesi; });
     if (box) {
       var r = $("[data-dz-fin-rata]");
       var m = $("[data-dz-fin-mesi]");
@@ -468,19 +467,18 @@
   }
 
   /* ---------- numeri chiave sotto la scheda ---------- */
-  var figTaglie = document.querySelector("[data-dz-fig-taglie]");
-  if (figTaglie) {
+  (function () {
     var setT = {};
     VARIANTI.forEach(function (v) { if (v.taglia) setT[v.taglia] = 1; });
     var quante = Object.keys(setT).length;
-    if (quante) figTaglie.textContent = quante;
-  }
-  if (colori.length > 0) {
-    var figColori = document.querySelector("[data-dz-fig-colori]");
-    var figColoriLabel = document.querySelector("[data-dz-fig-colori-label]");
-    if (figColori) figColori.textContent = colori.length;
-    if (figColoriLabel) figColoriLabel.textContent = colori.length === 1 ? "Colorazione" : "Colorazioni";
-  }
+    if (quante) document.querySelectorAll("[data-dz-fig-taglie]").forEach(function (el) { el.textContent = quante; });
+    if (colori.length > 0) {
+      document.querySelectorAll("[data-dz-fig-colori]").forEach(function (el) { el.textContent = colori.length; });
+      document.querySelectorAll("[data-dz-fig-colori-label]").forEach(function (el) {
+        el.textContent = colori.length === 1 ? "Colorazione" : "Colorazioni";
+      });
+    }
+  })();
 
   /* ---------- zoom foto: si apre al massimo restando tutta nello schermo ---------- */
   var zb = document.querySelector("[data-dz-zoombox]");
