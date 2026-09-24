@@ -72,14 +72,15 @@
     I loghi sono i PNG del negozio: invertiti e fusi in "screen" restano
     bianchi sia con sfondo trasparente sia con sfondo bianco.
   {%- endcomment -%}
-  {%- assign marchi = 'trek|TREK|trek.png,scott|SCOTT|scott.png,cannondale|CANNONDALE|cnd.png,amflow|AMFLOW|amflow.png' | split: ',' -%}
+  {%- comment -%} ultimo campo: scala del logo. Il PNG Amflow (1400x800) ha molta aria attorno: a pari altezza esce piccolo {%- endcomment -%}
+  {%- assign marchi = 'trek|TREK|trek.png|1,scott|SCOTT|scott.png|1,cannondale|CANNONDALE|cnd.png|1,amflow|AMFLOW|amflow.png|1.6' | split: ',' -%}
   <i class="bd-beam" aria-hidden="true"></i>
   <div class="wrap">
     <p class="bd-k">{{ 'home.loghi' | t }}</p>
     <div class="bd-row">
       {%- for riga in marchi -%}
         {%- assign c = riga | split: '|' -%}
-        <a class="bd-cell" href="/pages/{{ c[0] }}" style="--i:{{ forloop.index0 }}">
+        <a class="bd-cell" href="/pages/{{ c[0] }}" style="--i:{{ forloop.index0 }};--s:{{ c[3] }}">
           <span class="bd-l">
             <img class="bd-logo" src="{{ c[2] | file_url }}" alt="{{ c[1] }}" loading="lazy">
             <img class="bd-logo bd-glint" src="{{ c[2] | file_url }}" alt="" aria-hidden="true" loading="lazy">
@@ -98,7 +99,7 @@
   </script>
 </section>
 
-<section class="block wrap">
+<section class="block wrap after-dark">
   <div class="head"><div><p class="k">{{ 'home.cat_k' | t }}</p><h2>{{ 'home.cat_h' | t }}</h2></div><a class="more" href="/collections/tutte-le-bici">{{ 'home.cat_all' | t }}</a></div>
   <div class="cats">
     {%- assign bento = 'usato-1,bici-da-strada,ebikes,gravel,mountain-bike,urban' | split: ',' -%}
