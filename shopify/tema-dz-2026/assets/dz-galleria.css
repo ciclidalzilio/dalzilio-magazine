@@ -1,4 +1,4 @@
-/* dz-galleria.css — Cicli Dal Zilio · frecce, swipe e rail delle miniature */
+/* dz-galleria.css — Cicli Dal Zilio · galleria prodotto: frecce, swipe, miniature */
 
 .dz-thumb[hidden]{display:none!important}
 
@@ -13,32 +13,55 @@
 .dz-main:hover .dz-arrow,.dz-arrow:focus-visible{opacity:1}
 .dz-arrow:hover{background:rgba(255,255,255,.95)}
 .dz-main.dz-single .dz-arrow{display:none}
-
-/* rail lungo: scorre da solo, senza barra visibile */
-@media (min-width:961px){
-  .dz-thumbs{max-height:min(680px,72vh);overflow-y:auto;scrollbar-width:none;padding-right:2px}
-  .dz-thumbs::-webkit-scrollbar{display:none}
-}
 @media (prefers-reduced-motion:reduce){.dz-arrow{transition:none}}
 
-/* --- scheda prodotto più larga sui grandi schermi --- */
+/* =============================================================
+   iPad e Mac — stile pulito: foto grande su fondo neutro, miniature
+   piccole e centrate sotto, colonna acquisto con aria attorno.
+   ============================================================= */
 [data-dz-prodotto] .dz-wrap,
-[data-dz-prodotto] .dz-pdpbin{max-width:1720px;padding-left:clamp(24px,3vw,56px);padding-right:clamp(24px,3vw,56px)}
+[data-dz-prodotto] .dz-pdpbin{max-width:1600px;padding-left:clamp(24px,3vw,64px);padding-right:clamp(24px,3vw,64px)}
+
+@media (min-width:961px){
+  [data-dz-prodotto] .dz-grid{grid-template-columns:minmax(0,1.3fr) minmax(360px,1fr);gap:clamp(40px,5vw,96px);align-items:start}
+
+  /* la galleria non deve mai allargare la colonna (min-width:0 è la chiave) */
+  [data-dz-prodotto] .dz-gallery{display:flex;flex-direction:column;gap:18px;min-width:0;width:100%}
+
+  /* foto: fondo grigio chiaro, angoli morbidi, niente ombre dure.
+     La bici viene ingrandita dal JS (zoom adattivo) fino a riempire il riquadro. */
+  [data-dz-prodotto] .dz-main{order:1;width:100%;aspect-ratio:4/3.25;border-radius:28px;background:#f5f5f7;box-shadow:none;overflow:hidden}
+  [data-dz-prodotto] .dz-main img{padding:0;object-fit:contain;object-position:center;transform:scale(var(--dz-zoom,1));transition:transform .35s}
+  [data-dz-prodotto] .dz-main:hover img{transform:scale(calc(var(--dz-zoom,1) * 1.03))}
+  [data-dz-prodotto] .dz-ghost{opacity:.5}
+  [data-dz-prodotto] .dz-zoom{display:none}
+
+  /* miniature: piccole, centrate, scorrono se sono tante */
+  [data-dz-prodotto] .dz-thumbs{order:2;display:flex;flex-direction:row;flex-wrap:nowrap;gap:10px;
+    width:100%;min-width:0;max-height:none;overflow-x:auto;overflow-y:hidden;padding:2px 2px 4px;
+    justify-content:safe center;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  [data-dz-prodotto] .dz-thumbs::-webkit-scrollbar{display:none}
+  [data-dz-prodotto] .dz-thumb{flex:0 0 auto;width:72px;height:60px;border-radius:14px;
+    border:1.5px solid transparent;background:#f5f5f7;opacity:.7;transition:opacity .2s,border-color .2s,transform .2s}
+  [data-dz-prodotto] .dz-thumb:hover{opacity:1}
+  [data-dz-prodotto] .dz-thumb.on{opacity:1;border-color:#111319}
+
+  /* colonna acquisto: più respiro tra i blocchi */
+  [data-dz-prodotto] .dz-info{padding-top:8px}
+  [data-dz-prodotto] .dz-title{letter-spacing:-.02em;line-height:1.05}
+}
+
 @media (min-width:1280px){
-  [data-dz-prodotto] .dz-grid{grid-template-columns:minmax(0,1.55fr) minmax(400px,600px);gap:clamp(48px,4.5vw,88px)}
-  [data-dz-prodotto] .dz-gallery{grid-template-columns:96px 1fr;gap:16px}
-  [data-dz-prodotto] .dz-thumb{width:96px;height:82px}
-  [data-dz-prodotto] .dz-thumbs{max-height:min(820px,78vh)}
-  [data-dz-prodotto] .dz-main{aspect-ratio:4/3.3}
-  [data-dz-prodotto] .dz-title{font-size:clamp(2.2rem,3.4vw,3.1rem)}
+  [data-dz-prodotto] .dz-grid{grid-template-columns:minmax(0,1.4fr) minmax(440px,600px)}
+  [data-dz-prodotto] .dz-main{aspect-ratio:4/3.1}
+  [data-dz-prodotto] .dz-thumb{width:80px;height:66px}
+  [data-dz-prodotto] .dz-title{font-size:clamp(2.2rem,3vw,3rem)}
 }
 
 /* --- mobile: bici a tutta larghezza dello schermo, si sfoglia con lo swipe --- */
 @media (max-width:960px){
   [data-dz-prodotto] .dz-wrap{padding-left:14px;padding-right:14px}
   [data-dz-prodotto] .dz-main{margin:0 -14px;border-radius:0;aspect-ratio:1/0.82;touch-action:pan-y;user-select:none;-webkit-user-select:none;overflow:hidden}
-  /* zoom adattivo: dz-galleria.js misura il bianco attorno alla bici e imposta --dz-zoom
-     (foto con molta aria, es. Scott → ingrandite; foto già a filo, es. Trek → lasciate intere) */
   [data-dz-prodotto] .dz-main img{transform:scale(var(--dz-zoom,1));padding:0;object-fit:contain;object-position:center;cursor:zoom-in}
   [data-dz-prodotto] .dz-main:hover img{transform:scale(var(--dz-zoom,1))}
   [data-dz-prodotto] .dz-main.dz-swiping img{transition:none}

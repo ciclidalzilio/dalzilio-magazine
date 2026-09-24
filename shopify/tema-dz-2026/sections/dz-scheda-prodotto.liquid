@@ -26,15 +26,8 @@
 {%- capture bici_txt -%}{%- render 'dz-e-bici', product: p -%}{%- endcapture -%}
 {%- assign e_bici = false -%}
 {%- if bici_txt contains 'si' -%}{%- assign e_bici = true -%}{%- endif -%}
-{%- comment -%}
-  Scheda PREMIUM (studio antracite con barra LED, vedi dz-premium.css):
-  per le Pinarello e per qualsiasi prodotto con il tag "premium".
-{%- endcomment -%}
-{%- assign premium = false -%}
-{%- assign v_prem = p.vendor | downcase -%}
-{%- if v_prem contains 'pinarello' or p.tags contains 'premium' or p.tags contains 'Premium' -%}{%- assign premium = true -%}{%- endif -%}
 
-<section class="dz{% if premium %} dz-premium{% endif %}" data-dz-prodotto>
+<section class="dz" data-dz-prodotto>
 
   {%- comment -%} barra che resta fissa scorrendo: modello, prezzo, aggiungi {%- endcomment -%}
   <div class="dz-pdpbar" data-dz-pdpbar>
@@ -43,44 +36,6 @@
       <button type="button" class="dz-btn dz-primary" data-dz-bar-add>Aggiungi al carrello</button>
     </div>
   </div>
-
-  {%- if premium -%}
-  {%- liquid
-    assign ph_nome = p.title | remove_first: 'Scott' | remove_first: 'SCOTT' | remove_first: 'Trek' | remove_first: 'TREK' | remove_first: 'Cannondale' | remove_first: 'CANNONDALE' | remove_first: 'Pinarello' | remove_first: 'PINARELLO' | remove_first: 'Bicicletta' | strip
-    if ph_nome == blank
-      assign ph_nome = p.title
-    endif
-    assign ph_claim = p.metafields.custom.claim | default: ''
-    if ph_claim == blank
-      assign ph_descr = p.description | strip_html | remove_first: p.title | strip
-      assign ph_frasi = ph_descr | split: '. '
-      assign ph_claim = ph_frasi[0] | strip | truncate: 130, ''
-      if ph_frasi.size > 1 and ph_claim != blank
-        assign ph_claim = ph_claim | append: '.'
-      endif
-    endif
-    if ph_claim == blank
-      assign ph_claim = 'Progettata per chi non accetta compromessi.'
-    endif
-  -%}
-  <div class="dz-ph">
-    <p class="dz-ph-eye" data-reveal="1">{{ p.vendor | replace: 'scott_sports', 'SCOTT' }}{% if p.type == 'USATO' %} · Usato garantito{% else %} · Nuovo{% endif %}</p>
-    <div class="dz-ph-title" data-reveal="1">{{ ph_nome }}</div>
-    <p class="dz-ph-sub" data-reveal="2">{{ ph_claim }}</p>
-    <div class="dz-ph-cta" data-reveal="3">
-      <span class="dz-ph-price">{% if e_bici %}Da {% endif %}{{ p.price | money }}{% if sconto > 0 %} <s>{{ p.compare_at_price | money }}</s>{% endif %}</span>
-      <a class="dz-pill" href="#dz-acquisto">{% if p.available %}Acquista{% else %}Avvisami{% endif %}</a>
-      {%- if section.settings.whatsapp != blank -%}
-        <a class="dz-link" target="_blank" rel="noopener" href="https://wa.me/{{ section.settings.whatsapp }}?text={{ 'prod.wa_msg' | t: titolo: p.title | url_encode }}">Chiedi su WhatsApp</a>
-      {%- endif -%}
-    </div>
-    {%- if p.featured_media -%}
-    <div class="dz-ph-stage" data-reveal="3">
-      <img src="{{ p.featured_media | image_url: width: 2000 }}" alt="{{ p.featured_media.alt | default: p.title | escape }}" width="2000" height="1500" fetchpriority="high">
-    </div>
-    {%- endif -%}
-  </div>
-  {%- endif -%}
 
   <div class="dz-wrap">
 
@@ -106,7 +61,7 @@
       <b>{{ p.title }}</b>
     </nav>
 
-    <div class="dz-grid" id="dz-acquisto">
+    <div class="dz-grid">
 
       {%- comment -%} ---------- galleria ---------- {%- endcomment -%}
       <div class="dz-gallery">
@@ -142,7 +97,7 @@
         </div>
         <div class="dz-main">
           {%- comment -%} nome del modello in filigrana dietro la bici (stile GT) {%- endcomment -%}
-          {%- assign ghost = p.title | remove_first: 'Scott' | remove_first: 'SCOTT' | remove_first: 'Trek' | remove_first: 'TREK' | remove_first: 'Cannondale' | remove_first: 'CANNONDALE' | remove_first: 'Amflow' | remove_first: 'AMFLOW' | remove_first: 'Pinarello' | remove_first: 'PINARELLO' | remove_first: 'Bicicletta' | strip -%}
+          {%- assign ghost = p.title | remove_first: 'Scott' | remove_first: 'SCOTT' | remove_first: 'Trek' | remove_first: 'TREK' | remove_first: 'Cannondale' | remove_first: 'CANNONDALE' | remove_first: 'Amflow' | remove_first: 'AMFLOW' | remove_first: 'Bicicletta' | strip -%}
           {%- if ghost == blank -%}{%- assign ghost = p.title -%}{%- endif -%}
           <span class="dz-ghost" aria-hidden="true">{{ ghost | escape | upcase }}</span>
           {%- if p.featured_media -%}
@@ -474,16 +429,6 @@
 
 {{ 'dz-prodotto.css' | asset_url | stylesheet_tag }}
 {{ 'dz-galleria.css' | asset_url | stylesheet_tag }}
-{%- if premium -%}{{ 'dz-premium.css' | asset_url | stylesheet_tag }}
-<script>
-  (function(){
-    if (!('IntersectionObserver' in window)) return;
-    document.documentElement.classList.add('dz-js');
-    var els = document.querySelectorAll('.dz-premium [data-reveal]');
-    var io = new IntersectionObserver(function(en){ en.forEach(function(e){ if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
-    els.forEach(function(el){ io.observe(el); });
-  })();
-</script>{%- endif -%}
 <script src="{{ 'dz-prodotto.js' | asset_url }}" defer></script>
 <script src="{{ 'dz-galleria.js' | asset_url }}" defer></script>
 

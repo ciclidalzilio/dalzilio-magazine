@@ -1,0 +1,244 @@
+{%- comment -%}
+  dz-data-arrivo.liquid — Cicli Dal Zilio
+
+  Avviso sulla taglia selezionata quando non è disponibile:
+  - se la variante ha il metacampo custom.data_arrivo (aggiornato ogni giorno
+    dal controllo giacenze Cannondale) mostra «In arrivo il ...»;
+  - altrimenti dice che è esaurita e che non c'è ancora una data.
+
+  Le taglie esaurite restano cliccabili (e barrate), altrimenti il cliente non
+  potrebbe selezionarle per leggere l'avviso.
+
+  Taglia e colore si ricavano dal titolo con la stessa identica logica di
+  dz-prodotto.js: nel catalogo importato non sono sempre opzioni vere.
+
+  Non modifica nessun dato: legge soltanto.
+{%- endcomment -%}
+
+{%- liquid
+  assign p = product
+  assign mesi = 'gennaio,febbraio,marzo,aprile,maggio,giugno,luglio,agosto,settembre,ottobre,novembre,dicembre' | split: ','
+-%}
+
+{%- if p != blank -%}
+
+  {%- comment -%} mappa: id variante → data già scritta in italiano {%- endcomment -%}
+  <script type="application/json" data-dz-arrivo-dati>
+    {
+    {%- assign k = 0 -%}
+    {%- for v in p.variants -%}
+      {%- assign d = v.metafields.custom.data_arrivo -%}
+      {%- if d != blank -%}
+        {%- assign ds = d.value | date: '%Y-%m-%d' -%}
+        {%- assign mi = ds | date: '%m' | plus: 0 | minus: 1 -%}
+        {%- assign k = k | plus: 1 -%}
+        {%- if k > 1 -%},{% endif -%}
+        "{{ v.id }}": "{{ ds | date: '%-d' }} {{ mesi[mi] }} {{ ds | date: '%Y' }}"
+      {%- endif -%}
+    {%- endfor -%}
+    }
+  </script>
+
+  <div hidden data-dz-arrivo-src>
+    <div class="dz-arrivo" hidden data-dz-arrivo>
+      <span class="dz-arrivo-ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>
+      </span>
+      <div class="dz-arrivo-txt">
+        <b data-dz-arrivo-tit></b>
+        <p data-dz-arrivo-sub></p>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .dz-arrivo{display:flex;gap:11px;align-items:flex-start;margin:0 0 16px;padding:12px 14px;border-radius:14px;background:rgba(18,20,42,.045);border:1px solid rgba(18,20,42,.13);font-size:.93rem;line-height:1.45}
+    .dz-arrivo[hidden]{display:none}
+    .dz-arrivo p{margin:4px 0 0;opacity:.72}
+    .dz-arrivo b{font-weight:650}
+    .dz-arrivo-ico{flex:0 0 auto;width:20px;height:20px;margin-top:2px;opacity:.65}
+    .dz-arrivo-ico svg{width:20px;height:20px;display:block}
+
+    /* taglia esaurita ma cliccabile: resta barrata e ben leggibile,
+       anche quando è quella selezionata */
+    .dz-size.dz-size-avviso{
+      cursor:pointer !important;
+      opacity:1 !important;
+      color:rgba(18,20,42,.75) !important;
+      -webkit-text-fill-color:rgba(18,20,42,.75) !important;
+      background:#fff !important;
+      background-image:none !important;
+      border:1px dashed rgba(18,20,42,.32) !important;
+      text-decoration:line-through !important;
+      text-decoration-color:rgba(18,20,42,.5) !important;
+      box-shadow:none !important;
+    }
+    .dz-size.dz-size-avviso.on{
+      color:#12142a !important;
+      -webkit-text-fill-color:#12142a !important;
+      background:rgba(18,20,42,.06) !important;
+      border-style:solid !important;
+      border-color:rgba(18,20,42,.85) !important;
+      box-shadow:inset 0 0 0 1px rgba(18,20,42,.85) !important;
+    }
+  </style>
+
+  <script>
+    (function () {
+      var sez = document.querySelector('[data-dz-prodotto]');
+      var src = document.querySelector('[data-dz-arrivo-src]');
+      var tagDati = document.querySelector('[data-dz-arrivo-dati]');
+      if (!sez || !src || !tagDati) return;
+
+      var date = {};
+      try { date = JSON.parse(tagDati.textContent) || {}; } catch (e) { date = {}; }
+
+      var box = src.querySelector('[data-dz-arrivo]');
+      var info = sez.querySelector('.dz-info');
+      if (!box || !info) return;
+
+      var punto = info.querySelector('.dz-codici') || info.querySelector('.dz-price');
+      if (punto && punto.parentNode) punto.parentNode.insertBefore(box, punto.nextSibling);
+      else info.appendChild(box);
+      if (src.parentNode) src.parentNode.removeChild(src);
+
+      var elTit = box.querySelector('[data-dz-arrivo-tit]');
+      var elSub = box.querySelector('[data-dz-arrivo-sub]');
+
+      var SUB_DATA = 'Questa taglia ora non è disponibile. Scrivici per prenotarla: la mettiamo da parte appena arriva.';
+      var TIT_NODATA = 'Taglia esaurita';
+      var SUB_NODATA = 'Il fornitore non ha ancora dato una data di riassortimento. Scrivici: ti diciamo subito se è riordinabile e in quanto tempo.';
+
+      function leggiJSON(sel, fallback) {
+        var el = sez.querySelector(sel);
+        if (!el) return fallback;
+        try { return JSON.parse(el.textContent); } catch (e) { return fallback; }
+      }
+
+      var varianti = leggiJSON('[data-dz-varianti]', []) || [];
+      var NOME = leggiJSON('[data-dz-prodotto-nome]', '') || '';
+      if (!varianti.length) return;
+
+      /* stessa logica di dz-prodotto.js */
+      var TAGLIE = ['XXS','XS','S','SM','M','MD','ML','L','LG','XL','XXL','XXXL'];
+
+      function ricavaTaglia(titolo) {
+        var parole = String(titolo).replace(/[\/(),]/g, ' ').split(/\s+/).filter(Boolean);
+        for (var i = parole.length - 1; i >= 0; i--) {
+          var w = parole[i].toUpperCase();
+          if (TAGLIE.indexOf(w) !== -1) return w;
+          if (/^(4[4-9]|5[0-9]|6[0-4])$/.test(w)) return w;
+        }
+        return '';
+      }
+
+      function ricavaColore(titolo) {
+        var s = String(titolo);
+        String(NOME).split(/\s+/).forEach(function (w) {
+          if (w.length >= 2) s = s.replace(new RegExp('\\b' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'gi'), ' ');
+        });
+        return s
+          .replace(/\bbike\b/gi, ' ')
+          .replace(/\((?:EU|TW|IT|DE|US|CH)\)/gi, ' ')
+          .replace(/\b[A-Z]{4}\b\s*\/?/g, ' ')
+          .replace(/\b(XXS|XS|S|SM|M|MD|ML|L|LG|XL|XXL|XXXL)\b/g, ' ')
+          .replace(/\b(4[4-9]|5[0-9]|6[0-4])\b/g, ' ')
+          .replace(/\s{2,}/g, ' ')
+          .replace(/^[\s\/\-–]+|[\s\/\-–]+$/g, '')
+          .trim();
+      }
+
+      var colori = [];
+      varianti.forEach(function (v) {
+        var t = v.taglia_vera || ricavaTaglia(v.titolo);
+        var c = v.colore_vero || ricavaColore(v.titolo);
+        if (c === 'Default Title' || c === t) c = '';
+        v._taglia = t;
+        v._colore = c;
+        if (c && colori.indexOf(c) === -1) colori.push(c);
+      });
+
+      function coloreAttuale() {
+        var el = sez.querySelector('[data-dz-colore-nome]');
+        return el ? el.textContent.trim() : '';
+      }
+
+      function varianteDiTaglia(taglia) {
+        var col = colori.length > 1 ? coloreAttuale() : '';
+        for (var i = 0; i < varianti.length; i++) {
+          var v = varianti[i];
+          if (v._taglia !== taglia) continue;
+          if (col && v._colore !== col) continue;
+          return v;
+        }
+        return null;
+      }
+
+      var form = sez.querySelector('#dz-form');
+      var add = sez.querySelector('[data-dz-aggiungi]');
+      var testoAdd = add && add.firstChild ? add.firstChild.textContent : null;
+
+      function aggiornaAvviso() {
+        /* prodotto esaurito in tutte le taglie: ci pensa già il riquadro del tema */
+        if (form && form.hidden) { box.hidden = true; return; }
+
+        var campo = sez.querySelector('[data-dz-variante]');
+        var id = campo ? String(campo.value) : '';
+        var data = date[id];
+        var disponibile = true;
+        for (var i = 0; i < varianti.length; i++) {
+          if (String(varianti[i].id) === id) { disponibile = !!varianti[i].disponibile; break; }
+        }
+
+        if (disponibile) {
+          box.hidden = true;
+        } else {
+          if (elTit) elTit.textContent = data ? 'In arrivo il ' + data : TIT_NODATA;
+          if (elSub) elSub.textContent = data ? SUB_DATA : SUB_NODATA;
+          box.hidden = false;
+        }
+
+        if (add && testoAdd !== null && add.firstChild) {
+          add.firstChild.textContent = disponibile
+            ? testoAdd
+            : (data ? 'In arrivo il ' + data + ' ' : 'Non disponibile ');
+        }
+      }
+
+      function sbloccaTaglie() {
+        var tasti = sez.querySelectorAll('[data-taglia]');
+        for (var i = 0; i < tasti.length; i++) {
+          var b = tasti[i];
+          if (!b.disabled) continue;
+          var v = varianteDiTaglia(b.getAttribute('data-taglia'));
+          var d = v ? date[String(v.id)] : null;
+          b.disabled = false;
+          if (b.className.indexOf('dz-size-avviso') === -1) b.className += ' dz-size-avviso';
+          b.title = d ? 'In arrivo il ' + d : 'Esaurita — scrivici per sapere i tempi';
+        }
+      }
+
+      function ciclo() { sbloccaTaglie(); aggiornaAvviso(); }
+
+      var contenitore = sez.querySelector('[data-dz-taglie]');
+      if (contenitore && window.MutationObserver) {
+        new MutationObserver(function () { ciclo(); }).observe(contenitore, { childList: true });
+      }
+
+      document.addEventListener('click', function () { setTimeout(ciclo, 0); });
+      setTimeout(ciclo, 0);
+      window.addEventListener('load', ciclo);
+    })();
+  </script>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "DZ · Data di arrivo",
+  "tag": "div",
+  "settings": [
+    { "type": "paragraph", "content": "Quando il cliente sceglie una taglia non disponibile, mostra «In arrivo il ...» se la variante ha una data, oppure «Taglia esaurita» se non ce l'ha. La data si imposta sulla singola variante, nel metacampo «Data di arrivo» (custom.data_arrivo), e viene aggiornata ogni giorno dal controllo automatico delle giacenze Cannondale." }
+  ],
+  "presets": [{ "name": "DZ · Data di arrivo" }]
+}
+{% endschema %}

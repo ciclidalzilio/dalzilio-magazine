@@ -4,6 +4,8 @@
  * calcolatore rata, galleria.
  *
  * Non scrive nulla su Shopify: legge i dati già presenti nella pagina.
+ * La disponibilità di ogni variante è quella di Shopify, cioè quella del feed
+ * (sync.ciclidalzilio.com): il tema si limita a mostrarla correttamente.
  */
 (function () {
   "use strict";
@@ -26,6 +28,16 @@
   var TABELLE = leggiJSON("[data-dz-tabelle-taglie]", {});
   var NOME = leggiJSON("[data-dz-prodotto-nome]", "");
   if (!GREZZE.length) return;
+
+  /* Stile per colori esauriti (barrati, come le taglie non disponibili). */
+  (function () {
+    var st = document.createElement("style");
+    st.textContent =
+      ".dz-sw.off{opacity:.45;position:relative}" +
+      ".dz-sw.off span{text-decoration:line-through}" +
+      ".dz-size.off{opacity:.4;text-decoration:line-through;cursor:not-allowed}";
+    document.head.appendChild(st);
+  })();
 
   /* Taglia e colore non sempre esistono come opzioni: nel catalogo importato
      stanno dentro il titolo della variante. Qui li ricaviamo, senza toccare i dati. */
@@ -59,7 +71,12 @@
 
   var VARIANTI = GREZZE.map(function (v) {
     var t = v.taglia_vera || ricavaTaglia(v.titolo);
-    var c = v.colore_vero || ricavaColore(v.titolo);
+    /* Il feed Scott mette l'intera variante (colore + taglia) dentro l'opzione
+       "Color": in quel caso non è un vero colore, lo ricaviamo dal titolo.
+       Altrimenti ogni taglia diventerebbe un "colore" a sé. */
+    var cv = v.colore_vero;
+    if (cv && !v.taglia_vera && ricavaTaglia(cv)) cv = "";
+    var c = cv || ricavaColore(v.titolo);
     if (c === "Default Title" || c === t) c = "";
     return { id: v.id, taglia: t, colore: c, disponibile: v.disponibile, sku: v.sku, ean: v.ean,
              prezzo: v.prezzo, listino: v.listino, prezzo_html: v.prezzo_html, foto: v.foto || "" };
@@ -95,9 +112,27 @@
     });
   }
 
+  function coloreDisponibile(colore) {
+    return taglieDelColore(colore).some(function (v) { return v.disponibile; });
+  }
+
   function aggiorna() {
     var v = varianteCorrente();
-    if (!v) return;
+    var aggiungi = $("[data-dz-aggiungi]");
+    if (aggiungi && aggiungi.firstChild && !aggiungi.dataset.dzTesto) {
+      aggiungi.dataset.dzTesto = aggiungi.firstChild.textContent;
+    }
+
+    /* Nessuna variante corrisponde alla scelta: mai lasciare selezionata
+       un'altra variante di nascosto, blocca l'acquisto. */
+    if (!v) {
+      if (aggiungi) {
+        aggiungi.disabled = true;
+        aggiungi.firstChild.textContent = "Non disponibile ";
+      }
+      disegnaTaglie();
+      return;
+    }
 
     var campo = $("[data-dz-variante]");
     if (campo) campo.value = v.id;
@@ -123,10 +158,9 @@
       }
     }
 
-    var aggiungi = $("[data-dz-aggiungi]");
     if (aggiungi) {
       aggiungi.disabled = !v.disponibile;
-      if (!v.disponibile) aggiungi.firstChild.textContent = "Non disponibile ";
+      aggiungi.firstChild.textContent = v.disponibile ? (aggiungi.dataset.dzTesto || "Aggiungi al carrello · ") : "Non disponibile ";
     }
 
     if (v.foto) {
@@ -153,12 +187,14 @@
     box.innerHTML = colori
       .map(function (c) {
         var attivo = c === stato.colore ? " on" : "";
-        return '<button type="button" class="dz-sw' + attivo + '" data-colore="' + c.replace(/"/g, "&quot;") + '" title="' + c + '"><span>' + c + "</span></button>";
+        var esaurito = coloreDisponibile(c) ? "" : " off";
+        var titolo = c + (esaurito ? " (non disponibile)" : "");
+        return '<button type="button" class="dz-sw' + attivo + esaurito + '" data-colore="' + c.replace(/"/g, "&quot;") + '" title="' + titolo.replace(/"/g, "&quot;") + '"><span>' + c + "</span></button>";
       })
       .join("");
 
     var nome = $("[data-dz-colore-nome]");
-    if (nome) nome.textContent = stato.colore || "";
+    if (nome) nome.textContent = (stato.colore || "") + (stato.colore && !coloreDisponibile(stato.colore) ? " · non disponibile" : "");
   }
 
   /* ---------- taglie ---------- */
@@ -272,8 +308,12 @@
     var sw = e.target.closest("[data-colore]");
     if (sw) {
       stato.colore = sw.dataset.colore;
-      var disp = taglieDelColore(stato.colore).filter(function (v) { return v.disponibile; })[0];
-      if (disp) stato.taglia = disp.taglia;
+      var delColore = taglieDelColore(stato.colore);
+      /* prima taglia disponibile del colore; se il colore è esaurito, la
+         prima taglia (così la scheda mostra "Non disponibile" e non resta
+         selezionata la variante precedente) */
+      var scelta = delColore.filter(function (v) { return v.disponibile; })[0] || delColore[0];
+      if (scelta) stato.taglia = scelta.taglia;
       disegnaColori();
       aggiorna();
       return;

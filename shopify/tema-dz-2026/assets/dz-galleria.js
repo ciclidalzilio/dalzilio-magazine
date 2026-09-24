@@ -10,7 +10,7 @@
  *    subito prima;
  *  - frecce avanti/indietro sulla foto grande, tasti freccia da tastiera
  *    e swipe con il dito su mobile;
- *  - zoom adattivo su mobile: misura il bianco attorno alla bici e
+ *  - zoom adattivo (mobile, iPad e Mac): misura il bianco attorno alla bici e
  *    ingrandisce solo quanto serve (variabile CSS --dz-zoom).
  *
  * Si appoggia a dz-prodotto.js (che gestisce la selezione della variante)
@@ -190,11 +190,12 @@
     if (e.key === "ArrowRight") vai(1);
   });
 
-  /* ---------- zoom adattivo su mobile ----------
+  /* ---------- zoom adattivo ----------
    * Legge la foto in un piccolo canvas, trova il rettangolo che contiene la bici
    * (tutto ciò che non è bianco/quasi bianco) e calcola quanto ingrandire perché
-   * la bici riempia circa il 93% del riquadro, senza mai uscirne.
-   * Limiti: min 1 (mai rimpicciolire), max 1.3. Se la lettura fallisce → 1.
+   * la bici riempia circa il 92% del riquadro (90% su iPad/Mac), senza mai uscirne.
+   * Limiti: min 1 (mai rimpicciolire), max 1.3 su mobile e 1.5 su schermi grandi.
+   * Se la lettura fallisce → 1.
    */
   var boxCache = {};   /* src → {l,t,r,b} in frazione 0..1, oppure null */
 
@@ -231,7 +232,7 @@
   }
 
   function applicaZoom() {
-    if (window.innerWidth > 960) { main.style.removeProperty("--dz-zoom"); return; }
+    var grande = window.innerWidth > 960;
     var src = foto.currentSrc || foto.src;
     if (!src) return;
     misuraBox(src, function (box) {
@@ -242,8 +243,9 @@
       /* dimensione della foto con object-fit: contain */
       var dw = Math.min(cw, ch * box.ar), dh = dw / box.ar;
       var bw = dw * (box.r - box.l), bh = dh * (box.b - box.t);
-      var z = Math.min(0.93 * cw / bw, 0.93 * ch / bh);
-      z = Math.max(1, Math.min(1.3, z));
+      var riempi = grande ? 0.90 : 0.93;
+      var z = Math.min(riempi * cw / bw, riempi * ch / bh);
+      z = Math.max(1, Math.min(grande ? 1.5 : 1.3, z));
       main.style.setProperty("--dz-zoom", z.toFixed(3));
     });
   }
