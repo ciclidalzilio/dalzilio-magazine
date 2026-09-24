@@ -1,7 +1,7 @@
 {%- comment -%}
   Card prodotto — usata in home, collezioni, correlati e ricerca.
   Uso: {% render 'dz-card', product: prodotto %}
-  Niente recensioni inventate; sull'usato mostra la data di pubblicazione.
+  Niente recensioni inventate. La data di pubblicazione dell'usato sta solo nella scheda prodotto.
 {%- endcomment -%}
 {%- liquid
   comment
@@ -91,9 +91,6 @@
   <div class="pbody">
     <span class="brand">{{ product.vendor | replace: 'scott_sports', 'SCOTT' }}</span>
     <h3><a href="{{ p_url }}">{{ product.title }}</a></h3>
-    {%- if e_usato and product.published_at -%}
-      {%- assign data_pub = product.published_at | date: '%-d %B %Y' -%}<span class="pdate">{{ 'card.pubblicato' | t: data: data_pub }}</span>
-    {%- endif -%}
     <div class="foot">
       <span class="price{% if in_sconto %} sale{% endif %}">{{ product.price | money }}</span>
       {%- if in_sconto -%}<span class="old">{{ product.compare_at_price | money }}</span>{%- endif -%}
