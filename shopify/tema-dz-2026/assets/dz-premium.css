@@ -73,7 +73,7 @@
 .dz.dz-premium .dz-price-d{display:flex;gap:16px;align-items:stretch;flex-wrap:nowrap;margin-top:18px}
 .dz.dz-premium .dz-pbar{width:3px;border-radius:3px;background:var(--red);flex:none;align-self:stretch}
 .dz.dz-premium .dz-pin{display:flex;flex-direction:column;gap:6px;padding:2px 0;min-width:0}
-.dz.dz-premium .dz-price b[data-dz-prezzo]{color:var(--red)!important;font-size:2.5rem;font-weight:600;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}
+.dz.dz-premium .dz-price b[data-dz-prezzo]{color:var(--red)!important;font-size:2.7rem;font-weight:820;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
 .dz.dz-premium .dz-psub{display:block;font-size:13px;color:var(--sub);font-variant-numeric:tabular-nums;min-height:0}
 .dz.dz-premium .dz-psub:not(:has(:not([hidden]))){display:none}
 .dz.dz-premium .dz-old{color:var(--sub2);text-decoration:line-through}
@@ -318,7 +318,7 @@ html.dz-js .dz.dz-premium [data-reveal="3"]{transition-delay:.24s}
   body:has(.dz.dz-premium) .dzs-wlist{grid-template-columns:1fr}
 }
 @media (max-width:560px){
-  .dz.dz-premium .dz-price b[data-dz-prezzo]{font-size:2.2rem}
+  .dz.dz-premium .dz-price b[data-dz-prezzo]{font-size:2.15rem}
   .dz.dz-premium .dz-buy{flex-wrap:wrap}
   .dz.dz-premium .dz-qty{width:auto;height:44px;flex:0 0 auto}
   .dz.dz-premium .dz-qty button{width:40px!important}
