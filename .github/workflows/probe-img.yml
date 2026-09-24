@@ -1,0 +1,27 @@
+name: probe-img
+on:
+  push:
+    branches: [claude/install-ui-ux-pro-max-cq88gs]
+    paths: [".github/workflows/probe-img.yml"]
+permissions:
+  contents: write
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: scarica
+        run: |
+          mkdir -p probe/img
+          curl -sL -o probe/img/moterra-sl1.jpg "https://cdn.shopify.com/s/files/1/0873/6885/9912/files/ProdottiDalZilio_8b663589-3871-4e63-bc56-66cc2ee5b1c7.jpg?v=1750321554"
+          curl -sL -o probe/img/moterra-sl2.jpg "https://cdn.shopify.com/s/files/1/0873/6885/9912/files/2_1d5016e3-fc04-450e-9d3d-fdd1ee4902fe.jpg?v=1750320978"
+          curl -sL -o probe/img/addict-rc-20.png "https://cdn.shopify.com/s/files/1/0873/6885/9912/files/4232618097.png?v=1759797451"
+          ls -la probe/img
+      - name: commit
+        run: |
+          git config user.name "probe-bot"; git config user.email "probe@users.noreply.github.com"
+          git add -A probe; git commit -m "probe img: foto correlati" || exit 0
+          git fetch origin claude/install-ui-ux-pro-max-cq88gs
+          git rebase origin/claude/install-ui-ux-pro-max-cq88gs || (git rebase --abort; git reset --soft origin/claude/install-ui-ux-pro-max-cq88gs; git commit -m "probe img: foto correlati")
+          git push -u origin HEAD:claude/install-ui-ux-pro-max-cq88gs
