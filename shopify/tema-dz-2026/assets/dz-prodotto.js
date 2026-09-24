@@ -451,10 +451,32 @@
   var barra = sezione.querySelector("[data-dz-pdpbar]");
   var galleria = sezione.querySelector(".dz-gallery");
   if (barra && galleria && "IntersectionObserver" in window) {
+    /* La barra si aggancia sotto l'intestazione sticky del sito: l'altezza
+       cambia (striscia annunci, mobile), quindi la misuriamo invece di
+       fissarla nel CSS. */
+    var intest = document.querySelector(".dz header, header");
+    var sistemaBarra = function () {
+      if (!intest) return;
+      var giu = intest.getBoundingClientRect().bottom;
+      barra.style.top = Math.max(0, Math.round(giu)) + "px";
+    };
     var io = new IntersectionObserver(function (voci) {
-      barra.classList.toggle("show", !voci[0].isIntersecting);
+      var e = voci[0];
+      /* compare solo quando la galleria è già passata SOPRA (scroll verso il
+         basso), non quando sta ancora sotto la piega (es. apertura premium
+         su mobile, dove all'avvio la galleria non è ancora in vista) */
+      var sopra = !e.isIntersecting && e.boundingClientRect.top < 0;
+      if (sopra) sistemaBarra();
+      barra.classList.toggle("show", sopra);
     }, { rootMargin: "-140px 0px 0px 0px", threshold: 0 });
     io.observe(galleria);
+    var attesaBarra = false;
+    window.addEventListener("scroll", function () {
+      if (attesaBarra || !barra.classList.contains("show")) return;
+      attesaBarra = true;
+      requestAnimationFrame(function () { attesaBarra = false; sistemaBarra(); });
+    }, { passive: true });
+    window.addEventListener("resize", sistemaBarra);
 
     var barraAdd = barra.querySelector("[data-dz-bar-add]");
     if (barraAdd) {
