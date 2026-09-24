@@ -184,12 +184,21 @@
     if (!box || colori.length < 2) return;
     blocco.hidden = false;
 
+    /* scheda premium: accanto al nome, la miniatura della bici in quel colore
+       (foto della variante, ridotta). Senza foto resta il solo nome. */
+    var premium = sezione.classList.contains("dz-premium");
+    var fotoDi = function (c) {
+      var v = VARIANTI.filter(function (x) { return x.colore === c && x.foto; })[0];
+      return v ? v.foto.replace(/([?&])width=\d+/, "$1width=180") : "";
+    };
     box.innerHTML = colori
       .map(function (c) {
         var attivo = c === stato.colore ? " on" : "";
         var esaurito = coloreDisponibile(c) ? "" : " off";
         var titolo = c + (esaurito ? " (non disponibile)" : "");
-        return '<button type="button" class="dz-sw' + attivo + esaurito + '" data-colore="' + c.replace(/"/g, "&quot;") + '" title="' + titolo.replace(/"/g, "&quot;") + '"><span>' + c + "</span></button>";
+        var f = premium ? fotoDi(c) : "";
+        var img = f ? '<img src="' + f + '" alt="" loading="lazy" width="52" height="36">' : "";
+        return '<button type="button" class="dz-sw' + attivo + esaurito + (f ? " has-img" : "") + '" data-colore="' + c.replace(/"/g, "&quot;") + '" title="' + titolo.replace(/"/g, "&quot;") + '">' + img + '<span>' + c + "</span></button>";
       })
       .join("");
 
