@@ -217,9 +217,16 @@
 .dz-rail.dz-drag{scroll-snap-type:none;cursor:grabbing;scroll-behavior:auto}
 .dz-rail img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none}
 .dz-rail::-webkit-scrollbar{display:none}
-.dz-rail figure{flex:0 0 min(78vw,640px);margin:0;scroll-snap-align:start;background:var(--stage);border-radius:24px;overflow:hidden}
-.dz-rail img{width:100%;aspect-ratio:4/3;height:auto;object-fit:contain;display:block;mix-blend-mode:multiply;padding:4%}
-.dz-rail figcaption{padding:12px 18px 16px;font-size:13px;color:var(--sub)}
+/* card 4:3 piena: la foto parte "contain", poi il JS la ingrandisce sulla bici
+   (classe dz-fit); la didascalia e' una pillola di vetro sopra la foto */
+.dz-rail figure{position:relative;flex:0 0 min(78vw,640px);aspect-ratio:4/3;margin:0;scroll-snap-align:start;background:var(--stage);border-radius:24px;overflow:hidden}
+.dz-rail img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block;mix-blend-mode:multiply;padding:0;
+  transform-origin:50% 50%;opacity:0;transition:opacity .6s ease,transform .9s cubic-bezier(.2,.8,.2,1)}
+.dz-rail figure.dz-fit img{opacity:1}
+.dz-rail figcaption{position:absolute;left:14px;bottom:14px;z-index:2;max-width:calc(100% - 28px);padding:7px 13px;border-radius:980px;
+  background:rgba(255,255,255,.74);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  font-size:13px;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 18px -12px rgba(0,0,0,.45)}
 
 /* ---------- sezioni sotto la scheda: stessa quiete ---------- */
 body:has(.dz.dz-premium) .dzs{color:#1d1d1f;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Inter,system-ui,sans-serif}

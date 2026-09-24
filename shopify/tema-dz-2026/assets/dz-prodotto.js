@@ -166,6 +166,13 @@
     if (v.foto) {
       var foto = document.getElementById("dz-foto");
       if (foto && foto.src !== v.foto) foto.src = v.foto;
+      /* la stessa foto, piccola, nella barra fissa: cosi' su mobile il colore
+         scelto si vede anche quando la galleria e' fuori dallo schermo */
+      var barFoto = $("[data-dz-bar-foto]");
+      if (barFoto) {
+        var piccola = v.foto.replace(/([?&])width=\d+/, "$1width=240");
+        if (barFoto.getAttribute("src") !== piccola) barFoto.src = piccola;
+      }
     }
 
     var skuEl = $("[data-dz-sku]");

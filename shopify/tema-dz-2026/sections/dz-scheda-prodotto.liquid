@@ -48,6 +48,10 @@
   {%- comment -%} barra che resta fissa scorrendo: modello, prezzo, aggiungi {%- endcomment -%}
   <div class="dz-pdpbar" data-dz-pdpbar>
     <div class="dz-pdpbin">
+      {%- comment -%} foto della variante scelta: su mobile, scegliendo il colore in fondo, si vede senza risalire {%- endcomment -%}
+      {%- if p.featured_media -%}
+      <a class="dz-bar-foto" href="#dz-acquisto" aria-label="Torna alla foto"><img data-dz-bar-foto src="{{ p.featured_media | image_url: width: 240 }}" alt="" width="72" height="54"></a>
+      {%- endif -%}
       <span class="nm"><b>{{ p.title }}</b><span><span data-dz-bar-prezzo>{{ p.price | money }}</span>{% if e_bici %} · da <span data-dz-bar-rata></span>/mese{% endif %}</span></span>
       <button type="button" class="dz-btn dz-primary" data-dz-bar-add>Aggiungi al carrello</button>
     </div>
@@ -496,9 +500,35 @@
     <div class="dz-rail" data-reveal="2">
       {%- for media in p.media limit: 14 -%}
         {%- if media.media_type != 'image' -%}{%- continue -%}{%- endif -%}
+        {%- liquid
+          comment
+            Didascalia dal testo alternativo della foto, ripulito: il feed
+            scrive "Cannondale SuperSix EVO - sterzo Delta" o "Cannondale
+            SuperSix EVO 1 Platinum". Teniamo solo la parte che descrive la
+            foto ("Sterzo Delta", "Platinum"). Se non resta nulla, la
+            didascalia la mette il JavaScript (bici intera o dettaglio).
+          endcomment
+          assign cap = media.alt | strip
+          assign cap_d = cap | downcase
+          assign tit_d = p.title | downcase
+          if cap contains ' - '
+            assign cap = cap | split: ' - ' | last | strip
+          elsif cap contains ' – '
+            assign cap = cap | split: ' – ' | last | strip
+          elsif cap_d == tit_d
+            assign cap = ''
+          elsif cap_d contains tit_d
+            assign cap = cap_d | remove: tit_d | strip
+          endif
+          if cap != blank
+            assign cap_1 = cap | slice: 0 | upcase
+            assign cap_r = cap | slice: 1, 300
+            assign cap = cap_1 | append: cap_r
+          endif
+        -%}
         <figure>
           <img src="{{ media | image_url: width: 1200 }}" alt="{{ media.alt | default: p.title | escape }}" loading="lazy" width="1200" height="900">
-          {%- if media.alt != blank and media.alt != p.title -%}<figcaption>{{ media.alt }}</figcaption>{%- endif -%}
+          {%- if cap != blank -%}<figcaption>{{ cap }}</figcaption>{%- endif -%}
         </figure>
       {%- endfor -%}
     </div>
@@ -630,14 +660,13 @@
        rettangolo che contiene la bici (tutto ciò che non è bianco) e la
        ingrandisce finché riempie la scena, tagliando il bianco attorno.
        Se la lettura fallisce (es. CORS) la foto resta com'è. Nessun dato cambia. */
-    var scena = document.querySelector('.dz-premium .dz-ph-stage');
-    var img = scena ? scena.querySelector('img') : null;
-    if (!scena || !img) return;
-    var box = null, mostrato = false;
-    function mostra(){ if (!mostrato) { mostrato = true; scena.classList.add('dz-fit'); } }
-    function misura(cb){
-      var src = img.currentSrc || img.src;
+    /* Misura condivisa (apertura e galleria): legge la foto in un piccolo
+       canvas e restituisce il rettangolo che contiene la bici, in frazioni
+       0..1, più il rapporto larghezza/altezza. null se non riesce. */
+    var cacheBox = {};
+    window.dzMisuraBox = function(src, cb){
       if (!src) { cb(null); return; }
+      if (src in cacheBox) { cb(cacheBox[src]); return; }
       var s = new Image(); s.crossOrigin = 'anonymous';
       s.onload = function(){
         try {
@@ -652,12 +681,22 @@
               if (x < l) l = x; if (x > r) r = x; if (y < t) t = y; if (y > b) b = y;
             }
           }
-          if (r < 0 || (r - l) < W * 0.2) { cb(null); return; }
-          cb({ l: l / W, t: t / H, r: (r + 1) / W, b: (b + 1) / H, ar: s.naturalWidth / s.naturalHeight });
-        } catch (e) { cb(null); }
+          var box = null;
+          if (r >= 0 && (r - l) >= W * 0.2) box = { l: l / W, t: t / H, r: (r + 1) / W, b: (b + 1) / H, ar: s.naturalWidth / s.naturalHeight };
+          cacheBox[src] = box; cb(box);
+        } catch (e) { cacheBox[src] = null; cb(null); }
       };
-      s.onerror = function(){ cb(null); };
-      s.src = src.replace(/([?&])width=\d+/, '$1width=320');
+      s.onerror = function(){ cacheBox[src] = null; cb(null); };
+      s.src = src;
+    };
+    var scena = document.querySelector('.dz-premium .dz-ph-stage');
+    var img = scena ? scena.querySelector('img') : null;
+    if (!scena || !img) return;
+    var box = null, mostrato = false;
+    function mostra(){ if (!mostrato) { mostrato = true; scena.classList.add('dz-fit'); } }
+    function misura(cb){
+      var src = img.currentSrc || img.src;
+      window.dzMisuraBox(src ? src.replace(/([?&])width=\d+/, '$1width=320') : '', cb);
     }
     function applica(){
       if (!box) { mostra(); return; }
@@ -681,6 +720,41 @@
     setTimeout(mostra, 2500);
     var rz;
     window.addEventListener('resize', function(){ clearTimeout(rz); rz = setTimeout(applica, 120); });
+  })();
+  (function(){
+    /* galleria a nastro: ogni foto viene ingrandita sulla bici (via il bianco
+       attorno) e, se il feed non dà una didascalia, ne mette una sensata:
+       bici intera o dettaglio. */
+    var figs = document.querySelectorAll('.dz-premium .dz-rail figure');
+    if (!figs.length || !window.dzMisuraBox) return;
+    Array.prototype.forEach.call(figs, function(fig){
+      var img = fig.querySelector('img');
+      if (!img) return;
+      var src = img.getAttribute('src') || '';
+      window.dzMisuraBox(src.replace(/([?&])width=\d+/, '$1width=240'), function(box){
+        if (!box) { fig.classList.add('dz-fit'); return; }
+        var bw = box.r - box.l, bh = box.b - box.t;
+        function applica(){
+          var W = fig.clientWidth, H = fig.clientHeight;
+          if (!W || !H) return;
+          var dw = Math.min(W, H * box.ar), dh = dw / box.ar;       /* foto con object-fit: contain */
+          var s = Math.min(0.88 * W / (bw * dw), 0.8 * H / (bh * dh));   /* lascia aria alla didascalia in basso */
+          s = Math.max(1, Math.min(2.4, s));
+          var cx = ((box.l + box.r) / 2 - 0.5) * dw, cy = ((box.t + box.b) / 2 - 0.5) * dh;
+          img.style.transform = 'translate(' + (-cx * s).toFixed(1) + 'px,' + (-cy * s).toFixed(1) + 'px) scale(' + s.toFixed(3) + ')';
+          fig.classList.add('dz-fit');
+        }
+        applica();
+        window.addEventListener('resize', applica);
+        if (!fig.querySelector('figcaption')) {
+          var pieno = bw * bh > 0.85;                                /* niente bianco attorno: e' un dettaglio */
+          var largo = (bw * box.ar) / bh;                            /* proporzioni del soggetto */
+          var cap = document.createElement('figcaption');
+          cap.textContent = (!pieno && largo > 1.25 && largo < 2.4) ? 'Vista laterale' : 'Dettaglio';
+          fig.appendChild(cap);
+        }
+      });
+    });
   })();
   (function(){
     /* galleria a nastro: frecce, trascinamento col mouse, tasti freccia */
