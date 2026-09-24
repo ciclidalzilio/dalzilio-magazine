@@ -1,50 +1,28 @@
 {%- comment -%}
-  Home DZ 2026 — apertura scenografica (DAL ZILIO), marchi, categorie, ultimi arrivi (dalla
+  Home DZ 2026 — apertura a tutto schermo, marchi, categorie, ultimi arrivi (dalla
   collezione new-arrivals), usato reale, permuta (solo verso il nuovo), rate.
   Tutto legge dalle collezioni esistenti: nessun dato inventato.
 {%- endcomment -%}
 
-<section class="dzh" data-dzh>
+<section class="dzh">
   {%- comment -%}
-    Apertura scenografica (stili in dz-apertura.css). La parola DAL ZILIO e'
-    scritta due volte con lo stesso ciclo: una copia fa da maschera sopra la
-    foto, l'altra porta il riflesso. La I di ZILIO (data-dzh-o) e' il punto in
-    cui si "entra" scorrendo. Titolo h1, pulsanti e numeri restano nel codice
-    della pagina anche prima di comparire.
+    Apertura: la foto del gravel a tutto schermo, titolo, pulsanti e numeri
+    (stili in dz-apertura.css). Nessuna animazione.
+    Foto: hero-corsa-nitida.jpg nei File del negozio, 3200px ricampionata e
+    resa piu' nitida dall'originale 1600px; il CDN la serve nella misura adatta
+    allo schermo. Se non si carica, torna la versione del tema.
   {%- endcomment -%}
   {%- assign anno_c = 'now' | date: '%Y' -%}
-  {%- case request.locale.iso_code -%}
-    {%- when 'en' -%}{%- assign scorri = 'Scroll' -%}
-    {%- when 'de' -%}{%- assign scorri = 'Scrollen' -%}
-    {%- when 'fr' -%}{%- assign scorri = 'Défiler' -%}
-    {%- else -%}{%- assign scorri = 'Scorri' -%}
-  {%- endcase -%}
-  {%- capture parola -%}
-    <span class="dzh-parola">
-      {%- assign righe = 'DAL,ZILIO' | split: ',' -%}
-      {%- assign n = 0 -%}
-      {%- for riga in righe -%}
-        {%- assign lettere = riga | split: '' -%}
-        <span class="dzh-riga">
-          {%- for x in lettere -%}
-            <span class="dzh-l" style="--d:{{ n }}"{% if forloop.parentloop.index == 2 and forloop.index == 2 %} data-dzh-o{% endif %}>{{ x }}</span>
-            {%- assign n = n | plus: 1 -%}
-          {%- endfor -%}
-        </span>{% unless forloop.last %} {% endunless %}
-      {%- endfor -%}
-    </span>
-  {%- endcapture -%}
+  {%- assign foto = 'hero-corsa-nitida.jpg' | file_url -%}
   <div class="dzh-stage">
     <div class="dzh-foto" aria-hidden="true">
-      <img src="{{ 'hero-corsa.jpg' | asset_url }}" alt="" width="1600" height="685" fetchpriority="high">
+      <img src="{{ foto }}&width=2400"
+           srcset="{{ foto }}&width=1200 1200w, {{ foto }}&width=1800 1800w, {{ foto }}&width=2400 2400w, {{ foto }} 3200w"
+           sizes="(max-width: 760px) 240vw, 130vw"
+           alt="" width="3200" height="1370" fetchpriority="high"
+           onerror="if(!this.dataset.r){this.dataset.r=1;this.removeAttribute('srcset');this.src='{{ 'hero-corsa.jpg' | asset_url }}'}">
     </div>
     <div class="dzh-velo" aria-hidden="true"></div>
-    <div class="dzh-maschera" aria-hidden="true">{{ parola }}</div>
-    <div class="dzh-luce" aria-hidden="true">{{ parola | remove: ' data-dzh-o' }}</div>
-    <div class="dzh-intro">
-      <p class="dzh-k" aria-hidden="true">{{ 'home.kicker' | t: anno: anno_c }}</p>
-      <button class="dzh-giu-cue" type="button" data-dzh-cue>{{ scorri }}<i aria-hidden="true"></i></button>
-    </div>
     <div class="wrap dzh-testo">
       <div class="dzh-su">
         <p class="dzh-k">{{ 'home.kicker' | t: anno: anno_c }}</p>
@@ -66,73 +44,18 @@
     </div>
   </div>
   <script>
+    /* menu scuro finche' sotto di lui c'e' l'apertura o la fascia nera dei marchi */
     (function(){
-      var sec = document.querySelector('[data-dzh]'); if (!sec) return;
-      var st = sec.querySelector('.dzh-stage'), o = sec.querySelector('[data-dzh-o]');
-      var fascia = document.querySelector('.brands-dark'), testa = document.querySelector('.dz header');
-      var fermo = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      /* menu scuro finche' sotto di lui c'e' l'apertura o la fascia nera dei marchi */
-      function buio(){
-        var lim = testa ? testa.getBoundingClientRect().bottom : 66;
-        var fine = (fascia || sec).getBoundingClientRect().bottom;
-        document.body.classList.toggle('dz-buio', fine > lim);
-      }
-      if (fermo) { buio(); addEventListener('scroll', buio, { passive: true }); return; }
-      sec.classList.add('dzh-js');
-
-      function cl(t){ return t < 0 ? 0 : t > 1 ? 1 : t; }
-      function morbido(t){ return t * t * (3 - 2 * t); }
-      function v(k, x){ st.style.setProperty(k, x); }
-
-      /* punto d'ingresso: il centro della I, misurato sulla parola senza zoom */
-      function origine(){
-        if (!o) return;
-        v('--ox', (o.offsetLeft + o.offsetWidth / 2) + 'px');
-        v('--oy', (o.offsetTop + o.offsetHeight * 0.5) + 'px');
-      }
-      function corsa(){ return Math.max(1, sec.offsetHeight - st.offsetHeight); }
-
-      var S = 40;
-      function disegna(){
-        var p = cl(-sec.getBoundingClientRect().top / corsa());
-        var t = morbido(cl(p / 0.62));
-        v('--s', Math.exp(Math.log(S) * t).toFixed(4));
-        v('--m', (1 - cl((p - 0.4) / 0.2)).toFixed(3));
-        v('--i', (1 - cl(p / 0.14)).toFixed(3));
-        v('--z', (1.22 - 0.22 * t).toFixed(4));
-        var c = morbido(cl((p - 0.48) / 0.3)), c2 = morbido(cl((p - 0.6) / 0.3));
-        v('--c', c.toFixed(3)); v('--c2', c2.toFixed(3));
-        sec.classList.toggle('dzh-pronto', c > 0.6);
-        buio();
-      }
+      var fascia = document.querySelector('.brands-dark') || document.querySelector('.dzh');
+      var testa = document.querySelector('.dz header'); if (!fascia) return;
       var att = false;
-      function chiedi(){ if (!att) { att = true; requestAnimationFrame(function(){ att = false; disegna(); }); } }
-      addEventListener('scroll', chiedi, { passive: true });
-      addEventListener('resize', function(){ origine(); chiedi(); });
-      origine(); disegna();
-      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ origine(); disegna(); });
-      setTimeout(origine, 1500);
-
-      /* "Scorri" porta alla fine della sequenza; idem se si arriva ai pulsanti con la tastiera */
-      function allaFine(){ scrollTo({ top: sec.getBoundingClientRect().top + scrollY + corsa(), behavior: 'smooth' }); }
-      var cue = sec.querySelector('[data-dzh-cue]'); if (cue) cue.addEventListener('click', allaFine);
-      sec.querySelector('.dzh-testo').addEventListener('focusin', function(){ if (!sec.classList.contains('dzh-pronto')) allaFine(); });
-
-      /* la foto segue appena il mouse */
-      if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
-        var tx = 0, ty = 0, cx = 0, cy = 0, gira = false;
-        st.addEventListener('mousemove', function(e){
-          var r = st.getBoundingClientRect();
-          tx = ((e.clientX - r.left) / r.width - 0.5) * -22; ty = ((e.clientY - r.top) / r.height - 0.5) * -14;
-          if (!gira) { gira = true; requestAnimationFrame(passo); }
-        });
-        function passo(){
-          cx += (tx - cx) * 0.08; cy += (ty - cy) * 0.08;
-          v('--px', cx.toFixed(2) + 'px'); v('--py', cy.toFixed(2) + 'px');
-          if (Math.abs(tx - cx) > 0.1 || Math.abs(ty - cy) > 0.1) requestAnimationFrame(passo); else gira = false;
-        }
+      function buio(){
+        att = false;
+        var lim = testa ? testa.getBoundingClientRect().bottom : 66;
+        document.body.classList.toggle('dz-buio', fascia.getBoundingClientRect().bottom > lim);
       }
+      addEventListener('scroll', function(){ if (!att) { att = true; requestAnimationFrame(buio); } }, { passive: true });
+      buio();
     })();
   </script>
 </section>
