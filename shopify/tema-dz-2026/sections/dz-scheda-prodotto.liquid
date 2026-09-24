@@ -539,30 +539,70 @@
 {%- if premium -%}{{ 'dz-premium.css' | asset_url | stylesheet_tag }}
 <script>
   (function(){
-    /* dissolvenze allo scorrimento: scheda, galleria a nastro e sezioni sotto.
-       Ogni gruppo entra a scaglioni; finita l'animazione l'elemento torna
-       "normale" (cosi' i passaggi del mouse restano rapidi). */
-    if (!('IntersectionObserver' in window)) return;
-    document.documentElement.classList.add('dz-js');
-    var gruppi = ['.dz-premium .dz-gallery', '.dz-premium .dz-info',
-      '.dzs-figs .dzs-fig', '.dzs-auto .dzs-featimg', '.dzs-auto .dzs-feattxt',
-      '.dzs-why .dzs-why-grid > div:first-child', '.dzs-why .dzs-witem', '.dzs-why .dzs-wfoot',
-      '.dzs-rel .dzs-relhead', '.dzs-rel .prod',
-      '.dzs-feat.dzs-rev .dzs-featimg', '.dzs-feat.dzs-rev .dzs-feattxt',
-      '.dz-faq .head', '.dz-faq details'];
-    gruppi.forEach(function(sel){
-      document.querySelectorAll(sel).forEach(function(el, i){
-        if (el.hasAttribute('data-reveal')) return;
-        el.setAttribute('data-reveal', '1');
-        el.style.animationDelay = (Math.min(i, 8) * 70) + 'ms';
+    /* Scorrimento "alla Apple": apertura, scheda, galleria e sezioni sotto
+       sfumano e scivolano in base alla posizione dello scroll (avanti e
+       indietro), non una volta sola. Un solo listener, aggiornato a frame.
+       Parte a DOM pronto: le sezioni sotto la scheda vengono dopo nel DOM. */
+    function avvia(){
+      document.documentElement.classList.add('dz-js');
+      var riduci = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var gruppi = ['.dz-premium .dz-gallery', '.dz-premium .dz-info', '.dz-premium .dz-chap-head', '.dz-premium .dz-rail',
+        '.dzs-figs .dzs-fig', '.dzs-auto .dzs-featimg', '.dzs-auto .dzs-feattxt',
+        '.dzs-why .dzs-why-grid > div:first-child', '.dzs-why .dzs-witem', '.dzs-why .dzs-wfoot',
+        '.dzs-rel .dzs-relhead', '.dzs-rel .prod',
+        '.dzs-feat.dzs-rev .dzs-featimg', '.dzs-feat.dzs-rev .dzs-feattxt',
+        '.dz-faq .head', '.dz-faq details'];
+      var voci = [];
+      gruppi.forEach(function(sel){
+        document.querySelectorAll(sel).forEach(function(el, i){
+          if (el.dataset.dzRev) return;
+          el.dataset.dzRev = '1';
+          voci.push({ el: el, off: Math.min(i, 8) * 0.07 });
+        });
       });
-    });
-    var els = document.querySelectorAll('[data-reveal]');
-    var fine = function(e){ var el = e.currentTarget; el.classList.remove('in'); el.removeAttribute('data-reveal'); el.style.animationDelay = ''; el.removeEventListener('animationend', fine); };
-    var io = new IntersectionObserver(function(en){ en.forEach(function(e){ if (e.isIntersecting) { e.target.addEventListener('animationend', fine); e.target.classList.add('in'); io.unobserve(e.target); } }); }, { rootMargin: '0px 0px -8% 0px', threshold: 0.06 });
-    els.forEach(function(el){ io.observe(el); });
-    /* elementi gia' in vista al caricamento: partono subito */
-    setTimeout(function(){ els.forEach(function(el){ if (el.hasAttribute('data-reveal') && el.getBoundingClientRect().top < window.innerHeight) { el.addEventListener('animationend', fine); el.classList.add('in'); io.unobserve(el); } }); }, 120);
+      var hero = document.querySelector('.dz-premium .dz-ph');
+      var testi = hero ? Array.prototype.slice.call(hero.querySelectorAll('.dz-ph-title,.dz-ph-claim,.dz-ph-claim2,.dz-ph-cta')) : [];
+      var scena = hero ? hero.querySelector('.dz-ph-stage') : null;
+      var heroPronto = false;
+      if (hero) {
+        /* finita l'entrata (animazione CSS), lo scroll prende il comando */
+        var ultimo = scena || testi[testi.length - 1];
+        var sblocca = function(){ if (heroPronto) return; heroPronto = true; hero.classList.add('dz-set'); disegna(); };
+        if (ultimo) ultimo.addEventListener('animationend', sblocca);
+        setTimeout(sblocca, riduci ? 0 : 2000);
+      }
+      function clamp(x){ return x < 0 ? 0 : x > 1 ? 1 : x; }
+      function disegna(){
+        var vh = window.innerHeight || 800;
+        for (var i = 0; i < voci.length; i++) {
+          var v = voci[i], r = v.el.getBoundingClientRect();
+          if (riduci || r.bottom < 0) { v.el.style.opacity = ''; v.el.style.transform = ''; continue; }
+          var p = clamp((vh * 0.94 - r.top) / (vh * 0.34) - v.off);
+          if (p >= 1) { v.el.style.opacity = ''; v.el.style.transform = ''; }
+          else { v.el.style.opacity = p.toFixed(3); v.el.style.transform = 'translateY(' + ((1 - p) * 44).toFixed(1) + 'px)'; }
+        }
+        if (hero && heroPronto && !riduci) {
+          var h = hero.offsetHeight || 1, y = window.scrollY || window.pageYOffset || 0;
+          var f = clamp(y / (h * 0.7));
+          for (var k = 0; k < testi.length; k++) {
+            testi[k].style.opacity = (1 - f).toFixed(3);
+            testi[k].style.transform = 'translateY(' + (-f * 48).toFixed(1) + 'px)';
+          }
+          if (scena) {
+            scena.style.transform = 'translateY(' + (y * 0.16).toFixed(1) + 'px) scale(' + (1 + f * 0.05).toFixed(4) + ')';
+            scena.style.opacity = (1 - f * 0.45).toFixed(3);
+          }
+        }
+      }
+      var attesa = false;
+      function suScroll(){ if (attesa) return; attesa = true; requestAnimationFrame(function(){ attesa = false; disegna(); }); }
+      window.addEventListener('scroll', suScroll, { passive: true });
+      window.addEventListener('resize', suScroll);
+      window.addEventListener('load', disegna);
+      disegna(); setTimeout(disegna, 150);
+    }
+    if (!('requestAnimationFrame' in window)) return;
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', avvia); else avvia();
   })();
   (function(){
     /* galleria a nastro: frecce, trascinamento col mouse, tasti freccia */

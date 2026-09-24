@@ -177,6 +177,79 @@
     disegnaTaglie();
   }
 
+
+  /* ---------- goccia colore ---------- */
+  var MAPPA_COLORI = [
+    [/\b(white|bianco|bianca|pearl|perla|ivory|avorio|chalk|snow|cloud|arctic)\b/i, "#f1f1ef"],
+    [/\b(black|nero|nera|carbon|carbonio|jet|onyx|midnight|raw|stealth|shadow)\b/i, "#1c1c1e"],
+    [/\b(grey|gray|grigio|grigia|graphite|grafite|slate|gunmetal|smoke|tungsten|quarry|stone|shark|antracite|anthracite|titanium|titanio|steel|acciaio|iron|concrete)\b/i, "#8b8e94"],
+    [/\b(silver|argento|chrome|cromo|cromato|alluminio|aluminium|aluminum|platinum|platino|mercury|metal)\b/i, "#c8cbd1"],
+    [/\b(red|rosso|rossa|crimson|scarlet|ruby|cherry|viper|racing|magma|lava|flame)\b/i, "#d1202b"],
+    [/\b(coral|corallo|salmon|salmone|peach|pesca)\b/i, "#ff6f61"],
+    [/\b(orange|arancio|arancione|fire|mango|tangerine|amber|ambra)\b/i, "#f26a1b"],
+    [/\b(yellow|giallo|gialla|lemon|limone|sun|gold|oro|mustard|senape|citrus)\b/i, "#f2c230"],
+    [/\b(green|verde|olive|oliva|lime|mint|menta|forest|moss|muschio|khaki|sage|salvia|jungle|emerald|smeraldo)\b/i, "#3a8f5c"],
+    [/\b(teal|petrol|petrolio|turquoise|turchese|aqua|cyan|ciano|lagoon|laguna)\b/i, "#1f8f95"],
+    [/\b(blue|blu|navy|cobalt|cobalto|azure|azzurro|azzurra|royal|sky|denim|indigo|ocean|oceano|marine|sapphire|zaffiro)\b/i, "#2554c7"],
+    [/\b(purple|viola|violet|lilac|lilla|lavender|lavanda|plum|prugna|magenta|fuchsia|fucsia|grape)\b/i, "#7a3fbf"],
+    [/\b(pink|rosa|rose|blush|flamingo)\b/i, "#e8679a"],
+    [/\b(brown|marrone|bronze|bronzo|copper|rame|chocolate|cioccolato|coffee|caffe|mocha|rust|ruggine|terracotta|cognac)\b/i, "#8a5a3c"],
+    [/\b(beige|sand|sabbia|cream|crema|tan|desert|deserto|dune|linen|lino|bone|oat)\b/i, "#d8c8a8"]
+  ];
+  function coloreDaNome(nome) {
+    var trovati = [];
+    String(nome).split(/\s*(?:\/|,|\+|&| e | and |-)\s*/i).forEach(function (parte) {
+      for (var i = 0; i < MAPPA_COLORI.length; i++) {
+        if (MAPPA_COLORI[i][0].test(parte)) { trovati.push(MAPPA_COLORI[i][1]); break; }
+      }
+    });
+    if (!trovati.length) {
+      for (var k = 0; k < MAPPA_COLORI.length; k++) {
+        if (MAPPA_COLORI[k][0].test(nome)) { trovati.push(MAPPA_COLORI[k][1]); break; }
+      }
+    }
+    return trovati;
+  }
+  function stileGoccia(nome) {
+    var t = coloreDaNome(nome);
+    if (!t.length) return "";
+    return ' style="--c:' + t[0] + (t[1] ? ";--c2:" + t[1] : "") + '"';
+  }
+  var fotoColoreCache = {};
+  function coloriDallaFoto(box) {
+    Array.prototype.forEach.call(box.querySelectorAll(".dz-drop"), function (el) {
+      if (el.getAttribute("style")) return;
+      var nome = el.getAttribute("data-dz-drop");
+      var v = VARIANTI.filter(function (x) { return x.colore === nome && x.foto; })[0];
+      if (!v) return;
+      var src = v.foto.replace(/([?&])width=\d+/, "$1width=120");
+      if (fotoColoreCache[src]) { el.style.setProperty("--c", fotoColoreCache[src]); return; }
+      var img = new Image();
+      img.crossOrigin = "anonymous";
+      img.onload = function () {
+        try {
+          var W = 60, H = Math.max(1, Math.round(W * img.naturalHeight / img.naturalWidth));
+          var cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+          var ctx = cv.getContext("2d", { willReadFrequently: true });
+          ctx.drawImage(img, 0, 0, W, H);
+          var d = ctx.getImageData(0, 0, W, H).data, r = 0, g = 0, b = 0, n = 0, r2 = 0, g2 = 0, b2 = 0, n2 = 0;
+          for (var i = 0; i < d.length; i += 4) {
+            if (d[i + 3] < 40) continue;
+            var mx = Math.max(d[i], d[i + 1], d[i + 2]), mn = Math.min(d[i], d[i + 1], d[i + 2]);
+            if (mx > 235 && mn > 225) continue;              /* sfondo bianco */
+            if (mx - mn > 28 && mx > 60) { r += d[i]; g += d[i + 1]; b += d[i + 2]; n++; }   /* pixel colorati */
+            else { r2 += d[i]; g2 += d[i + 1]; b2 += d[i + 2]; n2++; }                        /* neri, grigi, argento */
+          }
+          var col;
+          if (n > 25 && n >= n2 * 0.08) col = "rgb(" + Math.round(r / n) + "," + Math.round(g / n) + "," + Math.round(b / n) + ")";
+          else if (n2) col = "rgb(" + Math.round(r2 / n2) + "," + Math.round(g2 / n2) + "," + Math.round(b2 / n2) + ")";
+          if (col) { fotoColoreCache[src] = col; el.style.setProperty("--c", col); }
+        } catch (e) { /* CORS o canvas non disponibile: resta la goccia neutra */ }
+      };
+      img.src = src;
+    });
+  }
+
   /* ---------- colori ---------- */
   function disegnaColori() {
     var box = $("[data-dz-colori]");
@@ -184,23 +257,21 @@
     if (!box || colori.length < 2) return;
     blocco.hidden = false;
 
-    /* scheda premium: accanto al nome, la miniatura della bici in quel colore
-       (foto della variante, ridotta). Senza foto resta il solo nome. */
+    /* scheda premium: accanto al nome una goccia di vetro del colore.
+       Il colore si ricava dal nome (italiano/inglese, anche bicolore
+       "Cobalt Blue / Living Coral"); se il nome non dice nulla, viene
+       letto dalla foto della variante. Non tocca i dati. */
     var premium = sezione.classList.contains("dz-premium");
-    var fotoDi = function (c) {
-      var v = VARIANTI.filter(function (x) { return x.colore === c && x.foto; })[0];
-      return v ? v.foto.replace(/([?&])width=\d+/, "$1width=180") : "";
-    };
     box.innerHTML = colori
       .map(function (c) {
         var attivo = c === stato.colore ? " on" : "";
         var esaurito = coloreDisponibile(c) ? "" : " off";
         var titolo = c + (esaurito ? " (non disponibile)" : "");
-        var f = premium ? fotoDi(c) : "";
-        var img = f ? '<img src="' + f + '" alt="" loading="lazy" width="52" height="36">' : "";
-        return '<button type="button" class="dz-sw' + attivo + esaurito + (f ? " has-img" : "") + '" data-colore="' + c.replace(/"/g, "&quot;") + '" title="' + titolo.replace(/"/g, "&quot;") + '">' + img + '<span>' + c + "</span></button>";
+        var goccia = premium ? '<i class="dz-drop" data-dz-drop="' + c.replace(/"/g, "&quot;") + '"' + stileGoccia(c) + '></i>' : "";
+        return '<button type="button" class="dz-sw' + attivo + esaurito + (premium ? " has-drop" : "") + '" data-colore="' + c.replace(/"/g, "&quot;") + '" title="' + titolo.replace(/"/g, "&quot;") + '">' + goccia + '<span>' + c + "</span></button>";
       })
       .join("");
+    if (premium) coloriDallaFoto(box);
 
     var nome = $("[data-dz-colore-nome]");
     if (nome) nome.textContent = (stato.colore || "") + (stato.colore && !coloreDisponibile(stato.colore) ? " · non disponibile" : "");
