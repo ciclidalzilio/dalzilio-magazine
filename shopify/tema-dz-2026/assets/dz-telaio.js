@@ -97,6 +97,23 @@
       }
     }
 
+    // i pezzi del kit scelto compaiono sotto il telaio
+    var box = $("[data-dzt-vis-kit]");
+    if (box) {
+      var imgs = kit && kit !== "su-misura" && kit.imgs ? kit.imgs.filter(Boolean) : [];
+      var chiave = imgs.join("|");
+      if (box.getAttribute("data-k") !== chiave) {
+        box.setAttribute("data-k", chiave);
+        box.innerHTML = "";
+        imgs.slice(0, 5).forEach(function (u, i) {
+          var s = document.createElement("span"); s.style.setProperty("--i", i);
+          var im = document.createElement("img"); im.src = u; im.alt = ""; im.loading = "lazy";
+          s.appendChild(im); box.appendChild(s);
+        });
+        box.hidden = !imgs.length;
+      }
+    }
+
     // testi del riepilogo
     var tTelaio = v ? v.t : "—";
     var tKit = "Solo telaio", pKit = "Incluso", cKit = 0;
@@ -167,7 +184,7 @@
       kit = D.kit.filter(function (k) { return String(k.i) === r.value; })[0] || null;
       if (kit) {
         var sel = $("[data-dzt-kit-var]", r.closest(".dzt-kit"));
-        var id = sel ? +sel.value : kit.scelta;
+        var id = sel ? +sel.value : kit.scelta;   // numero per i kit prodotto, "c0"... per i kit composti
         kitVar = kit.varianti.filter(function (x) { return x.id === id; })[0] || kit.varianti[0];
       }
     }
@@ -247,7 +264,15 @@
 
     var items = [{ id: v.id, quantity: 1, properties: props }];
     if (kit && kit !== "su-misura" && kitVar) {
-      items.push({ id: kitVar.id, quantity: 1, properties: { "Montato su": D.titolo + " · " + v.t, "_Montaggio n.": build } });
+      var suDi = { "Montato su": D.titolo + " · " + v.t, "_Montaggio n.": build };
+      if (kit.componenti && kit.componenti.length) {
+        // kit composto dal catalogo: nel carrello vanno i componenti veri, segnati col nome del kit
+        kit.componenti.forEach(function (cid) {
+          items.push({ id: cid, quantity: 1, properties: { "Kit": kit.titolo, "Montato su": suDi["Montato su"], "_Montaggio n.": build } });
+        });
+      } else {
+        items.push({ id: kitVar.id, quantity: 1, properties: suDi });
+      }
     }
 
     add.disabled = true; add.textContent = "Aggiungo…"; err.hidden = true;

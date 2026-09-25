@@ -17,8 +17,15 @@
     - "strada" oppure "mtb": il kit compare solo sui telai di quel tipo;
     - "per:parola" (es. "per:madone"): compare solo sui telai che hanno
       quella parola nel titolo. Senza tag compare su tutti i telai.
-  Se la collezione e' vuota o non esiste, al posto dei kit c'e' il montaggio
-  su misura via WhatsApp.
+  KIT COMPOSTI DAL CATALOGO (impostazione "Kit composti" della sezione): un
+  kit si puo' anche definire elencando prodotti che il negozio ha gia', una
+  riga per kit:
+    Nome del kit | maniglia[:variante], maniglia[:variante], ... | strada o mtb
+  ":variante" sceglie la variante che contiene quella parola (es. ":front",
+  ":rear" per le due ruote); l'ultimo campo e' facoltativo. Prezzo = somma dei
+  componenti, foto = composizione delle loro immagini, nel carrello vanno i
+  componenti veri.
+  Se non c'e' nessun kit, al posto dei kit c'e' il montaggio su misura via WhatsApp.
 
   Si usa assegnando al prodotto il modello "telaio" (templates/product.telaio.json).
   I dati strutturati per Google restano quelli di dz-schema.liquid nell'head.
@@ -108,6 +115,34 @@
       endif
     endfor
   endif
+
+  comment
+    Kit composti dal catalogo: righe valide per questo tipo di telaio.
+  endcomment
+  assign kc_righe = section.settings.kit_composti | newline_to_br | split: '<br />'
+  assign kc_ok = ''
+  assign n_kc = 0
+  for r in kc_righe
+    assign rr = r | strip
+    if rr == blank
+      continue
+    endif
+    assign parti = rr | split: '|'
+    if parti.size < 2
+      continue
+    endif
+    assign tipo = parti[2] | downcase | strip
+    if tipo == 'mtb' and mtb == false
+      continue
+    endif
+    if tipo == 'strada' and mtb
+      continue
+    endif
+    assign kc_ok = kc_ok | append: rr | append: '§'
+    assign n_kc = n_kc | plus: 1
+  endfor
+  assign kc_lista = kc_ok | split: '§'
+  assign kc_json = ''
 -%}
 
 <section class="dz dzt" data-dzt>
@@ -135,6 +170,7 @@
       <div class="dzt-vis-foto">
         <img data-dzt-foto src="{{ sel.featured_media | default: p.featured_media | image_url: width: 1400 }}" alt="{{ p.title | escape }}" width="1400" height="933" loading="lazy">
       </div>
+      <div class="dzt-vis-kit" data-dzt-vis-kit hidden></div>
       <ul class="dzt-vis-lista" data-dzt-vis-lista aria-live="polite">
         <li><span>Telaio</span><b data-dzt-v-telaio>{{ sel.title }}</b></li>
         <li><span>Montaggio</span><b data-dzt-v-kit>Solo telaio</b></li>
@@ -216,7 +252,65 @@
                 </label>
               {%- endif -%}
             {%- endfor -%}
-          {%- else -%}
+          {%- endif -%}
+          {%- for r in kc_lista -%}
+            {%- if r == blank -%}{%- continue -%}{%- endif -%}
+            {%- assign parti = r | split: '|' -%}
+            {%- assign kc_nome = parti[0] | strip -%}
+            {%- assign kc_pezzi = parti[1] | split: ',' -%}
+            {%- assign kc_tot = 0 -%}
+            {%- assign kc_disp = true -%}
+            {%- assign kc_ids = '' -%}
+            {%- assign kc_imgs = '' -%}
+            {%- assign kc_hs = ',' -%}
+            {%- assign kc_nomi = '' -%}
+            {%- for pz in kc_pezzi -%}
+              {%- assign pp = pz | split: ':' -%}
+              {%- assign h = pp[0] | strip -%}
+              {%- assign vk = pp[1] | strip | downcase -%}
+              {%- assign prod = all_products[h] -%}
+              {%- if prod == blank or prod.id == blank -%}{%- assign kc_disp = false -%}{%- continue -%}{%- endif -%}
+              {%- assign vv = prod.selected_or_first_available_variant -%}
+              {%- if vk != blank -%}
+                {%- for v in prod.variants -%}
+                  {%- assign vt = v.title | downcase -%}
+                  {%- if vt contains vk -%}{%- assign vv = v -%}{%- break -%}{%- endif -%}
+                {%- endfor -%}
+              {%- endif -%}
+              {%- assign kc_tot = kc_tot | plus: vv.price -%}
+              {%- unless vv.available -%}{%- assign kc_disp = false -%}{%- endunless -%}
+              {%- assign kc_ids = kc_ids | append: ',' | append: vv.id -%}
+              {%- assign chiave_h = ',' | append: h | append: ',' -%}
+              {%- unless kc_hs contains chiave_h -%}
+                {%- assign kc_hs = kc_hs | append: h | append: ',' -%}
+                {%- if prod.featured_image -%}{%- assign kc_u = prod.featured_image | image_url: width: 400 -%}{%- assign kc_imgs = kc_imgs | append: '§' | append: kc_u -%}{%- endif -%}
+                {%- assign kc_nomi = kc_nomi | append: '§' | append: prod.title -%}
+              {%- endunless -%}
+            {%- endfor -%}
+            {%- assign kc_id = 'c' | append: forloop.index0 -%}
+            {%- assign kc_img_l = kc_imgs | remove_first: '§' | split: '§' -%}
+            <label class="dzt-kit kc{% unless kc_disp %} esaurito{% endunless %}">
+              <input type="radio" name="dzt-kit" value="{{ kc_id }}"{% unless kc_disp %} disabled{% endunless %}>
+              {%- if kc_img_l.size > 0 -%}
+                <span class="dzt-kit-collage" aria-hidden="true">
+                  {%- for u in kc_img_l limit: 4 -%}<img src="{{ u }}" alt="" loading="lazy">{%- endfor -%}
+                </span>
+              {%- endif -%}
+              <span class="dzt-kit-testo">
+                <b>{{ kc_nome }}</b>
+                <ul>{%- assign kc_nomi_l = kc_nomi | remove_first: '§' | split: '§' -%}{%- for nm in kc_nomi_l -%}<li>{{ nm }}</li>{%- endfor -%}</ul>
+              </span>
+              <span class="dzt-kit-prezzo">{% if kc_disp %}+ {{ kc_tot | money }}{% else %}Non disponibile{% endif %}</span>
+            </label>
+            {%- capture kc_pezzo -%}
+              {"i": {{ kc_id | json }}, "titolo": {{ kc_nome | json }}, "scelta": {{ kc_id | json }},
+               "varianti": [{"id": {{ kc_id | json }}, "t": "", "prezzo": {{ kc_tot }}, "disp": {{ kc_disp | json }}}],
+               "componenti": [{{ kc_ids | remove_first: ',' }}],
+               "imgs": {{ kc_img_l | json }}}
+            {%- endcapture -%}
+            {%- assign kc_json = kc_json | append: ',' | append: kc_pezzo -%}
+          {%- endfor -%}
+          {%- if n_kit == 0 and n_kc == 0 -%}
             <label class="dzt-kit">
               <input type="radio" name="dzt-kit" value="su-misura">
               <span class="dzt-kit-testo"><b>Montaggio su misura</b><span>Scegli con noi gruppo, ruote e componenti: ti prepariamo il preventivo e la montiamo in officina.</span></span>
@@ -318,10 +412,12 @@
               {%- unless primo -%},{%- endunless -%}{%- assign primo = false -%}
               {"i": {{ forloop.index0 }}, "titolo": {{ k.title | json }},
                "varianti": [{%- for v in k.variants -%}{"id": {{ v.id }}, "t": {{ v.title | json }}, "prezzo": {{ v.price }}, "disp": {{ v.available | json }}}{% unless forloop.last %},{% endunless %}{%- endfor -%}],
-               "scelta": {{ k.selected_or_first_available_variant.id }}}
+               "scelta": {{ k.selected_or_first_available_variant.id }},
+               "imgs": [{% if k.featured_image %}{{ k.featured_image | image_url: width: 400 | json }}{% endif %}]}
             {%- endif -%}
           {%- endfor -%}
         {%- endif -%}
+        {%- if n_kit > 0 -%}{{ kc_json }}{%- else -%}{{ kc_json | remove_first: ',' }}{%- endif -%}
       ]
     }
   </script>
@@ -337,7 +433,9 @@
   "settings": [
     { "type": "text", "id": "kit_collezione", "label": "Collezione dei kit di montaggio (handle)", "default": "kit-montaggio",
       "info": "Ogni prodotto della collezione e' un kit: prezzo, foto e componenti in elenco puntato nella descrizione." },
-    { "type": "text", "id": "whatsapp", "label": "Numero WhatsApp", "default": "393457815102" }
+    { "type": "text", "id": "whatsapp", "label": "Numero WhatsApp", "default": "393457815102" },
+    { "type": "textarea", "id": "kit_composti", "label": "Kit composti dal catalogo",
+      "info": "Una riga per kit: Nome | maniglia[:variante], maniglia[:variante] | strada o mtb (facoltativo). Prezzo = somma dei componenti." }
   ]
 }
 {% endschema %}

@@ -84,6 +84,20 @@
 .dzt-kit-var{margin-top:8px;max-width:100%;font:inherit;font-size:14px;padding:8px 10px;border-radius:10px;border:1px solid var(--hair2);background:#fff;color:var(--ink)}
 .dzt-kit-prezzo{font-size:15px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
 
+/* kit composto: in alto la composizione con le foto dei pezzi, stile "flat lay" */
+.dzt-kit.kc{grid-template-columns:minmax(0,1fr) auto;row-gap:14px}
+.dzt-kit-collage{grid-column:1 / -1;display:flex;align-items:center;justify-content:center;gap:6px;height:150px;padding:10px 14px;
+  border-radius:14px;background:var(--panel);overflow:hidden}
+.dzt-kit-collage img{flex:1 1 0;min-width:0;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.dzt-kit-collage img:first-child{flex:1.7 1 0}
+/* sotto il telaio, a sinistra: i pezzi del kit scelto */
+.dzt-vis-kit{display:flex;gap:10px;margin-top:12px}
+.dzt-vis-kit[hidden]{display:none}
+.dzt-vis-kit span{position:relative;flex:1 1 0;min-width:0;height:78px;border-radius:14px;background:var(--panel);overflow:hidden;
+  animation:dztpezzo .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * 70ms)}
+.dzt-vis-kit img{position:absolute;inset:8px;width:calc(100% - 16px);height:calc(100% - 16px);object-fit:contain;mix-blend-mode:multiply}
+@keyframes dztpezzo{from{opacity:0;transform:translateY(8px)}}
+
 /* misure */
 .dzt-seg{display:inline-flex;padding:3px;border-radius:12px;background:var(--panel);gap:2px}
 .dzt-seg button{border:0;background:transparent;font:inherit;font-size:14px;font-weight:500;color:var(--ink);padding:9px 16px;border-radius:9px;cursor:pointer}
@@ -152,6 +166,10 @@
   .dzt-kit{grid-template-columns:auto minmax(0,1fr);padding:16px}
   .dzt-kit-prezzo{grid-column:2}
   .dzt-kit-foto{width:60px;height:60px}
+  .dzt-kit.kc{grid-template-columns:minmax(0,1fr)}
+  .dzt-kit.kc .dzt-kit-prezzo{grid-column:1}
+  .dzt-kit-collage{height:120px}
+  .dzt-vis-kit span{height:60px}
   .dzt-seg{display:flex}
   .dzt-seg button{flex:1;padding:9px 8px}
 }
