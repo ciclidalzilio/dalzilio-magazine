@@ -548,8 +548,14 @@
        data-titolo="{{ p.title | escape }}" data-marca="{{ p.vendor | escape }}" data-prezzo="{{ p.price_min }}" hidden>
     <div class="dz-chap-head">
       <h2>Quale <span data-dz-cmp-fam></span> <span class="g">fa per te.</span></h2>
+      <div class="dz-cmp-nav">
+        <button type="button" class="dz-rail-btn" data-dz-cmp-prev aria-label="Bici precedente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <button type="button" class="dz-rail-btn" data-dz-cmp-next aria-label="Bici successiva"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
     </div>
     <div class="dz-cmpwrap"><table class="dz-cmptab" data-dz-cmp-tab></table></div>
+    {%- comment -%} su telefono: una scheda per bici, da scorrere col dito come la galleria {%- endcomment -%}
+    <div class="dz-cmp-rail" data-dz-cmp-rail></div>
     <p class="dz-cmp-nota">Dati tecnici dalle schede ufficiali del produttore. Tocca una bici per aprirla.</p>
   </div>
   <script>
@@ -579,11 +585,12 @@
       var fam = famiglia(box.getAttribute('data-titolo'));
       if (fam.length < 3 || /^(kit|telaio|bike|bicicletta)\b/i.test(fam)) return;
 
-      function euro(cent) { return '€ ' + Math.round(cent / 100).toLocaleString('it-IT'); }
+      function euro(cent) { return '€ ' + String(Math.round(cent / 100)).replace(/\B(?=(\d{3})+(?!\d))/g, '.'); }
       function foto(u, w) { if (!u) return ''; u = String(u); if (u.indexOf('//') === 0) u = 'https:' + u; return u + (u.indexOf('?') > -1 ? '&' : '?') + 'width=' + w; }
 
       /* righe del confronto: etichetta e nomi della riga nella tabella del fornitore */
       var RIGHE = [
+        ['Telaio', ['frame', 'telaio']],
         ['Motore', ['motor', 'drive unit', 'motore']],
         ['Batteria', ['battery', 'batteria']],
         ['Forcella', ['fork', 'forcella']],
@@ -593,6 +600,8 @@
         ['Freni', ['brake front', 'brakes', 'brake', 'freni', 'freno anteriore']],
         ['Ruote', ['wheelset', 'wheels', 'wheel front', 'rims', 'ruote']],
         ['Pneumatici', ['tire front', 'tires', 'tyres', 'tire', 'pneumatici']],
+        ['Manubrio', ['handlebar', 'manubrio']],
+        ['Sella', ['saddle', 'sella']],
         ['Reggisella', ['seat post', 'seatpost', 'reggisella']],
         ['Peso', ['weight', 'peso']]
       ];
@@ -607,6 +616,21 @@
             var v = td[1].textContent.replace(/\s+/g, ' ').trim();
             if (k && v && !(k in out)) out[k] = v;
           });
+          /* niente tabella (es. Cannondale): l'elenco "Punti di forza", dove ogni
+             voce comincia col pezzo: "Ruote in carbonio DT Swiss ERC LOG 45: leggere..." */
+          doc.querySelectorAll('li').forEach(function(li){
+            var t = li.textContent.replace(/\s+/g, ' ').trim();
+            var pezzo = (t.indexOf(':') > -1 ? t.split(':')[0] : t).trim();
+            if (!pezzo || pezzo.length > 90) return;
+            var d = pezzo.toLowerCase(), k = '';
+            if (/guarnitura|misuratore|borracc|pneumatic/.test(d)) return;
+            if (/\bsella\b|saddle/.test(d)) k = 'saddle';
+            else if (/ruote|wheel/.test(d)) k = 'wheelset';
+            else if (/manubrio|systembar|handlebar/.test(d)) k = 'handlebar';
+            else if (/telaio|frame/.test(d)) k = 'frame';
+            else if (/gruppo|trasmissione|cambio|sram|shimano|campagnolo/.test(d)) k = 'groupset';
+            if (k && !(k in out)) out[k] = pezzo;
+          });
         } catch (e) {}
         return out;
       }
@@ -615,7 +639,8 @@
           var v = spec[chiavi[i]];
           if (!v) continue;
           if (label === 'Peso') { var n = parseFloat(v.replace(',', '.')); return isNaN(n) ? v : String(n).replace('.', ',') + ' kg'; }
-          v = v.split(',')[0].trim();
+          v = v.split(',')[0].replace(/^(sella|ruote( in carbonio)?|gruppo|trasmissione( elettronica)?|manubrio)\s+/i, '').trim();
+          v = v.charAt(0).toUpperCase() + v.slice(1);
           return v.length > 60 ? v.slice(0, 58) + '…' : v;
         }
         return '';
@@ -670,18 +695,43 @@
             '<span class="mod">' + esc(c.nome) + '</span><span class="pr">Da ' + euro(c.prezzo) + '</span>';
           return td(c, c.me ? '<span class="dz-cmp-bici">' + dentro + '</span>' : '<a class="dz-cmp-bici" href="' + esc(c.url) + '">' + dentro + '</a>', 'th');
         }).join('') + '</tr></thead>';
-        var corpo = '';
+        var corpo = '', righe = [];
         RIGHE.forEach(function(r){
           var vals = col.map(function(c){ return valore(c.spec, r[0], r[1]); });
           if (vals.filter(Boolean).length < 2) return;
+          righe.push([r[0], vals]);
           corpo += '<tr><td>' + r[0] + '</td>' + col.map(function(c, i){ return td(c, vals[i] ? esc(vals[i]) : '—'); }).join('') + '</tr>';
         });
-        corpo += '<tr><td>Disponibilità</td>' + col.map(function(c){
-          return td(c, '<span class="dot' + (c.disp ? '' : ' no') + '"></span>' + (c.disp ? 'Disponibile' : 'Su ordinazione'));
-        }).join('') + '</tr>';
+        function disp(c) { return '<span class="dot' + (c.disp ? '' : ' no') + '"></span>' + (c.disp ? 'Disponibile' : 'Su ordinazione'); }
+        corpo += '<tr><td>Disponibilità</td>' + col.map(function(c){ return td(c, disp(c)); }).join('') + '</tr>';
         tab.innerHTML = testa + '<tbody>' + corpo + '</tbody>';
+
+        /* su telefono: una scheda per bici con le stesse righe */
+        var rail = box.querySelector('[data-dz-cmp-rail]');
+        rail.innerHTML = col.map(function(c, i){
+          var dentro = (c.me ? '<span class="dz-cmp-tu">Questa bici</span>' : '') +
+            (c.img ? '<img src="' + esc(foto(c.img, 480)) + '" alt="" loading="lazy" width="240" height="160">' : '') +
+            '<span class="mod">' + esc(c.nome) + '</span><span class="pr">Da ' + euro(c.prezzo) + '</span>';
+          return '<article class="dz-cmp-card' + (c.me ? ' me' : '') + '">' +
+            (c.me ? '<span class="dz-cmp-bici">' + dentro + '</span>' : '<a class="dz-cmp-bici" href="' + esc(c.url) + '">' + dentro + '</a>') +
+            '<dl>' + righe.map(function(r){ return '<div><dt>' + r[0] + '</dt><dd>' + (r[1][i] ? esc(r[1][i]) : '—') + '</dd></div>'; }).join('') +
+            '<div><dt>Disponibilità</dt><dd>' + disp(c) + '</dd></div></dl></article>';
+        }).join('');
+        function passo() { var k = rail.querySelector('.dz-cmp-card'); return k ? k.getBoundingClientRect().width + 12 : 300; }
+        function frecce() {
+          var p = box.querySelector('[data-dz-cmp-prev]'), n = box.querySelector('[data-dz-cmp-next]');
+          p.disabled = rail.scrollLeft < 8;
+          n.disabled = rail.scrollLeft + rail.clientWidth > rail.scrollWidth - 8;
+        }
+        box.querySelector('[data-dz-cmp-prev]').addEventListener('click', function(){ rail.scrollBy({ left: -passo(), behavior: 'smooth' }); });
+        box.querySelector('[data-dz-cmp-next]').addEventListener('click', function(){ rail.scrollBy({ left: passo(), behavior: 'smooth' }); });
+        rail.addEventListener('scroll', frecce, { passive: true });
         box.querySelector('[data-dz-cmp-fam]').textContent = fam;
         box.hidden = false;
+        /* la scheda di questa bici subito in vista */
+        var mia = rail.querySelector('.dz-cmp-card.me');
+        if (mia) rail.scrollLeft = mia.offsetLeft - rail.offsetLeft - 16;
+        frecce();
       }).catch(function(){});
     })();
   </script>
