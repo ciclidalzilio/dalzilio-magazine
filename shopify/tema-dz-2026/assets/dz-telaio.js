@@ -89,6 +89,7 @@
 
     if (v) {
       $("[data-dzt-id]").value = v.id;
+      if (v.sku) $$("[data-dzt-ref]").forEach(function (r) { r.textContent = v.sku; });
       if (v.img && fotoEl && fotoEl.getAttribute("src") !== v.img) {
         fotoEl.classList.add("cambia");
         var pre = new Image();
@@ -233,7 +234,7 @@
       fs.appendChild(box); boxMis.appendChild(fs);
     });
     passoMis.hidden = !ms.length;
-    $("[data-dzt-num-riep]").textContent = ms.length ? "4" : "3";
+    $("[data-dzt-num-riep]").textContent = ms.length ? "IV" : "III";
   }
 
   /* ---- 1. taglia e colore ---- */
@@ -348,18 +349,6 @@
     barraVia();
     new IntersectionObserver(function (v) { inRiep = v[0].isIntersecting; barraVia(); }, { threshold: 0.15 }).observe(riep);
     new IntersectionObserver(function (v) { inConf = v[0].isIntersecting; barraVia(); }, { rootMargin: "0px 0px -35% 0px" }).observe(conf);
-  }
-
-  /* stile scena: menu scuro finche' sotto c'e' la pagina nera */
-  if (root.classList.contains("dzt-scena")) {
-    var testa = document.querySelector(".dz header"), att = false;
-    function buio() {
-      att = false;
-      var lim = testa ? testa.getBoundingClientRect().bottom : 66;
-      document.body.classList.toggle("dz-buio", root.getBoundingClientRect().bottom > lim);
-    }
-    addEventListener("scroll", function () { if (!att) { att = true; requestAnimationFrame(buio); } }, { passive: true });
-    buio();
   }
 
   aggiorna();

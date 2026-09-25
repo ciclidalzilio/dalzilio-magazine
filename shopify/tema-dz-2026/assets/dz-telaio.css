@@ -1,260 +1,232 @@
-/* DZ 2026 — scheda telaio, stile configuratore Apple.
-   Bianco, testo quasi nero, un solo colore d'azione (blu Apple) per cio' che si
-   sceglie e per il pulsante. Le scelte sono riquadri con bordo sottile: quello
-   selezionato prende il bordo blu. A sinistra il telaio resta fermo. */
+/* DZ 2026 — scheda telaio, stile atelier di alta orologeria nei colori del sito.
+   Bianco e grigio freddo del tema, testo quasi nero, titoli in Cormorant
+   Garamond sottile, etichette in maiuscoletto spaziato, filetti sottili. Il
+   tocco prezioso e' la sfumatura del marchio (arancio, rosa, viola) usata con
+   parsimonia: marca, numeri dei passi, filetto del riepilogo. Pulsanti neri.
+   Le foto dei telai hanno il fondo bianco: con mix-blend-mode:multiply il bianco
+   prende il colore della vetrina e il telaio sembra appoggiato nella luce. */
 
-.dzt{--ink:#1d1d1f;--sub:#6e6e73;--sub2:#86868b;--hair:rgba(0,0,0,.1);--hair2:rgba(0,0,0,.16);
-  --panel:#f5f5f7;--blue:#0071e3;--blue-h:#0077ed;
-  background:#fff;color:var(--ink);letter-spacing:-.012em;
-  font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Helvetica Neue",Inter,system-ui,sans-serif}
-.dzt *{box-sizing:border-box}
+.dzt{
+  --bianco:#fff;
+  --grigio:var(--ground,#f3f4f7);   /* il grigio freddo del tema */
+  --grigio2:#e7e8ee;                /* bordi della vetrina */
+  --ink:#111319;
+  --ink2:#2b2e3a;
+  --sub:#5c6070;
+  --filo:rgba(18,20,42,.12);
+  --filo2:rgba(18,20,42,.22);
+  --rosa:#FF2E63;
+  --sfuma:var(--grad-text,linear-gradient(100deg,#F26800,#FF1E57 50%,#7A22D8));
+  --sfuma-l:var(--grad,linear-gradient(100deg,#FF7A00,#FF2E63 58%,#8B2FE6));
+  --ko:#d0103a;
+  --serif:"Cormorant Garamond","Cormorant",Garamond,"Times New Roman",serif;
+  background:var(--bianco);color:var(--ink);font-family:var(--font-sans);letter-spacing:0
+}
+.dzt [hidden]{display:none!important}
+.dzt h1,.dzt h2,.dzt h3{text-wrap:balance}
 
-/* ---- apertura ---- */
-/* nome, subito il telaio grande, poi frase e prezzo: il telaio si vede appena si apre la pagina */
-.dzt-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:clamp(24px,3vw,44px) 20px 0;overflow:hidden}
-.dzt-k{order:1;margin:0 0 8px;font-size:15px;font-weight:600;color:#bf4800;letter-spacing:0}
-.dzt-h1{order:2;margin:0 auto;max-width:18ch;font-size:clamp(40px,5vw,72px);font-weight:600;letter-spacing:-.05em;line-height:.98;text-wrap:balance}
-.dzt-claim{order:4;margin:4px auto 0;max-width:34ch;font-size:clamp(18px,2vw,26px);font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink);text-wrap:balance}
-.dzt-hero-cta{order:5;display:flex;justify-content:center;align-items:baseline;gap:22px;flex-wrap:wrap;margin-top:22px;font-size:17px}
-.dzt-da{color:var(--sub)}
-.dzt-da b{color:var(--ink);font-weight:600}
-.dzt-link{color:var(--blue);text-decoration:none}
-.dzt-link:hover{text-decoration:underline}
-/* telaio grande su un fondale che sfuma nel bianco: nessuno stacco */
-.dzt-hero-stage{order:3;position:relative;width:100%;margin:clamp(6px,1.5vw,20px) auto 0;max-width:1200px;padding:0 0 clamp(18px,2.5vw,36px)}
-.dzt-hero-stage::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(55% 60% at 50% 80%,#e4e5ea 0%,#f0f0f3 45%,#fff 100%);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 30%,#000 72%,transparent 100%);
-  mask-image:linear-gradient(180deg,transparent 0,#000 30%,#000 72%,transparent 100%)}
-.dzt-hero-stage img{position:relative;z-index:1;display:block;width:100%;height:auto;max-height:62vh;margin:0 auto;object-fit:contain;mix-blend-mode:multiply}
+/* maiuscoletto spaziato nella sfumatura del marchio: marca, titoletti, numeri dei passi */
+.dzt-k,.dzt-num,.dzt-conto-k{background:var(--sfuma);-webkit-background-clip:text;background-clip:text;color:transparent}
+.dzt-k{margin:0;font-size:11px;font-weight:650;letter-spacing:.3em;text-transform:uppercase;width:fit-content;margin-inline:auto}
+.dzt-k i,.dzt-conto-k i{display:inline-block;width:4px;height:4px;margin:0 .9em;background:var(--rosa);transform:rotate(45deg);vertical-align:.2em}
 
-/* ---- configuratore ---- */
-.dzt-conf{max-width:1200px;margin:0 auto;padding:clamp(40px,6vw,96px) 24px 40px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:start}
-.dzt-vis{position:sticky;top:96px}
-.dzt-vis-foto{background:var(--panel);border-radius:28px;aspect-ratio:4/3;display:grid;place-items:center;overflow:hidden;padding:6%}
+/* pulsante: rettangolo nero, testo in maiuscoletto (.dzt davanti: vince su ".dz a{color:inherit}" del tema) */
+.dzt .dzt-btn{display:inline-flex;align-items:center;justify-content:center;min-height:52px;padding:0 36px;border:0;border-radius:1px;
+  background:var(--ink);color:#fff;font:600 12px/1 var(--font-sans);letter-spacing:.22em;text-transform:uppercase;text-decoration:none;cursor:pointer;
+  transition:background .25s ease,color .25s ease,box-shadow .25s ease}
+.dzt .dzt-btn:hover{background:var(--ink2)}
+.dzt-btn:focus-visible,.dzt-chip:focus-visible,.dzt-seg button:focus-visible{outline:2px solid var(--rosa);outline-offset:3px}
+.dzt .dzt-btn:disabled{background:#b4b7c3;cursor:not-allowed}
+
+/* ---------------- la vetrina ---------------- */
+.dzt-hero{padding:44px 20px 0;text-align:center;
+  background:radial-gradient(ellipse 62% 58% at 50% 56%,var(--bianco) 30%,var(--grigio) 100%)}
+.dzt-h1{margin:14px auto 0;font-variant-numeric:lining-nums;max-width:18ch;font-family:var(--serif);font-weight:300;font-size:clamp(40px,5.2vw,76px);line-height:1.02;letter-spacing:-.005em;color:var(--ink)}
+.dzt-ref{margin:14px 0 0;font-size:11px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;color:var(--sub)}
+.dzt-ref span{font-variant-numeric:tabular-nums;color:var(--ink)}
+.dzt-teca{position:relative;max-width:1180px;margin:6px auto 0}
+.dzt-teca img{position:relative;z-index:1;display:block;margin:0 auto;width:auto;max-width:100%;height:auto;max-height:54vh;mix-blend-mode:multiply}
+.dzt-hero-piede{display:flex;flex-direction:column;align-items:center;gap:18px;margin-top:8px}
+.dzt-da{margin:0;font-family:var(--serif);font-size:22px;color:var(--sub)}
+.dzt-da b{font-weight:500;color:var(--ink);font-variant-numeric:lining-nums tabular-nums}
+.dzt-scheda{position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));max-width:880px;margin:52px auto 0;padding:0}
+/* il filetto sopra le caratteristiche: la sfumatura del marchio, sottilissima */
+.dzt-scheda::before{content:"";position:absolute;left:0;right:0;top:0;height:1px;background:var(--sfuma-l);opacity:.75}
+.dzt-scheda div{padding:20px 12px 24px;border-left:1px solid var(--filo)}
+.dzt-scheda div:first-child{border-left:0}
+.dzt-scheda dt{font-size:10.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--sub)}
+.dzt-scheda dd{margin:6px 0 0;font-family:var(--serif);font-size:27px;font-weight:400;font-variant-numeric:lining-nums;color:var(--ink)}
+
+/* ---------------- il configuratore ---------------- */
+.dzt-conf{padding:104px 20px 96px;background:var(--bianco);border-top:1px solid var(--filo)}
+.dzt-conf-testa,.dzt-desc-testa{text-align:center}
+.dzt-conf-testa h2,.dzt-desc-testa h2{margin:14px 0 0;font-family:var(--serif);font-weight:300;font-size:clamp(34px,4vw,56px);line-height:1.05;letter-spacing:0;color:var(--ink)}
+.dzt-conf-corpo{display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr);gap:clamp(40px,6vw,88px);max-width:1200px;margin:64px auto 0}
+
+.dzt-vis{position:sticky;top:96px;align-self:start}
+.dzt-vis-foto{display:grid;place-items:center;aspect-ratio:4/3;padding:6%;
+  background:radial-gradient(ellipse 70% 62% at 50% 52%,var(--bianco) 20%,var(--grigio2) 100%);
+  box-shadow:inset 0 0 0 1px var(--filo),inset 0 0 0 9px var(--bianco),inset 0 0 0 10px var(--filo)}
 .dzt-vis-foto img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply;transition:opacity .35s ease}
-.dzt-vis-foto img.cambia{opacity:.2}
-.dzt-vis-lista{list-style:none;margin:18px 0 0;padding:0;display:grid;gap:0;border-top:1px solid var(--hair)}
-.dzt-vis-lista li{display:flex;justify-content:space-between;gap:16px;padding:12px 2px;border-bottom:1px solid var(--hair);font-size:14px}
-.dzt-vis-lista span{color:var(--sub)}
-.dzt-vis-lista b{font-weight:600;text-align:right}
+.dzt-vis-foto img.cambia{opacity:.25}
+.dzt-vis-kit{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.dzt-vis-kit span{display:grid;place-items:center;width:68px;height:68px;padding:6px;background:var(--grigio);box-shadow:inset 0 0 0 1px var(--filo)}
+.dzt-vis-kit img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+.dzt-vis-lista{margin:22px 0 0;padding:0;list-style:none}
+.dzt-vis-lista li{display:flex;justify-content:space-between;align-items:baseline;gap:20px;padding:13px 0;border-bottom:1px solid var(--filo)}
+.dzt-vis-lista span{flex:none;font-size:10.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--sub)}
+.dzt-vis-lista b{font-family:var(--serif);font-size:19px;font-weight:500;text-align:right;font-variant-numeric:lining-nums}
 
-.dzt-passi{display:flex;flex-direction:column;gap:clamp(44px,6vw,72px);margin:0}
-.dzt-passo{position:relative}
-.dzt-num{margin:0 0 6px;font-size:13px;font-weight:600;color:var(--sub2);font-variant-numeric:tabular-nums}
-.dzt-passo h2{margin:0 0 6px;font-size:clamp(26px,3vw,36px);font-weight:600;letter-spacing:-.035em;line-height:1.1}
-.dzt-sub{margin:0 0 18px;color:var(--sub);font-size:16px;line-height:1.45}
-.dzt-gruppo{border:0;margin:20px 0 0;padding:0;min-width:0}
-.dzt-gruppo legend{padding:0;margin:0 0 10px;font-size:15px;font-weight:600}
-.dzt-gruppo legend span{font-weight:400;color:var(--sub);margin-left:6px}
+/* i passi */
+.dzt-passi{min-width:0}
+.dzt-passo{padding-bottom:52px;margin-bottom:52px;border-bottom:1px solid var(--filo)}
+.dzt-passo:last-child{margin-bottom:0;padding-bottom:0;border-bottom:0}
+.dzt-num{margin:0;width:fit-content;font-family:var(--serif);font-size:21px;font-weight:600;letter-spacing:.14em}
+.dzt-passo h3{margin:2px 0 24px;font-family:var(--serif);font-weight:400;font-size:clamp(30px,2.8vw,38px);line-height:1.1;letter-spacing:0;color:var(--ink)}
+.dzt-sub{margin:-12px 0 24px;max-width:52ch;font-size:15px;line-height:1.6;color:var(--sub)}
 
-/* riquadri di scelta */
-.dzt-chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(86px,1fr));gap:10px}
-.dzt-chips-larghe{grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
-.dzt-chips-mis{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
-.dzt-chip{min-width:0}
-.dzt-chips .dzt-chip.dzt-chip-lunga,.dzt-chips-mis .dzt-chip{white-space:normal}
-.dzt-chip[disabled]{cursor:not-allowed;background:#fafafa}
-.dzt-chip{position:relative;min-height:52px;padding:10px 12px;border-radius:14px;border:1px solid var(--hair2);background:#fff;color:var(--ink);
-  font:inherit;font-size:15px;font-weight:500;line-height:1.2;cursor:pointer;transition:border-color .15s,box-shadow .15s;text-wrap:balance}
-.dzt-chip:hover{border-color:#86868b}
-.dzt-chips:not(.dzt-chips-larghe) .dzt-chip{white-space:nowrap}
-.dzt-chip.on{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
-.dzt-chip.no{color:var(--sub2)}
-.dzt-chip.no::after{content:"esaurita";display:block;font-size:11px;font-weight:400;color:var(--sub2);margin-top:2px}
-.dzt-chip:focus-visible,.dzt-add:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
-.dzt-nota{margin:12px 0 0;font-size:14px;color:var(--sub);min-height:1.2em}
-.dzt-nota.ko{color:#bf4800}
-.dzt-aiuto{margin:8px 0 0;font-size:14px;color:var(--sub)}
-.dzt-aiuto a{color:var(--blue);text-decoration:none}
-.dzt-aiuto a:hover{text-decoration:underline}
+.dzt-gruppo{margin:0 0 24px;padding:0;border:0;min-width:0}
+.dzt-gruppo legend{padding:0;margin-bottom:12px;font-size:10.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--sub)}
+.dzt-gruppo legend span{margin-left:.8em;letter-spacing:.04em;text-transform:none;font-weight:400}
+.dzt-chips{display:flex;flex-wrap:wrap;gap:8px}
+.dzt-chip{min-width:58px;min-height:48px;padding:0 16px;border:0;border-radius:1px;background:var(--bianco);box-shadow:inset 0 0 0 1px var(--filo2);
+  font:500 14.5px/1.25 var(--font-sans);color:var(--ink);cursor:pointer;transition:box-shadow .2s ease,color .2s ease,background .2s ease}
+.dzt-chip:hover{box-shadow:inset 0 0 0 1px var(--ink)}
+.dzt-chip.on{box-shadow:inset 0 0 0 2px var(--ink);font-weight:650}
+/* esaurito: la riga diagonale delle taglie finite */
+.dzt-chip.no{color:#9a9eae;background:linear-gradient(to top right,transparent calc(50% - .6px),rgba(18,20,42,.2) 50%,transparent calc(50% + .6px))}
+.dzt-chip.no.on{color:var(--ink)}
+.dzt-chip:disabled{cursor:not-allowed}
+.dzt-chips-larghe .dzt-chip{padding:12px 20px;text-align:left}
+.dzt-chips-mis .dzt-chip{min-width:0;white-space:normal}
+.dzt-nota{margin:0;font-size:14px;line-height:1.5;color:var(--sub)}
+.dzt-nota:empty{display:none}
+.dzt-nota.ko{color:var(--ko)}
+.dzt-aiuto{margin:18px 0 0;font-size:14.5px;color:var(--sub)}
+.dzt .dzt-aiuto a,.dzt .dzt-desc-testo a{color:var(--ink);text-decoration:underline;text-decoration-color:var(--rosa);text-underline-offset:4px}
 
-/* kit di montaggio */
-.dzt-kits{display:flex;flex-direction:column;gap:12px}
-.dzt-kit{position:relative;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:16px;padding:18px 20px;border-radius:18px;
-  border:1px solid var(--hair2);background:#fff;cursor:pointer;transition:border-color .15s,box-shadow .15s}
-.dzt-kit:hover{border-color:#86868b}
-.dzt-kit.on{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
-.dzt-kit.esaurito{opacity:.5;cursor:not-allowed}
+/* il montaggio: righe da catalogo, separate da filetti */
+.dzt-kits{border-top:1px solid var(--filo)}
+.dzt-kit{position:relative;display:flex;align-items:flex-start;gap:18px;padding:22px 6px 22px 42px;border-bottom:1px solid var(--filo);cursor:pointer;transition:background .2s ease}
+.dzt-kit:hover{background:rgba(243,244,247,.55)}
+.dzt-kit.on{background:var(--grigio)}
 .dzt-kit input{position:absolute;opacity:0;pointer-events:none}
-.dzt-kit:has(input:focus-visible){outline:2px solid var(--blue);outline-offset:3px}
-.dzt-kit-foto{width:72px;height:72px;border-radius:12px;background:var(--panel);display:grid;place-items:center;overflow:hidden}
+.dzt-kit::before{content:"";position:absolute;left:10px;top:25px;width:18px;height:18px;border-radius:50%;background:var(--bianco);box-shadow:inset 0 0 0 1px var(--filo2);transition:box-shadow .2s ease,background .2s ease}
+.dzt-kit.on::before{background:var(--ink);box-shadow:inset 0 0 0 1px var(--ink),inset 0 0 0 4px var(--bianco)}
+.dzt-kit:has(input:focus-visible){outline:2px solid var(--rosa);outline-offset:-2px}
+.dzt-kit.esaurito{opacity:.5;cursor:not-allowed}
+.dzt-kit-foto,.dzt-kit-collage{flex:none;width:76px;height:76px;background:var(--bianco);box-shadow:inset 0 0 0 1px var(--filo)}
+.dzt-kit-foto{display:grid;place-items:center;padding:6px}
 .dzt-kit-foto img{width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
-.dzt-kit:not(:has(.dzt-kit-foto)) .dzt-kit-testo{grid-column:1 / 3}
-.dzt-kit-testo{display:flex;flex-direction:column;gap:4px;min-width:0}
-.dzt-kit-testo b{font-size:17px;font-weight:600;letter-spacing:-.02em}
-.dzt-kit-testo > span{font-size:14px;color:var(--sub);line-height:1.4}
-.dzt-kit-testo ul{margin:2px 0 0;padding:0;list-style:none;font-size:13.5px;color:var(--sub);line-height:1.45}
-.dzt-kit-testo li::before{content:"· "}
-.dzt-kit-var{margin-top:8px;max-width:100%;font:inherit;font-size:14px;padding:8px 10px;border-radius:10px;border:1px solid var(--hair2);background:#fff;color:var(--ink)}
-.dzt-kit-prezzo{font-size:15px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
+.dzt-kit-collage{display:grid;grid-template-columns:1fr 1fr;gap:1px;padding:4px}
+.dzt-kit-collage img{width:100%;height:100%;min-height:0;object-fit:contain;mix-blend-mode:multiply}
+.dzt-kit-testo{flex:1;min-width:0}
+.dzt-kit-testo b{display:block;font-family:var(--serif);font-size:23px;font-weight:500;line-height:1.15;color:var(--ink)}
+.dzt-kit-testo > span{display:block;margin-top:6px;font-size:14px;line-height:1.55;color:var(--sub)}
+.dzt-kit-testo ul{margin:6px 0 0;padding:0;list-style:none;font-size:14px;line-height:1.55;color:var(--sub)}
+.dzt-kit-testo li{display:inline}
+.dzt-kit-testo li + li::before{content:" · ";color:var(--rosa)}
+.dzt-kit-var{display:block;margin-top:12px;max-width:100%;padding:9px 12px;border:0;border-radius:1px;background:var(--bianco);box-shadow:inset 0 0 0 1px var(--filo2);font:14px var(--font-sans);color:var(--ink)}
+.dzt-kit-prezzo{flex:none;margin-left:auto;padding-top:5px;font-size:14.5px;font-weight:500;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--ink)}
+.dzt-kit-prev .dzt-kit-prezzo{color:var(--sub)}
 
-/* kit composto: in alto la composizione con le foto dei pezzi, stile "flat lay" */
-.dzt-kit.kc{grid-template-columns:minmax(0,1fr) auto;row-gap:14px}
-.dzt-kit-collage{grid-column:1 / -1;display:flex;align-items:center;justify-content:center;gap:6px;height:150px;padding:10px 14px;
-  border-radius:14px;background:var(--panel);overflow:hidden}
-.dzt-kit-collage img{flex:1 1 0;min-width:0;height:100%;object-fit:contain;mix-blend-mode:multiply}
-.dzt-kit-collage img:first-child{flex:1.7 1 0}
-/* sotto il telaio, a sinistra: i pezzi del kit scelto */
-.dzt-vis-kit{display:flex;gap:10px;margin-top:12px}
-.dzt-vis-kit[hidden]{display:none}
-.dzt-vis-kit span{position:relative;flex:1 1 0;min-width:0;height:78px;border-radius:14px;background:var(--panel);overflow:hidden;
-  animation:dztpezzo .5s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i) * 70ms)}
-.dzt-vis-kit img{position:absolute;inset:8px;width:calc(100% - 16px);height:calc(100% - 16px);object-fit:contain;mix-blend-mode:multiply}
-@keyframes dztpezzo{from{opacity:0;transform:translateY(8px)}}
+/* il riepilogo: una scheda con doppio filetto, come un certificato;
+   in cima una riga sottile nella sfumatura del marchio */
+.dzt-conto{position:relative;padding:40px 36px 34px;background:var(--grigio);
+  box-shadow:inset 0 0 0 1px var(--filo),inset 0 0 0 7px var(--grigio),inset 0 0 0 8px var(--filo)}
+.dzt-conto::before{content:"";position:absolute;left:8px;right:8px;top:8px;height:2px;background:var(--sfuma-l)}
+.dzt-conto-k{margin:0 auto;width:fit-content;text-align:center;font-size:10.5px;font-weight:650;letter-spacing:.28em;text-transform:uppercase}
+.dzt-conto-nome{margin:10px 0 26px;text-wrap:balance;font-variant-numeric:lining-nums;text-align:center;font-family:var(--serif);font-size:28px;font-weight:400;line-height:1.15}
+.dzt-riga{display:flex;justify-content:space-between;align-items:baseline;gap:18px;padding:15px 0;border-top:1px solid var(--filo)}
+.dzt-riga span{min-width:0}
+.dzt-riga span b{display:block;font-size:10.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--sub)}
+.dzt-riga i{display:block;margin-top:4px;font-style:normal;font-family:var(--serif);font-size:19px;font-weight:500;line-height:1.25;font-variant-numeric:lining-nums}
+.dzt-riga > b{flex:none;font-size:15px;font-weight:500;font-variant-numeric:tabular-nums}
+.dzt-tot{display:flex;justify-content:space-between;align-items:baseline;gap:18px;padding-top:18px;border-top:1px solid var(--ink)}
+.dzt-tot span{font-size:10.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase}
+.dzt-tot b{font-family:var(--serif);font-size:40px;font-weight:400;line-height:1;font-variant-numeric:lining-nums tabular-nums}
+.dzt-tot-nota{margin:6px 0 0;text-align:right;font-size:13.5px;color:var(--sub)}
+.dzt-note{display:block;margin:26px 0 0;font-size:10.5px;font-weight:600;letter-spacing:.24em;text-transform:uppercase;color:var(--sub)}
+.dzt-note span{margin-left:.6em;letter-spacing:.04em;text-transform:none;font-weight:400}
+.dzt-note textarea{display:block;width:100%;box-sizing:border-box;margin-top:10px;padding:12px 14px;border:0;border-radius:1px;background:var(--bianco);box-shadow:inset 0 0 0 1px var(--filo);
+  font:15px/1.5 var(--font-sans);letter-spacing:0;text-transform:none;color:var(--ink);resize:vertical}
+.dzt-note textarea:focus{outline:none;box-shadow:inset 0 0 0 1px var(--ink)}
+.dzt-pag{margin-top:22px}
+.dzt-seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.dzt-seg button{min-height:48px;padding:10px 12px;border:0;border-radius:1px;background:var(--bianco);box-shadow:inset 0 0 0 1px var(--filo2);
+  font:500 14px/1.25 var(--font-sans);color:var(--ink);cursor:pointer}
+.dzt-seg button.on{box-shadow:inset 0 0 0 2px var(--ink);font-weight:650}
+.dzt-seg button:disabled{opacity:.4;cursor:not-allowed}
+.dzt-pag-info{margin:12px 0 0;font-size:14.5px;line-height:1.55;color:var(--ink)}
+.dzt-pag-info b{font-variant-numeric:tabular-nums}
+.dzt-pag-prova{margin:10px 0 0;font-size:12.5px;line-height:1.5;font-style:italic;color:var(--sub)}
+.dzt-conto .dzt-add{width:100%;min-height:56px;margin-top:24px}
+.dzt-err{margin:12px 0 0;font-size:14px;line-height:1.5;color:var(--ko)}
+.dzt .dzt-conto .dzt-prev{width:100%;margin-top:10px;padding:12px 16px;letter-spacing:.14em;line-height:1.35;text-align:center;background:var(--bianco);color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.dzt .dzt-conto .dzt-prev:hover{background:var(--ink);color:#fff}
+.dzt-prev-nota{margin:12px 0 0;text-align:center;font-size:13px;color:var(--sub)}
 
-/* scelta di pagamento: tutto ora o acconto (nel riepilogo) */
-.dzt-pag{margin:0 0 16px}
-.dzt-pag[hidden]{display:none}
-.dzt-seg{display:flex;padding:3px;border-radius:12px;background:#e8e8ed;gap:2px}
-.dzt-seg button{flex:1;border:0;background:transparent;font:inherit;font-size:14px;font-weight:500;color:var(--ink);padding:10px 8px;border-radius:9px;cursor:pointer;line-height:1.2}
-.dzt-seg button.on{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.06)}
-.dzt-seg button[disabled]{color:var(--sub2);cursor:not-allowed}
-.dzt-seg button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
-.dzt-pag-info{margin:10px 2px 0;font-size:14px;line-height:1.45;color:var(--sub)}
-.dzt-pag-info b{color:var(--ink);font-size:16px}
-.dzt-pag-prova{margin:8px 2px 0;font-size:12.5px;color:#bf4800}
-
-/* note per l'officina (nel riepilogo) */
-.dzt-note{display:flex;flex-direction:column;gap:8px;margin:14px 0 18px;font-size:15px;font-weight:600}
-.dzt-note > span{font-weight:400;color:var(--sub);font-size:13px;margin-top:-6px}
-.dzt-note textarea{font:inherit;font-size:15px;font-weight:400;padding:12px 14px;border-radius:14px;border:1px solid var(--hair2);resize:vertical;color:var(--ink)}
-.dzt-note textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
-
-/* riepilogo */
-.dzt-conto{border-radius:22px;background:var(--panel);padding:8px 22px 22px}
-.dzt-riga{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding:14px 0;border-bottom:1px solid var(--hair)}
-.dzt-riga span{display:flex;flex-direction:column;gap:2px;min-width:0}
-.dzt-riga span b{font-size:15px;font-weight:600}
-.dzt-riga i{font-style:normal;font-size:14px;color:var(--sub);line-height:1.4}
-.dzt-riga > b{font-size:15px;font-weight:600;white-space:nowrap;font-variant-numeric:tabular-nums}
-.dzt-tot{display:flex;justify-content:space-between;align-items:baseline;padding:18px 0 16px;font-size:17px;font-weight:600}
-.dzt-tot b{font-size:clamp(26px,3vw,32px);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.dzt-add{display:flex;align-items:center;justify-content:center;width:100%;min-height:50px;border:0;border-radius:980px;background:var(--blue);color:#fff;
-  font:inherit;font-size:17px;font-weight:500;cursor:pointer;text-decoration:none;transition:background .2s}
-.dzt-add:hover{background:var(--blue-h)}
-.dzt-add[disabled]{background:#d2d2d7;color:#86868b;cursor:not-allowed}
-.dzt-err{margin:10px 0 0;font-size:14px;color:#bf4800}
-.dzt-tot-nota{margin:-8px 0 14px;text-align:right;font-size:14px;color:var(--sub)}
-.dzt-tot-nota[hidden],.dzt-prev[hidden],.dzt-riga[hidden],.dzt-vis-lista li[hidden]{display:none}
-.dzt-prev{display:flex;align-items:center;justify-content:center;width:100%;min-height:50px;margin-top:10px;padding:8px 18px;border-radius:980px;text-align:center;line-height:1.25;
-  border:1px solid var(--blue);color:var(--blue);background:#fff;font-size:17px;font-weight:500;text-decoration:none;transition:background .2s}
-.dzt-prev:hover{background:rgba(0,113,227,.06)}
-.dzt-prev:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
-.dzt-prev-nota{margin:8px 0 0;text-align:center;font-size:13px;color:var(--sub)}
-/* la scelta "preventivo personalizzato" tra i montaggi */
-.dzt-kit-prev{border-style:dashed}
-.dzt-kit-prev.on{border-style:solid}
+/* ---------------- caratteristiche e descrizione ---------------- */
+.dzt-desc{padding:104px 20px 112px;background:var(--grigio);border-top:1px solid var(--filo)}
+.dzt-desc-corpo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(40px,6vw,88px);max-width:1200px;margin:56px auto 0;align-items:start}
+.dzt-desc-testo{font-size:16.5px;line-height:1.75;color:var(--ink2)}
+.dzt-desc-testo > h2:first-child{display:none}
+.dzt-desc-testo p{margin:0 0 1.1em;max-width:62ch}
+.dzt-desc-testo h2,.dzt-desc-testo h3{font-family:var(--serif);font-weight:400;font-size:26px;color:var(--ink)}
+.dzt-spec{margin:0;border-top:1px solid var(--filo2)}
+.dzt-spec div{display:grid;grid-template-columns:minmax(120px,190px) 1fr;gap:20px;padding:15px 0;border-bottom:1px solid var(--filo)}
+.dzt-spec dt{padding-top:4px;font-size:10.5px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--sub)}
+.dzt-spec dd{margin:0;font-family:var(--serif);font-size:19px;font-weight:500;line-height:1.35;font-variant-numeric:lining-nums}
+.dzt-desc-corpo > :only-child{grid-column:1 / -1;max-width:760px;justify-self:center;width:100%}
 
 /* barra in basso su telefono */
 .dzt-barra{display:none}
 
-/* descrizione del telaio */
-.dzt-desc{max-width:760px;margin:0 auto;padding:clamp(40px,6vw,80px) 24px clamp(40px,6vw,80px);border-top:1px solid var(--hair)}
-.dzt-desc h2{margin:0 0 18px;font-size:clamp(28px,3.4vw,40px);font-weight:600;letter-spacing:-.035em}
-.dzt-desc-testo{font-size:17px;line-height:1.6;color:#424245}
-.dzt-desc-testo img{max-width:100%;height:auto;border-radius:18px}
-
-@media (max-width:900px){
-  .dzt-conf{grid-template-columns:1fr;padding-top:36px}
-  .dzt-vis{position:relative;top:auto}
-  .dzt-vis-lista{display:none}
-  /* telefono: il telaio subito sotto il nome, frase e prezzo sotto la foto;
-     la foto del configuratore non si ripete (quella dell'apertura cambia col colore) */
-  .dzt-hero{padding-top:28px;padding-bottom:4px}
-  .dzt-hero-stage{margin-top:14px;padding-bottom:18px}
-  .dzt-hero-stage img{max-height:none}
-  .dzt-claim{margin-top:6px;font-size:18px}
-  .dzt-hero-cta{margin-top:14px}
-  .dzt-vis-foto{display:none}
-  .dzt-vis-kit{margin-top:0}
+@media (max-width:960px){
+  .dzt-conf-corpo{grid-template-columns:1fr}
+  .dzt-vis{position:static}
   .dzt-barra{display:flex;position:fixed;left:12px;right:12px;bottom:76px;z-index:60;align-items:center;justify-content:space-between;gap:14px;
-    padding:10px 10px 10px 18px;border-radius:18px;background:rgba(255,255,255,.86);
-    backdrop-filter:blur(18px) saturate(1.6);-webkit-backdrop-filter:blur(18px) saturate(1.6);
-    box-shadow:0 10px 30px -12px rgba(0,0,0,.25),0 0 0 .5px rgba(0,0,0,.08);
-    transform:translateY(0);transition:transform .3s ease,opacity .3s ease}
+    padding:10px 10px 10px 18px;background:rgba(255,255,255,.94);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+    box-shadow:inset 0 0 0 1px var(--filo),0 12px 30px -14px rgba(18,20,42,.35);transition:transform .3s ease,opacity .3s ease}
   .dzt-barra.via{transform:translateY(140%);opacity:0;pointer-events:none}
   .dzt-barra span{display:flex;flex-direction:column}
-  .dzt-barra i{font-style:normal;font-size:12px;color:var(--sub)}
-  .dzt-barra b{font-size:18px;font-weight:600;font-variant-numeric:tabular-nums}
-  .dzt-barra .dzt-add{width:auto;min-height:42px;padding:0 20px;font-size:15px}
+  .dzt-barra i{font-style:normal;font-size:10px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:var(--sub)}
+  .dzt-barra b{font-family:var(--serif);font-size:24px;font-weight:500;line-height:1.1;font-variant-numeric:lining-nums tabular-nums}
+  .dzt-barra .dzt-btn{min-height:44px;padding:0 22px}
+  .dzt-desc-corpo{grid-template-columns:1fr}
 }
-@media (max-width:560px){
-  .dzt-conf{padding-left:18px;padding-right:18px}
-  .dzt-chips{grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:8px}
-  .dzt-chip{font-size:14px;padding:8px 6px;min-height:48px}
-  .dzt-chips-larghe{grid-template-columns:1fr 1fr}
-  .dzt-chips-mis{grid-template-columns:1fr 1fr}
-  .dzt-chips-mis .dzt-chip{font-size:13.5px;padding:8px 4px}
-  .dzt-kit{grid-template-columns:auto minmax(0,1fr);padding:16px}
-  .dzt-kit-prezzo{grid-column:2}
-  .dzt-kit-foto{width:60px;height:60px}
-  .dzt-kit.kc{grid-template-columns:minmax(0,1fr)}
-  .dzt-prev{font-size:16px}
-  .dzt-kit.kc .dzt-kit-prezzo{grid-column:1}
-  .dzt-kit-collage{height:120px}
-  .dzt-vis-kit span{height:60px}
-}
-@media (prefers-reduced-motion:reduce){.dzt *{transition:none!important}}
-
-/* =====================================================================
-   STILE "SCENA": pagina nera, telaio in una pozza di luce da studio che
-   sfuma nel buio, nome del modello enorme in trasparenza dietro, titolo
-   metallico, configuratore scuro come le pagine "Pro" di Apple.
-   Le foto hanno fondo bianco: restano su riquadri chiari (o nella luce),
-   cosi' la fusione "multiply" le scontorna senza farle diventare nere.
-   ===================================================================== */
-.dzt-parola{display:none}
-.dzt.dzt-scena{--ink:#f5f5f7;--sub:#a1a1a6;--sub2:#86868b;--hair:rgba(255,255,255,.12);--hair2:rgba(255,255,255,.22);
-  --panel:#1c1c1e;--blue:#2997ff;--blue-h:#47a6ff;background:#000;color:var(--ink)}
-.dzt-scena .dzt-hero{background:#000}
-.dzt-scena .dzt-k{color:#ff9f0a}
-.dzt-scena .dzt-h1{background:linear-gradient(180deg,#fff 25%,#b8b8bf 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
-.dzt-scena .dzt-claim{color:#d2d2d7}
-/* la scena: fondo nero, pozza di luce, nome del modello dietro, telaio sopra */
-.dzt-scena .dzt-hero-stage{isolation:isolate;background:#000;max-width:none;padding-bottom:clamp(24px,3vw,44px)}
-.dzt-scena .dzt-hero-stage::before{z-index:1;inset:0;-webkit-mask-image:none;mask-image:none;
-  background:radial-gradient(48% 50% at 50% 54%,#fff 0%,#f1f1f4 42%,rgba(150,150,158,.5) 74%,rgba(0,0,0,0) 100%)}
-.dzt-scena .dzt-parola{display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-58%);z-index:0;
-  font-size:clamp(96px,21vw,340px);font-weight:800;letter-spacing:-.05em;line-height:.8;white-space:nowrap;pointer-events:none;
-  color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.24)}
-.dzt-scena .dzt-hero-stage img{z-index:2;max-height:66vh}
-/* riga di luce sul "pavimento" */
-.dzt-scena .dzt-hero-stage::after{content:"";position:absolute;left:18%;right:18%;bottom:clamp(20px,2.6vw,40px);height:1px;z-index:3;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent)}
-.dzt-scena .dzt-da{color:var(--sub)}
-.dzt-scena .dzt-link{color:var(--blue)}
-
-/* configuratore scuro */
-.dzt-scena .dzt-vis-foto{background:radial-gradient(closest-side,#fff 0%,#ececf0 55%,#8e8e96 100%)}
-.dzt-scena .dzt-vis-kit span,.dzt-scena .dzt-kit-foto,.dzt-scena .dzt-kit-collage{background:#f2f2f5}
-.dzt-scena .dzt-chip,.dzt-scena .dzt-kit{background:var(--panel);color:var(--ink);border-color:var(--hair2)}
-.dzt-scena .dzt-chip:hover,.dzt-scena .dzt-kit:hover{border-color:#8e8e93}
-.dzt-scena .dzt-chip.on,.dzt-scena .dzt-kit.on{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
-.dzt-scena .dzt-chip[disabled]{background:#111113}
-.dzt-scena .dzt-kit-var,.dzt-scena .dzt-note textarea{background:var(--panel);color:var(--ink);border-color:var(--hair2)}
-.dzt-scena .dzt-conto{background:var(--panel)}
-.dzt-scena .dzt-seg{background:#2c2c2e}
-.dzt-scena .dzt-seg button{color:var(--ink)}
-.dzt-scena .dzt-seg button.on{background:#636366;box-shadow:none}
-.dzt-scena .dzt-seg button[disabled]{color:#636366}
-.dzt-scena .dzt-add[disabled]{background:#3a3a3c;color:#8e8e93}
-.dzt-scena .dzt-prev{background:transparent}
-.dzt-scena .dzt-prev:hover{background:rgba(41,151,255,.12)}
-.dzt-scena .dzt-pag-prova,.dzt-scena .dzt-nota.ko,.dzt-scena .dzt-err{color:#ff9f0a}
-.dzt-scena .dzt-desc{border-top-color:var(--hair)}
-.dzt-scena .dzt-desc-testo{color:#d2d2d7}
-@media (max-width:900px){
-  .dzt-scena .dzt-barra{background:rgba(28,28,30,.86);box-shadow:0 10px 30px -12px rgba(0,0,0,.6),0 0 0 .5px rgba(255,255,255,.12)}
+@media (max-width:760px){
+  .dzt-hero{padding:30px 16px 0}
+  .dzt-h1{font-size:clamp(36px,10.4vw,48px)}
+  .dzt-teca{margin:14px -16px 0}
+  .dzt-teca img{width:100%;max-height:none}
+  .dzt-da{font-size:20px}
+  .dzt-scheda{grid-template-columns:1fr 1fr;margin-top:40px}
+  .dzt-scheda div{padding:16px 10px 18px}
+  .dzt-scheda div:nth-child(odd){border-left:0}
+  .dzt-scheda div:nth-child(n+3){border-top:1px solid var(--filo)}
+  .dzt-scheda dd{font-size:24px}
+  .dzt-conf{padding:72px 16px 64px}
+  .dzt-conf-corpo{margin-top:40px}
+  /* su telefono la vetrina c'e' gia' in alto (e segue il colore scelto) */
+  .dzt-vis{display:none}
+  .dzt-passo{padding-bottom:40px;margin-bottom:40px}
+  .dzt-kit{gap:14px;padding:20px 4px 20px 36px;flex-wrap:wrap}
+  .dzt-kit::before{left:6px;top:23px}
+  .dzt-kit-foto,.dzt-kit-collage{width:64px;height:64px}
+  .dzt-kit-testo{flex-basis:calc(100% - 80px)}
+  .dzt-kit-prezzo{margin-left:0;padding-top:0}
+  .dzt-kit-foto ~ .dzt-kit-prezzo,.dzt-kit-collage ~ .dzt-kit-prezzo{margin-left:78px}
+  .dzt-kit-testo b{font-size:21px}
+  .dzt-conto{padding:32px 20px 26px}
+  .dzt-conto-dz{display:none}
+  .dzt-tot b{font-size:34px}
+  .dzt-seg{grid-template-columns:1fr}
+  .dzt-desc{padding:72px 16px 80px}
+  .dzt-desc-corpo{margin-top:36px}
+  .dzt-spec div{grid-template-columns:1fr;gap:4px}
 }
 
-/* menu scuro sopra la pagina nera (stile scena) */
-.dz header{transition:background .35s ease,border-color .35s ease}
-body.dz-buio header{background:rgba(8,8,10,.86);border-bottom-color:rgba(255,255,255,.08)}
-body.dz-buio .menu a{color:rgba(255,255,255,.86)}
-body.dz-buio .menu a:hover{color:#fff;background:rgba(255,255,255,.08)}
-body.dz-buio .menu a.sale{color:#ff5c85}
-body.dz-buio .icb,body.dz-buio .burger,body.dz-buio .locform select{color:#fff}
-body.dz-buio .locform select option{color:#111319}
-body.dz-buio .logo .reallogo{filter:invert(1) hue-rotate(180deg)}
-body.dz-buio .logo .wm{color:#fff}
+@media (prefers-reduced-motion:reduce){
+  .dzt *{transition:none!important}
+}
