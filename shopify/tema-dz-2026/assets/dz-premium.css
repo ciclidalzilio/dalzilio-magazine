@@ -188,11 +188,14 @@
   padding:clamp(20px,3vw,48px) 0 clamp(44px,5vw,84px);
   background:transparent;border-radius:0;overflow:hidden}
 /* fondale grigio su un livello a parte che sfuma nel bianco della pagina in alto
-   e in basso: nessuno stacco tra il riquadro e il bianco. La bici resta nitida. */
+   e in basso: nessuno stacco tra il riquadro e il bianco. La bici resta nitida.
+   La sfumatura in basso comincia sotto le ruote (nel margine sotto la foto), cosi'
+   le gomme poggiano sul grigio e non sul bianco. */
+.dz-ph-stage{--dz-sfuma-giu:clamp(44px,5vw,84px)}
 .dz-ph-stage::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
   background:radial-gradient(60% 70% at 50% 78%,#dfe0e5 0%,#eeeef1 42%,#fff 100%);
-  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 26%,#000 70%,transparent 100%);
-  mask-image:linear-gradient(180deg,transparent 0,#000 26%,#000 70%,transparent 100%)}
+  -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 calc(100% - var(--dz-sfuma-giu)),transparent 100%);
+  mask-image:linear-gradient(180deg,transparent 0,#000 18%,#000 calc(100% - var(--dz-sfuma-giu)),transparent 100%)}
 .dz-ph-stage img{position:relative;z-index:1;width:100%;height:auto;max-height:80vh;object-fit:contain;object-position:50% 100%;display:block;mix-blend-mode:multiply;
   opacity:0;transition:opacity .8s ease}
 .dz-ph-stage.dz-fit img{opacity:1}
@@ -357,7 +360,7 @@ html.dz-js body:has(.dz.dz-premium) [data-dz-rev]{will-change:opacity,transform}
   .dz-ph-title{font-size:clamp(40px,11vw,56px)}
   .dz-ph-claim{font-size:18px}
   .dz-ph-cta{gap:14px}
-  .dz-ph-stage{border-radius:0;padding:12px 0 30px}
+  .dz-ph-stage{border-radius:0;padding:12px 0 30px;--dz-sfuma-giu:30px}
   .dz-chap{padding-top:48px}
   .dz-keys{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 18px}
   .dz-key-link{grid-column:1 / -1}
