@@ -1,20 +1,25 @@
 {%- comment -%}
   dz-scheda-telaio.liquid — Cicli Dal Zilio
 
-  Scheda dei telai in stile atelier di alta orologeria: fondo avorio, titoli
-  in carattere classico sottile, filetti oro, un solo colore d'azione (verde
-  profondo). Il telaio sta in vetrina, poi si compone la bici in pochi passi.
-    I.   Taglia e colore del telaio (le varianti del prodotto).
-    II.  Montaggio: solo telaio, uno dei kit preparati dal negozio oppure il
-         preventivo personalizzato.
-    III. Le tue misure: solo se il kit scelto ha pezzi con misure (manubrio,
-         sella...), con le sole varianti che esistono davvero; quelle esaurite
-         nel magazzino (per Trek arriva dal B2B della casa) non si scelgono.
-    IV.  Riepilogo con il totale e le note per l'officina: nel carrello vanno
-         il telaio (con le note sulla riga) e il kit scelto. Col preventivo
-         personalizzato il pulsante apre WhatsApp con la configurazione scritta.
-  Sotto: le caratteristiche tecniche (lette dalla tabella del fornitore nella
-  descrizione) e il testo del telaio.
+  Scheda dei telai come un configuratore d'auto: a sinistra il telaio grande e
+  fermo (le viste del prodotto sotto, i pezzi del montaggio che si aggiungono),
+  a destra le scelte, in basso una barra sempre visibile con quello che hai
+  scelto, il totale e il pulsante. Su telefono il telaio resta in alto mentre
+  si scorrono le scelte, e la barra sta sopra il menu in basso.
+  Colori e carattere del sito, come la scheda prodotto.
+
+  Le scelte, in ordine (la barra delle schede in cima al pannello ci salta):
+    1. Telaio: colore (con la foto del telaio in quel colore) e taglia.
+    2. Montaggio: solo telaio, uno dei kit preparati dal negozio oppure il
+       preventivo personalizzato.
+    3. Misure: solo se il kit scelto ha pezzi con misure (manubrio, sella...),
+       con le sole varianti che esistono davvero; quelle esaurite nel magazzino
+       (per Trek arriva dal B2B della casa) non si scelgono.
+    4. Riepilogo: righe, totale, note per l'officina, pagamento, preventivo.
+  Nel carrello vanno il telaio (con le note sulla riga) e il kit scelto. Col
+  preventivo personalizzato il pulsante apre WhatsApp con la configurazione.
+  Sotto il configuratore: descrizione e caratteristiche tecniche (lette dalla
+  tabella del fornitore nella descrizione).
 
   I KIT sono prodotti normali dentro la collezione indicata nelle impostazioni
   della sezione (di base "kit-montaggio"): prezzo, foto e varianti del
@@ -31,7 +36,7 @@
   ":rear" per le due ruote); l'ultimo campo e' facoltativo. Prezzo = somma dei
   componenti, foto = composizione delle loro immagini, nel carrello vanno i
   componenti veri. Un pezzo senza ":variante" che ha piu' varianti (es. piega
-  390/420 x 130, sella 145/155) diventa una scelta nel passo "Le tue misure".
+  390/420 x 130, sella 145/155) diventa una scelta nel passo "Misure".
   Il preventivo personalizzato c'e' sempre, come ultima scelta.
 
   ACCONTO: se il telaio (e ogni pezzo del kit scelto) ha un piano di acquisto
@@ -240,89 +245,94 @@
     endif
   endfor
 -%}
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&display=swap">
-
+{%- liquid
+  assign foto0 = sel.featured_media | default: p.featured_media
+-%}
 <section class="dz dzt" data-dzt>
+  <form class="dzt-app" id="dzt-configura" action="{{ routes.cart_add_url }}" method="post" data-dzt-form>
+    <input type="hidden" name="id" value="{{ sel.id }}" data-dzt-id>
 
-  {%- comment -%} la vetrina: marca, nome, referenza, il telaio in luce, il prezzo {%- endcomment -%}
-  <div class="dzt-hero">
-    <p class="dzt-k">{% if marca != blank %}{{ marca }} <i></i> {% endif %}Kit telaio</p>
-    <h1 class="dzt-h1">{{ p.title }}</h1>
-    {%- if sel.sku != blank -%}<p class="dzt-ref">Referenza <span data-dzt-ref>{{ sel.sku }}</span></p>{%- endif -%}
-    {%- if p.featured_media -%}
-    <div class="dzt-teca">
-      <img data-dzt-foto-hero src="{{ p.featured_media | image_url: width: 1800 }}" alt="{{ p.featured_media.alt | default: p.title | escape }}"
-           width="1800" height="{{ 1800 | divided_by: p.featured_media.aspect_ratio | round }}" fetchpriority="high">
-    </div>
-    {%- endif -%}
-    <div class="dzt-hero-piede">
-      <p class="dzt-da">Telaio da <b>{{ p.price_min | money }}</b></p>
-      <a class="dzt-btn" href="#dzt-configura">Componi la tua bici</a>
-    </div>
-    <dl class="dzt-scheda">
-      {%- if anno != blank -%}<div><dt>Anno modello</dt><dd>{{ anno }}</dd></div>{%- endif -%}
-      {%- if n_taglie > 0 -%}<div><dt>Taglie</dt><dd>{{ n_taglie }}</dd></div>{%- endif -%}
-      {%- if n_colori > 0 -%}<div><dt>Colorazioni</dt><dd>{{ n_colori }}</dd></div>{%- endif -%}
-      <div><dt>Montaggio</dt><dd>In officina</dd></div>
-    </dl>
-  </div>
-
-  <div class="dzt-conf" id="dzt-configura">
-    <div class="dzt-conf-testa">
-      <p class="dzt-k">La tua configurazione</p>
-      <h2>Dal telaio alla tua bici.</h2>
+    {%- comment -%} a sinistra: il telaio grande, fermo; sotto le viste del prodotto e i pezzi del montaggio {%- endcomment -%}
+    <div class="dzt-stage">
+      <div class="dzt-stage-foto">
+        {%- if foto0 -%}
+        <img data-dzt-foto src="{{ foto0 | image_url: width: 1800 }}" alt="{{ foto0.alt | default: p.title | escape }}"
+             width="1800" height="{{ 1800 | divided_by: foto0.aspect_ratio | round }}" fetchpriority="high">
+        {%- endif -%}
+      </div>
+      <div class="dzt-stage-kit" data-dzt-vis-kit hidden></div>
+      {%- assign n_viste = 0 -%}
+      {%- for m in p.media -%}{%- if m.media_type == 'image' -%}{%- assign n_viste = n_viste | plus: 1 -%}{%- endif -%}{%- endfor -%}
+      {%- if n_viste > 1 -%}
+      <div class="dzt-viste" role="group" aria-label="Viste del telaio">
+        {%- assign nv = 0 -%}
+        {%- for m in p.media -%}
+          {%- if m.media_type != 'image' or nv >= 6 -%}{%- continue -%}{%- endif -%}
+          {%- assign nv = nv | plus: 1 -%}
+          <button type="button" class="dzt-vista{% if m.id == foto0.id %} on{% endif %}" data-dzt-vista="{{ m | image_url: width: 1800 }}" aria-label="Vista {{ nv }}">
+            <img src="{{ m | image_url: width: 160 }}" alt="" width="80" height="60" loading="lazy">
+          </button>
+        {%- endfor -%}
+      </div>
+      {%- endif -%}
     </div>
 
-    <div class="dzt-conf-corpo">
-      {%- comment -%} a sinistra, ferma mentre si scorre: il telaio nel colore scelto e le scelte fatte {%- endcomment -%}
-      <aside class="dzt-vis">
-        <div class="dzt-vis-foto">
-          <img data-dzt-foto src="{{ sel.featured_media | default: p.featured_media | image_url: width: 1400 }}" alt="{{ p.title | escape }}" width="1400" height="933" loading="lazy">
-        </div>
-        <div class="dzt-vis-kit" data-dzt-vis-kit hidden></div>
-        <ul class="dzt-vis-lista" data-dzt-vis-lista aria-live="polite">
-          <li><span>Telaio</span><b data-dzt-v-telaio>{{ sel.title }}</b></li>
-          <li><span>Montaggio</span><b data-dzt-v-kit>Solo telaio</b></li>
-          <li data-dzt-v-misure-riga hidden><span>Misure</span><b data-dzt-v-misure></b></li>
-        </ul>
-      </aside>
+    {%- comment -%} a destra: nome, prezzo, e le scelte {%- endcomment -%}
+    <div class="dzt-pan">
+      <div class="dzt-pan-testa">
+        <p class="dzt-k">{% if marca != blank %}{{ marca }} · {% endif %}Kit telaio{% if anno != blank %} · {{ anno }}{% endif %}</p>
+        <h1 class="dzt-h1">{{ p.title }}</h1>
+        <p class="dzt-da">Telaio da <b>{{ p.price_min | money }}</b></p>
+        {%- if sel.sku != blank -%}<p class="dzt-ref">Referenza <span data-dzt-ref>{{ sel.sku }}</span></p>{%- endif -%}
+      </div>
 
-      <form class="dzt-passi" action="{{ routes.cart_add_url }}" method="post" data-dzt-form>
-        <input type="hidden" name="id" value="{{ sel.id }}" data-dzt-id>
+      <nav class="dzt-tab" aria-label="Passi della configurazione" data-dzt-tab>
+        <a href="#dzt-p-telaio" class="on"><i>1</i>Telaio</a>
+        <a href="#dzt-p-montaggio"><i>2</i>Montaggio</a>
+        <a href="#dzt-p-misure" data-dzt-tab-misure hidden><i>3</i>Misure</a>
+        <a href="#dzt-riepilogo"><i data-dzt-num-riep>3</i>Riepilogo</a>
+      </nav>
 
-        {%- comment -%} I. taglia e colore {%- endcomment -%}
-        <div class="dzt-passo" data-dzt-passo="1">
-          <p class="dzt-num">I</p>
-          <h3>Taglia e colore</h3>
-          {%- for opt in p.options_with_values -%}
-            {%- assign on = opt.name | downcase -%}
-            {%- assign etichetta = opt.name -%}
-            {%- if on == 'size' or on == 'taglia' -%}{%- assign etichetta = 'Taglia' -%}{%- elsif on == 'color' or on == 'colore' -%}{%- assign etichetta = 'Colore' -%}{%- endif -%}
-            {%- unless opt.values.size == 1 and opt.values.first == 'Default Title' -%}
-            <fieldset class="dzt-gruppo" data-dzt-opt="{{ forloop.index0 }}" data-dzt-optname="{{ on }}">
-              <legend>{{ etichetta }}</legend>
-              <div class="dzt-chips{% if on == 'color' or on == 'colore' %} dzt-chips-larghe{% endif %}">
-                {%- for val in opt.values -%}
-                  <button type="button" class="dzt-chip{% if val == opt.selected_value %} on{% endif %}" data-dzt-val="{{ val | escape }}" aria-pressed="{% if val == opt.selected_value %}true{% else %}false{% endif %}">{{ val }}</button>
-                {%- endfor -%}
-              </div>
-            </fieldset>
-            {%- endunless -%}
-          {%- endfor -%}
-          <p class="dzt-nota" data-dzt-disp></p>
-          {%- if mtb == false -%}
-          <p class="dzt-aiuto">Non sai che taglia prendere? <a href="https://wa.me/{{ wa }}?text={{ 'Ciao! Che taglia mi consigliate per il telaio ' | append: p.title | url_encode }}" target="_blank" rel="noopener">Chiedilo a noi</a></p>
-          {%- endif -%}
-        </div>
+      {%- comment -%} 1. telaio: colore e taglia {%- endcomment -%}
+      <div class="dzt-passo" id="dzt-p-telaio" data-dzt-passo="1">
+        <h2>Telaio</h2>
+        {%- for opt in p.options_with_values -%}
+          {%- assign oi = forloop.index0 -%}
+          {%- assign on = opt.name | downcase -%}
+          {%- assign colore = false -%}
+          {%- assign etichetta = opt.name -%}
+          {%- if on == 'size' or on == 'taglia' -%}{%- assign etichetta = 'Taglia' -%}{%- elsif on == 'color' or on == 'colore' -%}{%- assign etichetta = 'Colore' -%}{%- assign colore = true -%}{%- endif -%}
+          {%- unless opt.values.size == 1 and opt.values.first == 'Default Title' -%}
+          <fieldset class="dzt-gruppo" data-dzt-opt="{{ oi }}" data-dzt-optname="{{ on }}">
+            <legend>{{ etichetta }} <span data-dzt-scelto="{{ oi }}">{{ opt.selected_value }}</span></legend>
+            <div class="dzt-chips{% if colore %} dzt-colori{% endif %}">
+              {%- for val in opt.values -%}
+                {%- assign vimg = '' -%}
+                {%- if colore -%}
+                  {%- for v in p.variants -%}
+                    {%- if v.options[oi] == val and v.featured_media -%}{%- assign vimg = v.featured_media | image_url: width: 240 -%}{%- break -%}{%- endif -%}
+                  {%- endfor -%}
+                {%- endif -%}
+                <button type="button" class="dzt-chip{% if val == opt.selected_value %} on{% endif %}" data-dzt-val="{{ val | escape }}" aria-pressed="{% if val == opt.selected_value %}true{% else %}false{% endif %}">
+                  {%- if vimg != '' -%}<img src="{{ vimg }}" alt="" width="120" height="80" loading="lazy">{%- endif -%}
+                  <span>{{ val }}</span>
+                </button>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+          {%- endunless -%}
+        {%- endfor -%}
+        <p class="dzt-nota" data-dzt-disp></p>
+        {%- if mtb == false -%}
+        <p class="dzt-aiuto">Non sai che taglia prendere? <a href="https://wa.me/{{ wa }}?text={{ 'Ciao! Che taglia mi consigliate per il telaio ' | append: p.title | url_encode }}" target="_blank" rel="noopener">Chiedilo a noi</a></p>
+        {%- endif -%}
+      </div>
 
-        {%- comment -%} II. montaggio {%- endcomment -%}
-        <div class="dzt-passo" data-dzt-passo="2">
-          <p class="dzt-num">II</p>
-          <h3>Il montaggio</h3>
-          <p class="dzt-sub">Kit preparati da noi e già abbinati a questo telaio. Oppure il solo telaio.</p>
-          <div class="dzt-kits" role="radiogroup" aria-label="Montaggio">
+      {%- comment -%} 2. montaggio {%- endcomment -%}
+      <div class="dzt-passo" id="dzt-p-montaggio" data-dzt-passo="2">
+        <h2>Montaggio</h2>
+        <p class="dzt-sub">Kit preparati da noi e già abbinati a questo telaio. La bici la montiamo noi, in officina.</p>
+        <div class="dzt-kits" role="radiogroup" aria-label="Montaggio">
             <label class="dzt-kit on">
               <input type="radio" name="dzt-kit" value="" checked>
               <span class="dzt-kit-testo"><b>Solo telaio</b><span>Il telaio nudo, da montare come vuoi tu.</span></span>
@@ -455,61 +465,61 @@
               <span class="dzt-kit-prezzo">Su richiesta</span>
             </label>
           </div>
-        </div>
+      </div>
 
-        {%- comment -%} III. misure: compare solo se il kit scelto ha pezzi con misure; lo riempie lo script {%- endcomment -%}
-        <div class="dzt-passo" data-dzt-passo="misure" data-dzt-mis-passo hidden>
-          <p class="dzt-num">III</p>
-          <h3>Le tue misure</h3>
-          <p class="dzt-sub">Solo le misure che esistono per questo montaggio. Quelle esaurite nel magazzino {% if marca != blank %}{{ marca }}{% else %}del marchio{% endif %} non si possono scegliere.</p>
-          <div data-dzt-mis-box></div>
-        </div>
+      {%- comment -%} 3. misure: compare solo se il kit scelto ha pezzi con misure; lo riempie lo script {%- endcomment -%}
+      <div class="dzt-passo" id="dzt-p-misure" data-dzt-passo="misure" data-dzt-mis-passo hidden>
+        <h2>Misure</h2>
+        <p class="dzt-sub">Solo le misure che esistono per questo montaggio. Quelle esaurite nel magazzino {% if marca != blank %}{{ marca }}{% else %}del marchio{% endif %} non si possono scegliere.</p>
+        <div data-dzt-mis-box></div>
+      </div>
 
-        {%- comment -%} riepilogo (III, oppure IV se ci sono le misure) {%- endcomment -%}
-        <div class="dzt-passo dzt-riep" data-dzt-passo="riepilogo" id="dzt-riepilogo">
-          <p class="dzt-num" data-dzt-num-riep>III</p>
-          <h3>La tua bici</h3>
-          <div class="dzt-conto">
-            <p class="dzt-conto-k"><span class="dzt-conto-dz">Cicli Dal Zilio <i></i> </span>Scheda di montaggio</p>
-            <p class="dzt-conto-nome">{{ p.title }}</p>
-            <div class="dzt-riga"><span><b>Telaio</b><i data-dzt-r-telaio>{{ sel.title }}</i></span><b data-dzt-r-telaio-p>{{ sel.price | money }}</b></div>
-            <div class="dzt-riga"><span><b>Montaggio</b><i data-dzt-r-kit>Solo telaio</i></span><b data-dzt-r-kit-p>Incluso</b></div>
-            <div class="dzt-riga" data-dzt-r-misure-riga hidden><span><b>Misure</b><i data-dzt-r-misure></i></span><b></b></div>
-            <div class="dzt-tot"><span>Totale</span><b data-dzt-tot>{{ sel.price | money }}</b></div>
-            <p class="dzt-tot-nota" data-dzt-tot-nota hidden>+ montaggio su preventivo</p>
-            <label class="dzt-note">Note per l'officina <span>facoltative</span><textarea rows="2" maxlength="400" placeholder="Es. nastro manubrio nero, pedali già montati…" data-dzt-note></textarea></label>
-            {%- if acc_ok -%}
-            <div class="dzt-pag" data-dzt-pag>
-              <div class="dzt-seg" role="radiogroup" aria-label="Pagamento">
-                <button type="button" class="on" data-dzt-pag-modo="tutto" aria-pressed="true">Paga tutto ora</button>
-                <button type="button" data-dzt-pag-modo="acconto" aria-pressed="false">Riserva con acconto del {{ acc_perc }}%</button>
-              </div>
-              <p class="dzt-pag-info" data-dzt-pag-info hidden></p>
-              {%- if acc_prova -%}<p class="dzt-pag-prova">Anteprima: l'acconto si attiva quando l'app di preordini avrà creato il piano.</p>{%- endif -%}
-            </div>
-            {%- endif -%}
-            <button type="submit" class="dzt-btn dzt-add" data-dzt-add{% unless sel.available %} disabled{% endunless %}>{% if sel.available %}Aggiungi al carrello{% else %}Non disponibile{% endif %}</button>
-            <p class="dzt-err" data-dzt-err role="alert" hidden></p>
-            <a class="dzt-btn dzt-prev" data-dzt-wa target="_blank" rel="noopener" href="https://wa.me/{{ wa }}">Chiedici un preventivo personalizzato</a>
-            <p class="dzt-prev-nota" data-dzt-prev-nota>Ti rispondiamo su WhatsApp con la tua configurazione già scritta.</p>
+      {%- comment -%} 4. riepilogo {%- endcomment -%}
+      <div class="dzt-passo dzt-riep" id="dzt-riepilogo" data-dzt-passo="riepilogo">
+        <h2>Riepilogo</h2>
+        <div class="dzt-conto">
+          <div class="dzt-riga"><span><b>Telaio</b><i data-dzt-r-telaio>{{ sel.title }}</i></span><b data-dzt-r-telaio-p>{{ sel.price | money }}</b></div>
+          <div class="dzt-riga"><span><b>Montaggio</b><i data-dzt-r-kit>Solo telaio</i></span><b data-dzt-r-kit-p>Incluso</b></div>
+          <div class="dzt-riga" data-dzt-r-misure-riga hidden><span><b>Misure</b><i data-dzt-r-misure></i></span><b></b></div>
+          <div class="dzt-tot"><span>Totale</span><b data-dzt-tot>{{ sel.price | money }}</b></div>
+          <p class="dzt-tot-nota" data-dzt-tot-nota hidden>+ montaggio su preventivo</p>
+        </div>
+        {%- if acc_ok -%}
+        <div class="dzt-pag" data-dzt-pag>
+          <p class="dzt-etich">Pagamento</p>
+          <div class="dzt-seg" role="radiogroup" aria-label="Pagamento">
+            <button type="button" class="on" data-dzt-pag-modo="tutto" aria-pressed="true">Paga tutto ora</button>
+            <button type="button" data-dzt-pag-modo="acconto" aria-pressed="false">Acconto {{ acc_perc }}%</button>
           </div>
+          <p class="dzt-pag-info" data-dzt-pag-info hidden></p>
+          {%- if acc_prova -%}<p class="dzt-pag-prova">Anteprima: l'acconto si attiva quando l'app di preordini avrà creato il piano.</p>{%- endif -%}
         </div>
-      </form>
+        {%- endif -%}
+        <label class="dzt-note"><span class="dzt-etich">Note per l'officina <i>facoltative</i></span><textarea rows="2" maxlength="400" placeholder="Es. nastro manubrio nero, pedali già montati…" data-dzt-note></textarea></label>
+        <a class="dzt-prev" data-dzt-wa target="_blank" rel="noopener" href="https://wa.me/{{ wa }}">Chiedici un preventivo personalizzato</a>
+        <p class="dzt-prev-nota" data-dzt-prev-nota>Ti rispondiamo su WhatsApp con la tua configurazione già scritta.</p>
+      </div>
     </div>
-  </div>
 
-  {%- comment -%} barra in basso su telefono: totale e riepilogo, sempre a portata {%- endcomment -%}
-  <div class="dzt-barra" data-dzt-barra>
-    <span><i>Totale</i><b data-dzt-tot2>{{ sel.price | money }}</b></span>
-    <a class="dzt-btn" href="#dzt-riepilogo">Riepilogo</a>
-  </div>
+    {%- comment -%} la barra in basso: cosa hai scelto, il totale, il pulsante; sempre visibile mentre configuri {%- endcomment -%}
+    <div class="dzt-bar">
+      <div class="dzt-bar-sel" aria-live="polite">
+        <span class="dzt-bar-k">La tua bici</span>
+        <span class="dzt-bar-v"><span data-dzt-v-telaio>{{ sel.title }}</span> · <span data-dzt-v-kit>Solo telaio</span><span data-dzt-v-misure-riga hidden> · <span data-dzt-v-misure></span></span></span>
+      </div>
+      <div class="dzt-bar-tot">
+        <span>Totale</span>
+        <b data-dzt-tot2>{{ sel.price | money }}</b>
+        <i data-dzt-bar-oggi></i>
+      </div>
+      <button type="submit" class="dzt-add" data-dzt-add{% unless sel.available %} disabled{% endunless %}>{% if sel.available %}Aggiungi al carrello{% else %}Non disponibile{% endif %}</button>
+      <p class="dzt-err" data-dzt-err role="alert" hidden></p>
+    </div>
+  </form>
 
   {%- if spec_l.size > 0 or desc_testo != blank -%}
   <div class="dzt-desc">
-    <div class="dzt-desc-testa">
-      <p class="dzt-k">Il telaio</p>
-      <h2>Caratteristiche</h2>
-    </div>
+    <h2>Il telaio</h2>
     <div class="dzt-desc-corpo">
       {%- if desc_testo != blank -%}<div class="dzt-desc-testo">{{ desc_testo }}</div>{%- endif -%}
       {%- if spec_l.size > 0 -%}
@@ -536,7 +546,7 @@
       "varianti": [
         {%- for v in p.variants -%}
         {"id": {{ v.id }}, "o": {{ v.options | json }}, "t": {{ v.title | json }}, "prezzo": {{ v.price }}, "disp": {{ v.available | json }}, "sku": {{ v.sku | json }},
-         "img": {% if v.featured_media %}{{ v.featured_media | image_url: width: 1400 | json }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}
+         "img": {% if v.featured_media %}{{ v.featured_media | image_url: width: 1800 | json }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}
         {%- endfor -%}
       ],
       "kit": [

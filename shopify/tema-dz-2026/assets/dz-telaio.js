@@ -1,6 +1,7 @@
-/* DZ 2026 — scheda telaio: il configuratore.
-   Tiene lo stato delle scelte (variante del telaio, kit), aggiorna foto,
-   riepilogo e totale, e aggiunge al carrello telaio e kit in un colpo solo.
+/* DZ 2026 — scheda telaio: il configuratore (stile configuratore d'auto).
+   Tiene lo stato delle scelte (variante del telaio, kit, misure), aggiorna la
+   foto grande, la barra in basso, il riepilogo e il totale, e aggiunge al
+   carrello telaio e kit in un colpo solo.
    Le note per l'officina vanno sulla riga del telaio; il kit porta la nota
    "Montato su". Nessun dato del negozio viene modificato. */
 (function () {
@@ -62,7 +63,7 @@
   }
 
   /* ---- aggiornamento di tutto cio' che si vede ---- */
-  var fotoEl = $("[data-dzt-foto]"), fotoHero = $("[data-dzt-foto-hero]");
+  var fotoEl = $("[data-dzt-foto]");
   function aggiorna() {
     var v = variante();
 
@@ -80,6 +81,8 @@
         c.classList.toggle("on", on);
         c.setAttribute("aria-pressed", on ? "true" : "false");
       });
+      var sc = $("[data-dzt-scelto]", g);
+      if (sc) sc.textContent = scelte[i] || "";
     });
 
     var disp = $("[data-dzt-disp]");
@@ -93,7 +96,8 @@
       if (v.img && fotoEl && fotoEl.getAttribute("src") !== v.img) {
         fotoEl.classList.add("cambia");
         var pre = new Image();
-        pre.onload = pre.onerror = function () { fotoEl.src = v.img; fotoEl.classList.remove("cambia"); if (fotoHero) fotoHero.src = v.img; };
+        pre.onload = pre.onerror = function () { fotoEl.src = v.img; fotoEl.classList.remove("cambia"); };
+        $$("[data-dzt-vista]").forEach(function (b) { b.classList.toggle("on", b.getAttribute("data-dzt-vista") === v.img); });
         pre.src = v.img;
       }
     }
@@ -166,6 +170,8 @@
         info.hidden = false;
       } else info.hidden = true;
     }
+    var bo = $("[data-dzt-bar-oggi]");
+    if (bo) bo.textContent = pagModo === "acconto" && accOk ? "oggi " + soldi(oggi) : "";
 
     var add = $("[data-dzt-add]");
     if (kit === "su-misura") {
@@ -234,7 +240,9 @@
       fs.appendChild(box); boxMis.appendChild(fs);
     });
     passoMis.hidden = !ms.length;
-    $("[data-dzt-num-riep]").textContent = ms.length ? "IV" : "III";
+    var tabMis = $("[data-dzt-tab-misure]");
+    if (tabMis) tabMis.hidden = !ms.length;
+    $("[data-dzt-num-riep]").textContent = ms.length ? "4" : "3";
   }
 
   /* ---- 1. taglia e colore ---- */
@@ -341,14 +349,31 @@
     });
   });
 
-  /* barra in basso su telefono: sparisce quando il riepilogo e' sullo schermo */
-  var barra = $("[data-dzt-barra]"), riep = $("#dzt-riepilogo"), conf = $("#dzt-configura");
-  if (barra && riep && conf && "IntersectionObserver" in window) {
-    var inConf = false, inRiep = false;
-    function barraVia() { barra.classList.toggle("via", !inConf || inRiep); }
-    barraVia();
-    new IntersectionObserver(function (v) { inRiep = v[0].isIntersecting; barraVia(); }, { threshold: 0.15 }).observe(riep);
-    new IntersectionObserver(function (v) { inConf = v[0].isIntersecting; barraVia(); }, { rootMargin: "0px 0px -35% 0px" }).observe(conf);
+  /* altezza del menu del sito: il telaio e le schede si fermano subito sotto */
+  var testa = document.querySelector(".dz header");
+  function misuraTesta() { if (testa) root.style.setProperty("--dzt-testa", testa.getBoundingClientRect().height + "px"); }
+  misuraTesta();
+  addEventListener("resize", misuraTesta);
+
+  /* viste del telaio sotto la foto grande */
+  $$("[data-dzt-vista]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      if (!fotoEl) return;
+      fotoEl.src = b.getAttribute("data-dzt-vista");
+      $$("[data-dzt-vista]").forEach(function (x) { x.classList.toggle("on", x === b); });
+    });
+  });
+
+  /* schede in cima al pannello: si accende quella del passo che si sta guardando */
+  var tabs = $$("[data-dzt-tab] a");
+  if (tabs.length && "IntersectionObserver" in window) {
+    var visti = {};
+    var oss = new IntersectionObserver(function (voci) {
+      voci.forEach(function (x) { visti[x.target.id] = x.isIntersecting; });
+      var att = tabs.filter(function (t) { return !t.hidden && visti[t.getAttribute("href").slice(1)]; })[0];
+      if (att) tabs.forEach(function (t) { t.classList.toggle("on", t === att); });
+    }, { rootMargin: "-30% 0px -55% 0px" });
+    tabs.forEach(function (t) { var el = document.getElementById(t.getAttribute("href").slice(1)); if (el) oss.observe(el); });
   }
 
   aggiorna();
