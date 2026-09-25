@@ -487,19 +487,44 @@
     <div class="dz-key"><b><span data-dz-fig-rata>—</span><em>/mese</em></b><span>In <span data-dz-fig-mesi>48</span> rate</span></div>
     <a class="dz-key dz-key-link" href="#shopify-section-permuta"><b>Permuta</b><span>La tua usata vale, ovunque tu sia ›</span></a>
   </div>
-  {%- if p.media.size > 1 -%}
+  {%- liquid
+    comment
+      Galleria "da vicino": solo le foto di DETTAGLIO. Fuori la foto principale
+      e le foto dei colori (quelle legate alle varianti): sono la stessa vista
+      laterale in un altro colore, qui sarebbero una ripetizione. Con meno di
+      due foto di dettaglio il capitolo non compare.
+    endcomment
+    assign ids_colori = ','
+    for v in p.variants
+      if v.featured_media
+        assign ids_colori = ids_colori | append: v.featured_media.id | append: ','
+      endif
+    endfor
+    assign n_dett = 0
+    for media in p.media
+      assign chiave_m = ',' | append: media.id | append: ','
+      if media.media_type != 'image' or media.id == p.featured_media.id or ids_colori contains chiave_m
+        continue
+      endif
+      assign n_dett = n_dett | plus: 1
+    endfor
+  -%}
+  {%- if n_dett > 1 -%}
   <div class="dz-chap" id="dz-galleria">
     <div class="dz-chap-head" data-reveal="1">
       <h2>{{ section.settings.gal_h2 }}</h2>
       <div class="dz-rail-nav">
-        <span class="dz-chap-n">{{ p.media.size }} foto</span>
+        <span class="dz-chap-n">{{ n_dett | at_most: 14 }} foto</span>
         <button type="button" class="dz-rail-btn" data-dz-rail-prev aria-label="Foto precedente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
         <button type="button" class="dz-rail-btn" data-dz-rail-next aria-label="Foto successiva"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
       </div>
     </div>
     <div class="dz-rail" data-reveal="2">
-      {%- for media in p.media limit: 14 -%}
-        {%- if media.media_type != 'image' -%}{%- continue -%}{%- endif -%}
+      {%- assign n_mostrate = 0 -%}
+      {%- for media in p.media -%}
+        {%- assign chiave_m = ',' | append: media.id | append: ',' -%}
+        {%- if media.media_type != 'image' or media.id == p.featured_media.id or ids_colori contains chiave_m or n_mostrate >= 14 -%}{%- continue -%}{%- endif -%}
+        {%- assign n_mostrate = n_mostrate | plus: 1 -%}
         {%- liquid
           comment
             Didascalia dal testo alternativo della foto, ripulito: il feed
