@@ -39,7 +39,12 @@
   ANTEPRIMA ACCONTO (impostazione della sezione, 0 = spenta): per vedere la
   scelta prima che esistano i piani. Mostra gli importi ma non ordina nulla.
 
-  Si usa assegnando al prodotto il modello "telaio" (templates/product.telaio.json).
+  STILE (impostazione della sezione): "chiaro" (bianco, stile Apple) oppure
+  "scena" (pagina nera, telaio in una pozza di luce da studio, nome del modello
+  enorme in trasparenza dietro, configuratore scuro).
+
+  Si usa assegnando al prodotto il modello "telaio" (templates/product.telaio.json);
+  il modello "telaio-scena" e' lo stesso con lo stile scena.
   I dati strutturati per Google restano quelli di dz-schema.liquid nell'head.
 {%- endcomment -%}
 
@@ -174,7 +179,15 @@
   assign kc_json = ''
 -%}
 
-<section class="dz dzt" data-dzt>
+{%- liquid
+  assign stile = section.settings.stile | default: 'chiaro'
+  comment
+    Parola del modello per lo stile scena: "Kit telaio Madone SLR Gen 8" -> MADONE
+  endcomment
+  assign tit_m = p.title | remove_first: 'Kit telaio ' | remove_first: 'Telaio ' | remove_first: 'Frameset ' | remove_first: 'Frame '
+  assign parola = tit_m | split: ' ' | first | upcase
+-%}
+<section class="dz dzt{% if stile == 'scena' %} dzt-scena{% endif %}" data-dzt>
 
   {%- comment -%} apertura: nome del telaio, una frase, il telaio grande su fondale che sfuma nel bianco {%- endcomment -%}
   <div class="dzt-hero">
@@ -187,6 +200,7 @@
     </div>
     {%- if p.featured_media -%}
     <div class="dzt-hero-stage">
+      {%- if stile == 'scena' -%}<span class="dzt-parola" aria-hidden="true">{{ parola }}</span>{%- endif -%}
       <img data-dzt-foto-hero src="{{ p.featured_media | image_url: width: 1800 }}" alt="{{ p.featured_media.alt | default: p.title | escape }}"
            width="1800" height="{{ 1800 | divided_by: p.featured_media.aspect_ratio | round }}" fetchpriority="high">
     </div>
@@ -481,6 +495,8 @@
     { "type": "text", "id": "whatsapp", "label": "Numero WhatsApp", "default": "393457815102" },
     { "type": "textarea", "id": "kit_composti", "label": "Kit composti dal catalogo",
       "info": "Una riga per kit: Nome | maniglia[:variante], maniglia[:variante] | strada o mtb (facoltativo). Prezzo = somma dei componenti." },
+    { "type": "select", "id": "stile", "label": "Stile della scheda", "default": "chiaro",
+      "options": [{ "value": "chiaro", "label": "Chiaro (bianco)" }, { "value": "scena", "label": "Scena (nero, luce da studio)" }] },
     { "type": "range", "id": "acconto_anteprima", "label": "Anteprima acconto (%)", "min": 0, "max": 50, "step": 5, "default": 0,
       "info": "Solo per provare la scelta 'Riserva con acconto' prima che un'app di preordini crei i piani: mostra gli importi ma non ordina. 0 = spenta." }
   ]

@@ -196,3 +196,65 @@
   .dzt-vis-kit span{height:60px}
 }
 @media (prefers-reduced-motion:reduce){.dzt *{transition:none!important}}
+
+/* =====================================================================
+   STILE "SCENA": pagina nera, telaio in una pozza di luce da studio che
+   sfuma nel buio, nome del modello enorme in trasparenza dietro, titolo
+   metallico, configuratore scuro come le pagine "Pro" di Apple.
+   Le foto hanno fondo bianco: restano su riquadri chiari (o nella luce),
+   cosi' la fusione "multiply" le scontorna senza farle diventare nere.
+   ===================================================================== */
+.dzt-parola{display:none}
+.dzt.dzt-scena{--ink:#f5f5f7;--sub:#a1a1a6;--sub2:#86868b;--hair:rgba(255,255,255,.12);--hair2:rgba(255,255,255,.22);
+  --panel:#1c1c1e;--blue:#2997ff;--blue-h:#47a6ff;background:#000;color:var(--ink)}
+.dzt-scena .dzt-hero{background:#000}
+.dzt-scena .dzt-k{color:#ff9f0a}
+.dzt-scena .dzt-h1{background:linear-gradient(180deg,#fff 25%,#b8b8bf 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+.dzt-scena .dzt-claim{color:#d2d2d7}
+/* la scena: fondo nero, pozza di luce, nome del modello dietro, telaio sopra */
+.dzt-scena .dzt-hero-stage{isolation:isolate;background:#000;max-width:none;padding-bottom:clamp(24px,3vw,44px)}
+.dzt-scena .dzt-hero-stage::before{z-index:1;inset:0;-webkit-mask-image:none;mask-image:none;
+  background:radial-gradient(48% 50% at 50% 54%,#fff 0%,#f1f1f4 42%,rgba(150,150,158,.5) 74%,rgba(0,0,0,0) 100%)}
+.dzt-scena .dzt-parola{display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-58%);z-index:0;
+  font-size:clamp(96px,21vw,340px);font-weight:800;letter-spacing:-.05em;line-height:.8;white-space:nowrap;pointer-events:none;
+  color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.24)}
+.dzt-scena .dzt-hero-stage img{z-index:2;max-height:66vh}
+/* riga di luce sul "pavimento" */
+.dzt-scena .dzt-hero-stage::after{content:"";position:absolute;left:18%;right:18%;bottom:clamp(20px,2.6vw,40px);height:1px;z-index:3;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.55),transparent)}
+.dzt-scena .dzt-da{color:var(--sub)}
+.dzt-scena .dzt-link{color:var(--blue)}
+
+/* configuratore scuro */
+.dzt-scena .dzt-vis-foto{background:radial-gradient(closest-side,#fff 0%,#ececf0 55%,#8e8e96 100%)}
+.dzt-scena .dzt-vis-kit span,.dzt-scena .dzt-kit-foto,.dzt-scena .dzt-kit-collage{background:#f2f2f5}
+.dzt-scena .dzt-chip,.dzt-scena .dzt-kit{background:var(--panel);color:var(--ink);border-color:var(--hair2)}
+.dzt-scena .dzt-chip:hover,.dzt-scena .dzt-kit:hover{border-color:#8e8e93}
+.dzt-scena .dzt-chip.on,.dzt-scena .dzt-kit.on{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+.dzt-scena .dzt-chip[disabled]{background:#111113}
+.dzt-scena .dzt-kit-var,.dzt-scena .dzt-note textarea{background:var(--panel);color:var(--ink);border-color:var(--hair2)}
+.dzt-scena .dzt-conto{background:var(--panel)}
+.dzt-scena .dzt-seg{background:#2c2c2e}
+.dzt-scena .dzt-seg button{color:var(--ink)}
+.dzt-scena .dzt-seg button.on{background:#636366;box-shadow:none}
+.dzt-scena .dzt-seg button[disabled]{color:#636366}
+.dzt-scena .dzt-add[disabled]{background:#3a3a3c;color:#8e8e93}
+.dzt-scena .dzt-prev{background:transparent}
+.dzt-scena .dzt-prev:hover{background:rgba(41,151,255,.12)}
+.dzt-scena .dzt-pag-prova,.dzt-scena .dzt-nota.ko,.dzt-scena .dzt-err{color:#ff9f0a}
+.dzt-scena .dzt-desc{border-top-color:var(--hair)}
+.dzt-scena .dzt-desc-testo{color:#d2d2d7}
+@media (max-width:900px){
+  .dzt-scena .dzt-barra{background:rgba(28,28,30,.86);box-shadow:0 10px 30px -12px rgba(0,0,0,.6),0 0 0 .5px rgba(255,255,255,.12)}
+}
+
+/* menu scuro sopra la pagina nera (stile scena) */
+.dz header{transition:background .35s ease,border-color .35s ease}
+body.dz-buio header{background:rgba(8,8,10,.86);border-bottom-color:rgba(255,255,255,.08)}
+body.dz-buio .menu a{color:rgba(255,255,255,.86)}
+body.dz-buio .menu a:hover{color:#fff;background:rgba(255,255,255,.08)}
+body.dz-buio .menu a.sale{color:#ff5c85}
+body.dz-buio .icb,body.dz-buio .burger,body.dz-buio .locform select{color:#fff}
+body.dz-buio .locform select option{color:#111319}
+body.dz-buio .logo .reallogo{filter:invert(1) hue-rotate(180deg)}
+body.dz-buio .logo .wm{color:#fff}
