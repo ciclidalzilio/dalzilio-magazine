@@ -47,7 +47,13 @@
   ANTEPRIMA ACCONTO (impostazione della sezione, 0 = spenta): per vedere la
   scelta prima che esistano i piani. Mostra gli importi ma non ordina nulla.
 
-  Si usa assegnando al prodotto il modello "telaio" (templates/product.telaio.json).
+  STILE (impostazione della sezione): "auto" e' il configuratore descritto
+  sopra; "carte" e' la stessa scheda in colonna: titolone come la scheda
+  prodotto, telaio grande sotto, scelte a schede grandi (i kit scorrono di lato),
+  selezione con la sfumatura del marchio, barra scura galleggiante in basso.
+
+  Si usa assegnando al prodotto il modello "telaio" (templates/product.telaio.json);
+  il modello "telaio-carte" e' lo stesso con lo stile carte.
   I dati strutturati per Google restano quelli di dz-schema.liquid nell'head.
 {%- endcomment -%}
 
@@ -248,7 +254,8 @@
 {%- liquid
   assign foto0 = sel.featured_media | default: p.featured_media
 -%}
-<section class="dz dzt" data-dzt>
+{%- assign stile = section.settings.stile | default: 'auto' -%}
+<section class="dz dzt{% if stile == 'carte' %} dzt-carte{% endif %}" data-dzt>
   <form class="dzt-app" id="dzt-configura" action="{{ routes.cart_add_url }}" method="post" data-dzt-form>
     <input type="hidden" name="id" value="{{ sel.id }}" data-dzt-id>
 
@@ -335,6 +342,7 @@
         <div class="dzt-kits" role="radiogroup" aria-label="Montaggio">
             <label class="dzt-kit on">
               <input type="radio" name="dzt-kit" value="" checked>
+              {%- if p.featured_media -%}<span class="dzt-kit-foto"><img src="{{ p.featured_media | image_url: width: 400 }}" alt="" width="200" height="150" loading="lazy"></span>{%- endif -%}
               <span class="dzt-kit-testo"><b>Solo telaio</b><span>Il telaio nudo, da montare come vuoi tu.</span></span>
               <span class="dzt-kit-prezzo">Incluso</span>
             </label>
@@ -461,6 +469,7 @@
             {%- endfor -%}
             <label class="dzt-kit dzt-kit-prev">
               <input type="radio" name="dzt-kit" value="su-misura">
+              <span class="dzt-kit-foto dzt-kit-icona" aria-hidden="true"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/></svg></span>
               <span class="dzt-kit-testo"><b>Preventivo personalizzato</b><span>Vuoi altri componenti? Scegli con noi gruppo, ruote e cockpit: ti prepariamo un preventivo su misura e la montiamo in officina.</span></span>
               <span class="dzt-kit-prezzo">Su richiesta</span>
             </label>
@@ -590,6 +599,8 @@
     { "type": "text", "id": "whatsapp", "label": "Numero WhatsApp", "default": "393457815102" },
     { "type": "textarea", "id": "kit_composti", "label": "Kit composti dal catalogo",
       "info": "Una riga per kit: Nome | maniglia[:variante], maniglia[:variante] | strada o mtb (facoltativo). Prezzo = somma dei componenti." },
+    { "type": "select", "id": "stile", "label": "Stile della scheda", "default": "auto",
+      "options": [{ "value": "auto", "label": "Configuratore (telaio fermo a sinistra)" }, { "value": "carte", "label": "Carte (titolone, scelte a schede grandi)" }] },
     { "type": "range", "id": "acconto_anteprima", "label": "Anteprima acconto (%)", "min": 0, "max": 50, "step": 5, "default": 0,
       "info": "Solo per provare la scelta 'Riserva con acconto' prima che un'app di preordini crei i piani: mostra gli importi ma non ordina. 0 = spenta." }
   ]

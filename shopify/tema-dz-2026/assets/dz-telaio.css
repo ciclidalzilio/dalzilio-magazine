@@ -27,8 +27,8 @@
 .dzt-stage{grid-area:stage;position:sticky;top:var(--dzt-testa,64px);align-self:start;overflow:hidden;
   height:calc(100vh - var(--dzt-testa,64px) - var(--dzt-bar));height:calc(100svh - var(--dzt-testa,64px) - var(--dzt-bar));min-height:460px;
   background:radial-gradient(ellipse 68% 62% at 50% 48%,#fff 0%,var(--stage) 62%,#ececef 100%)}
-.dzt-stage-foto{position:absolute;inset:0;display:grid;place-items:center;padding:5% 7% 104px}
-.dzt-stage-foto img{display:block;width:100%;height:100%;max-width:none;object-fit:contain;mix-blend-mode:multiply;transition:opacity .35s ease}
+.dzt-stage-foto{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:5% 7% 104px}
+.dzt-stage-foto img{display:block;width:auto;height:auto;max-width:100%;max-height:100%;object-fit:contain;mix-blend-mode:multiply;transition:opacity .35s ease}
 .dzt-stage-foto img.cambia{opacity:.2}
 
 /* i pezzi del montaggio scelto, in colonna nell'angolo */
@@ -116,6 +116,9 @@
 .dzt-kit-var{display:block;margin-top:10px;max-width:100%;padding:8px 10px;border:0;border-radius:10px;background:var(--stage);font-family:inherit;font-size:14px;color:var(--ink)}
 .dzt-kit-prezzo{position:absolute;top:16px;right:16px;font-size:15px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
 .dzt-kit-prev{background:var(--stage);box-shadow:none}
+/* preventivo: al posto della foto, la chiave inglese sulla sfumatura del marchio */
+.dzt-kit-icona{color:#fff;background:var(--grad)!important}
+.dzt-kit-icona svg{width:26px;height:26px}
 .dzt-kit-prev .dzt-kit-prezzo{font-weight:500;color:var(--sub)}
 
 /* riepilogo */
@@ -221,6 +224,87 @@
   .dzt-kit-testo b{padding-right:100px;font-size:15.5px}
   .dzt-kit-foto,.dzt-kit-collage{width:56px;height:56px}
   .dzt-spec div{grid-template-columns:1fr;gap:2px}
+}
+
+/* ================================================================
+   STILE "CARTE": la stessa scheda in colonna.
+   Titolone come la scheda prodotto, il telaio grande sotto, le scelte a
+   schede grandi (i kit scorrono di lato col dito), la scelta fatta con il
+   bordo nella sfumatura del marchio, una barra scura galleggiante in basso
+   con il pulsante nella sfumatura.
+   ================================================================ */
+.dzt-carte .dzt-app{display:flex;flex-direction:column}
+.dzt-carte .dzt-pan{display:contents}
+.dzt-carte .dzt-pan-testa{order:0;padding:40px 20px 0;text-align:center}
+.dzt-carte .dzt-k{letter-spacing:.14em}
+.dzt-carte .dzt-h1{max-width:20ch;margin:12px auto 0;font-size:clamp(40px,5vw,76px);letter-spacing:-.05em;line-height:.98}
+.dzt-carte .dzt-da{margin-top:14px;font-size:clamp(18px,1.8vw,22px)}
+.dzt-carte .dzt-stage{order:1;position:relative;top:auto;align-self:stretch;height:clamp(300px,54vh,660px);min-height:0;margin-top:0;
+  background:radial-gradient(ellipse 60% 70% at 50% 52%,#fff 0%,#fff 38%,rgba(255,255,255,0) 72%),linear-gradient(180deg,#fff 0%,var(--stage) 30%,var(--stage) 70%,#fff 100%)}
+.dzt-carte .dzt-stage-foto{padding:3% 8% 84px}
+.dzt-carte .dzt-tab{display:none}
+.dzt-carte .dzt-passo{order:3;width:100%;max-width:1100px;box-sizing:border-box;margin:0 auto;padding:72px 24px 0;scroll-margin-top:calc(var(--dzt-testa,64px) + 16px)}
+.dzt-carte .dzt-passo h2{margin-bottom:28px;text-align:center;font-size:clamp(28px,3.2vw,40px);letter-spacing:-.035em}
+.dzt-carte .dzt-sub{max-width:52ch;margin:-18px auto 28px;text-align:center;font-size:16px}
+.dzt-carte .dzt-gruppo{margin-bottom:32px}
+.dzt-carte .dzt-gruppo legend{width:100%;margin-bottom:14px;text-align:center;font-size:15px}
+.dzt-carte .dzt-nota,.dzt-carte .dzt-aiuto{text-align:center}
+/* taglie: pillole in fila, al centro */
+.dzt-carte .dzt-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+.dzt-carte .dzt-chip{min-width:72px;min-height:52px;padding:0 20px;border-radius:980px;font-size:16px}
+/* la scelta fatta: bordo nella sfumatura del marchio */
+.dzt-carte .dzt-chip.on,.dzt-carte .dzt-kit.on{box-shadow:none;border:2px solid transparent;
+  background:linear-gradient(#fff,#fff) padding-box,var(--grad) border-box}
+.dzt-carte .dzt-chip.on{padding:0 18px}
+/* colori: schede grandi con la foto */
+.dzt-carte .dzt-colori{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,300px));justify-content:center;gap:14px}
+.dzt-carte .dzt-colori .dzt-chip{min-height:0;padding:14px 14px 16px;border-radius:22px;font-size:15px;font-weight:600}
+.dzt-carte .dzt-colori .dzt-chip.on{padding:12px 12px 14px}
+.dzt-carte .dzt-colori .dzt-chip img{aspect-ratio:16/10;border-radius:14px}
+/* montaggio: schede alte che scorrono di lato */
+.dzt-carte .dzt-kits{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(250px,290px);gap:16px;margin:0 -24px;padding:6px 24px 22px;
+  overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 24px;scrollbar-width:thin}
+.dzt-carte .dzt-kit{flex-direction:column;gap:14px;padding:14px 14px 18px;border-radius:24px;scroll-snap-align:start;background:#fff;box-shadow:inset 0 0 0 1px var(--hair2)}
+.dzt-carte .dzt-kit.on{padding:12px 12px 16px}
+.dzt-carte .dzt-kit-prev{background:var(--stage);box-shadow:none}
+.dzt-carte .dzt-kit-foto,.dzt-carte .dzt-kit-collage{width:100%;height:auto;aspect-ratio:4/3;border-radius:16px}
+.dzt-carte .dzt-kit-foto{padding:10px}
+.dzt-carte .dzt-kit-collage{gap:4px;padding:8px}
+.dzt-carte .dzt-kit-icona svg{width:54px;height:54px}
+.dzt-carte .dzt-kit-testo{flex:1}
+.dzt-carte .dzt-kit-testo b{padding-right:0;font-size:18px}
+.dzt-carte .dzt-kit-prezzo{position:static;font-size:17px;font-weight:700;letter-spacing:-.02em}
+/* misure e riepilogo al centro */
+.dzt-carte .dzt-chips-mis .dzt-chip{padding:0 18px;font-size:15px}
+.dzt-carte .dzt-chips-mis .dzt-chip.on{padding:0 16px}
+.dzt-carte .dzt-riep{max-width:680px}
+.dzt-carte .dzt-conto{padding:8px 24px 24px;border-radius:24px}
+.dzt-carte .dzt-tot b{font-size:32px}
+.dzt-carte .dzt-riep{padding-bottom:40px}
+/* barra scura galleggiante, pulsante nella sfumatura */
+.dzt-carte .dzt-bar{order:9;position:sticky;bottom:18px;align-self:center;width:min(820px,calc(100% - 24px));min-height:0;margin:24px auto 18px;padding:10px 10px 10px 22px;
+  border:0;border-radius:22px;background:rgba(22,22,24,.9);color:#fff;box-shadow:0 18px 44px -18px rgba(0,0,0,.55)}
+.dzt-carte .dzt-bar-k,.dzt-carte .dzt-bar-tot span,.dzt-carte .dzt-bar-tot i{color:rgba(255,255,255,.62)}
+.dzt-carte .dzt-add{border:0;background:var(--grad);box-shadow:0 12px 26px -12px rgba(255,46,99,.7)}
+.dzt-carte .dzt-add:hover{background:var(--grad);filter:brightness(1.06)}
+.dzt-carte .dzt-add:disabled{background:#4a4a4f;box-shadow:none}
+.dzt-carte .dzt-desc{border-top:1px solid var(--hair)}
+@media (max-width:960px){
+  .dzt-carte .dzt-stage{position:relative;top:auto;z-index:auto;height:clamp(240px,44svh,420px);border-bottom:0}
+  .dzt-carte .dzt-stage-foto{padding:8px 16px 64px}
+  .dzt-carte .dzt-viste{left:50%;right:auto;top:auto;bottom:12px;transform:translateX(-50%);flex-direction:row}
+  .dzt-carte .dzt-pan-testa{padding:32px 16px 0}
+  .dzt-carte .dzt-passo{padding:52px 16px 0;scroll-margin-top:calc(var(--dzt-testa,64px) + 12px)}
+  .dzt-carte .dzt-kits{margin:0 -16px;padding:6px 16px 20px;scroll-padding:0 16px;grid-auto-columns:78%}
+  .dzt-carte .dzt-bar{bottom:calc(68px + env(safe-area-inset-bottom,0px));width:calc(100% - 20px);margin:20px auto 10px;padding:8px 8px 8px 16px;border-radius:20px}
+  .dzt-carte .dzt-bar-tot{text-align:left}
+}
+@media (max-width:420px){
+  .dzt-carte .dzt-colori{grid-template-columns:1fr 1fr;gap:10px}
+  .dzt-carte .dzt-colori .dzt-chip{padding:10px 10px 12px;font-size:13.5px;border-radius:18px}
+  .dzt-carte .dzt-colori .dzt-chip.on{padding:8px 8px 10px}
+  .dzt-carte .dzt-chip{min-width:60px;padding:0 16px}
+  .dzt-carte .dzt-kit-testo b{padding-right:0}
 }
 
 @media (prefers-reduced-motion:reduce){
