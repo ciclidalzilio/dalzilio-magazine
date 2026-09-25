@@ -1,0 +1,343 @@
+{%- comment -%}
+  dz-scheda-telaio.liquid — Cicli Dal Zilio
+
+  Scheda dei telai, stile configuratore Apple: si parte dal telaio e si
+  costruisce la bici in quattro passi.
+    1. Taglia e colore del telaio (le varianti del prodotto).
+    2. Montaggio: solo telaio oppure uno dei kit preparati dal negozio.
+    3. Misure: manubrio, attacco, pedivelle, altezza sella indicativa,
+       oppure "le decidiamo insieme".
+    4. Riepilogo con il totale: nel carrello vanno il telaio (con le misure
+       come note della riga) e il kit scelto.
+
+  I KIT sono prodotti normali dentro la collezione indicata nelle impostazioni
+  della sezione (di base "kit-montaggio"): prezzo, foto e varianti del
+  prodotto; i componenti si scrivono nella descrizione come elenco puntato.
+  Tag facoltativi sul kit:
+    - "strada" oppure "mtb": il kit compare solo sui telai di quel tipo;
+    - "per:parola" (es. "per:madone"): compare solo sui telai che hanno
+      quella parola nel titolo. Senza tag compare su tutti i telai.
+  Se la collezione e' vuota o non esiste, al posto dei kit c'e' il montaggio
+  su misura via WhatsApp.
+
+  Si usa assegnando al prodotto il modello "telaio" (templates/product.telaio.json).
+  I dati strutturati per Google restano quelli di dz-schema.liquid nell'head.
+{%- endcomment -%}
+
+{%- liquid
+  assign p = product
+  assign sel = p.selected_or_first_available_variant
+  assign tit_d = p.title | downcase
+  assign wa = section.settings.whatsapp | default: '393457815102'
+
+  comment
+    Marca: il feed Trek mette "FRAME" come produttore, la marca vera e' nei tag.
+  endcomment
+  assign marca = p.vendor
+  if marca == 'FRAME' or marca == 'SERVICEPART' or marca == 'AFTERMARKET'
+    assign marca = ''
+    if p.tags contains 'TREK'
+      assign marca = 'Trek'
+    elsif p.tags contains 'SCOTT'
+      assign marca = 'Scott'
+    elsif p.tags contains 'CANNONDALE'
+      assign marca = 'Cannondale'
+    endif
+  endif
+
+  comment
+    Tipo di telaio, per proporre le misure giuste (manubrio drop o piatto).
+    Il tag "mtb" o "strada" sul telaio vince sul riconoscimento dal nome.
+  endcomment
+  assign mtb = false
+  assign parole_mtb = 'top fuel,slash,supercaliber,marlin,farley,fuel ex,remedy,roscoe,procaliber,x-caliber,session,stache,spark,scale,genius,ransom,scalpel,habit,jekyll,mtb,mountain' | split: ','
+  for parola in parole_mtb
+    if tit_d contains parola
+      assign mtb = true
+    endif
+  endfor
+  if p.tags contains 'mtb' or p.tags contains 'MTB'
+    assign mtb = true
+  elsif p.tags contains 'strada' or p.tags contains 'gravel'
+    assign mtb = false
+  endif
+
+  if mtb
+    assign m_manubrio = '720 mm|740 mm|760 mm|780 mm|800 mm' | split: '|'
+    assign m_attacco = '35 mm|40 mm|45 mm|50 mm|60 mm' | split: '|'
+    assign m_pedivelle = '165 mm|170 mm|175 mm' | split: '|'
+  else
+    assign m_manubrio = '36 cm|38 cm|40 cm|42 cm|44 cm' | split: '|'
+    assign m_attacco = '80 mm|90 mm|100 mm|110 mm|120 mm|130 mm' | split: '|'
+    assign m_pedivelle = '165 mm|167,5 mm|170 mm|172,5 mm|175 mm' | split: '|'
+  endif
+
+  comment
+    Kit compatibili con questo telaio (vedi i tag nel commento in alto).
+  endcomment
+  assign kit_coll = collections[section.settings.kit_collezione]
+  assign kit_ok = ','
+  assign n_kit = 0
+  if kit_coll != blank
+    for k in kit_coll.products limit: 24
+      assign mostra = true
+      assign ha_per = false
+      assign trovato = false
+      for t in k.tags
+        assign td = t | downcase | strip
+        if td contains 'per:'
+          assign ha_per = true
+          assign kw = td | remove_first: 'per:' | strip
+          if kw != blank and tit_d contains kw
+            assign trovato = true
+          endif
+        endif
+        if td == 'mtb' and mtb == false
+          assign mostra = false
+        endif
+        if td == 'strada' and mtb
+          assign mostra = false
+        endif
+      endfor
+      if ha_per and trovato == false
+        assign mostra = false
+      endif
+      if mostra
+        assign kit_ok = kit_ok | append: k.handle | append: ','
+        assign n_kit = n_kit | plus: 1
+      endif
+    endfor
+  endif
+-%}
+
+<section class="dz dzt" data-dzt>
+
+  {%- comment -%} apertura: nome del telaio, una frase, il telaio grande su fondale che sfuma nel bianco {%- endcomment -%}
+  <div class="dzt-hero">
+    <p class="dzt-k">{% if marca != blank %}{{ marca }} · {% endif %}Telaio</p>
+    <h1 class="dzt-h1">{{ p.title }}</h1>
+    <p class="dzt-claim">Parti dal telaio. Scegli il montaggio e le tue misure: la bici la costruiamo noi, in officina.</p>
+    <div class="dzt-hero-cta">
+      <span class="dzt-da">Telaio da <b>{{ p.price_min | money }}</b></span>
+      <a class="dzt-link" href="#dzt-configura">Configura la tua bici ›</a>
+    </div>
+    {%- if p.featured_media -%}
+    <div class="dzt-hero-stage">
+      <img src="{{ p.featured_media | image_url: width: 1800 }}" alt="{{ p.featured_media.alt | default: p.title | escape }}"
+           width="1800" height="{{ 1800 | divided_by: p.featured_media.aspect_ratio | round }}" fetchpriority="high">
+    </div>
+    {%- endif -%}
+  </div>
+
+  <div class="dzt-conf" id="dzt-configura">
+    {%- comment -%} a sinistra, fermo mentre si scorre: il telaio nel colore scelto e il montaggio che prende forma {%- endcomment -%}
+    <aside class="dzt-vis">
+      <div class="dzt-vis-foto">
+        <img data-dzt-foto src="{{ sel.featured_media | default: p.featured_media | image_url: width: 1400 }}" alt="{{ p.title | escape }}" width="1400" height="933" loading="lazy">
+      </div>
+      <ul class="dzt-vis-lista" data-dzt-vis-lista aria-live="polite">
+        <li><span>Telaio</span><b data-dzt-v-telaio>{{ sel.title }}</b></li>
+        <li><span>Montaggio</span><b data-dzt-v-kit>Solo telaio</b></li>
+        <li><span>Misure</span><b data-dzt-v-misure>Di serie</b></li>
+      </ul>
+    </aside>
+
+    <form class="dzt-passi" action="{{ routes.cart_add_url }}" method="post" data-dzt-form>
+      <input type="hidden" name="id" value="{{ sel.id }}" data-dzt-id>
+
+      {%- comment -%} 1. taglia e colore {%- endcomment -%}
+      <div class="dzt-passo" data-dzt-passo="1">
+        <p class="dzt-num">1</p>
+        <h2>Taglia e colore del telaio.</h2>
+        {%- for opt in p.options_with_values -%}
+          {%- assign on = opt.name | downcase -%}
+          {%- assign etichetta = opt.name -%}
+          {%- if on == 'size' or on == 'taglia' -%}{%- assign etichetta = 'Taglia' -%}{%- elsif on == 'color' or on == 'colore' -%}{%- assign etichetta = 'Colore' -%}{%- endif -%}
+          {%- unless opt.values.size == 1 and opt.values.first == 'Default Title' -%}
+          <fieldset class="dzt-gruppo" data-dzt-opt="{{ forloop.index0 }}" data-dzt-optname="{{ on }}">
+            <legend>{{ etichetta }}</legend>
+            <div class="dzt-chips{% if on == 'color' or on == 'colore' %} dzt-chips-larghe{% endif %}">
+              {%- for val in opt.values -%}
+                <button type="button" class="dzt-chip{% if val == opt.selected_value %} on{% endif %}" data-dzt-val="{{ val | escape }}" aria-pressed="{% if val == opt.selected_value %}true{% else %}false{% endif %}">{{ val }}</button>
+              {%- endfor -%}
+            </div>
+          </fieldset>
+          {%- endunless -%}
+        {%- endfor -%}
+        <p class="dzt-nota" data-dzt-disp></p>
+        {%- if mtb == false -%}
+        <p class="dzt-aiuto">Non sai che taglia prendere? <a href="https://wa.me/{{ wa }}?text={{ 'Ciao! Che taglia mi consigliate per il telaio ' | append: p.title | url_encode }}" target="_blank" rel="noopener">Chiedilo a noi ›</a></p>
+        {%- endif -%}
+      </div>
+
+      {%- comment -%} 2. montaggio {%- endcomment -%}
+      <div class="dzt-passo" data-dzt-passo="2">
+        <p class="dzt-num">2</p>
+        <h2>Come la vuoi montata?</h2>
+        <p class="dzt-sub">Kit preparati da noi, già abbinati al telaio. Oppure solo il telaio.</p>
+        <div class="dzt-kits" role="radiogroup" aria-label="Montaggio">
+          <label class="dzt-kit on">
+            <input type="radio" name="dzt-kit" value="" checked>
+            <span class="dzt-kit-testo"><b>Solo telaio</b><span>Il telaio nudo, da montare come vuoi tu.</span></span>
+            <span class="dzt-kit-prezzo">Incluso</span>
+          </label>
+          {%- if n_kit > 0 -%}
+            {%- for k in kit_coll.products limit: 24 -%}
+              {%- assign chiave = ',' | append: k.handle | append: ',' -%}
+              {%- if kit_ok contains chiave -%}
+                {%- assign kv = k.selected_or_first_available_variant -%}
+                <label class="dzt-kit{% unless k.available %} esaurito{% endunless %}">
+                  <input type="radio" name="dzt-kit" value="{{ forloop.index0 }}" data-dzt-kit-handle="{{ k.handle }}"{% unless k.available %} disabled{% endunless %}>
+                  {%- if k.featured_image -%}
+                    <span class="dzt-kit-foto"><img src="{{ k.featured_image | image_url: width: 300 }}" alt="" width="150" height="150" loading="lazy"></span>
+                  {%- endif -%}
+                  <span class="dzt-kit-testo">
+                    <b>{{ k.title }}</b>
+                    {%- assign pezzi = k.description | replace: '</li>', '' | split: '<li>' -%}
+                    {%- if pezzi.size > 1 -%}
+                      <ul>
+                        {%- for pz in pezzi offset: 1 limit: 6 -%}
+                          {%- assign pz_t = pz | strip_html | strip -%}
+                          {%- if pz_t != blank -%}<li>{{ pz_t }}</li>{%- endif -%}
+                        {%- endfor -%}
+                      </ul>
+                    {%- elsif k.description != blank -%}
+                      <span>{{ k.description | strip_html | truncatewords: 22 }}</span>
+                    {%- endif -%}
+                    {%- if k.variants.size > 1 -%}
+                      <select class="dzt-kit-var" data-dzt-kit-var aria-label="Versione del kit">
+                        {%- for v in k.variants -%}
+                          <option value="{{ v.id }}"{% unless v.available %} disabled{% endunless %}{% if v.id == kv.id %} selected{% endif %}>{{ v.title }} · {{ v.price | money }}</option>
+                        {%- endfor -%}
+                      </select>
+                    {%- endif -%}
+                  </span>
+                  <span class="dzt-kit-prezzo">{% if k.available %}+ {{ kv.price | money }}{% else %}Esaurito{% endif %}</span>
+                </label>
+              {%- endif -%}
+            {%- endfor -%}
+          {%- else -%}
+            <label class="dzt-kit">
+              <input type="radio" name="dzt-kit" value="su-misura">
+              <span class="dzt-kit-testo"><b>Montaggio su misura</b><span>Scegli con noi gruppo, ruote e componenti: ti prepariamo il preventivo e la montiamo in officina.</span></span>
+              <span class="dzt-kit-prezzo">Preventivo</span>
+            </label>
+          {%- endif -%}
+        </div>
+      </div>
+
+      {%- comment -%} 3. misure {%- endcomment -%}
+      <div class="dzt-passo" data-dzt-passo="3">
+        <p class="dzt-num">3</p>
+        <h2>Le tue misure.</h2>
+        <p class="dzt-sub">Le montiamo così come le scegli. "Di serie" vuol dire le misure previste per la tua taglia. Se non le conosci, le decidiamo insieme.</p>
+        <div class="dzt-seg" role="radiogroup" aria-label="Misure">
+          <button type="button" class="on" data-dzt-modo="io" aria-pressed="true">Le scelgo io</button>
+          <button type="button" data-dzt-modo="insieme" aria-pressed="false">Le decidiamo insieme</button>
+        </div>
+        <div class="dzt-misure" data-dzt-misure>
+          {%- assign gruppi = 'Manubrio|Larghezza,Attacco manubrio|Lunghezza,Pedivelle|Lunghezza' | split: ',' -%}
+          {%- for g in gruppi -%}
+            {%- assign gg = g | split: '|' -%}
+            {%- case forloop.index -%}
+              {%- when 1 -%}{%- assign valori = m_manubrio -%}
+              {%- when 2 -%}{%- assign valori = m_attacco -%}
+              {%- else -%}{%- assign valori = m_pedivelle -%}
+            {%- endcase -%}
+            <fieldset class="dzt-gruppo" data-dzt-mis="{{ gg[0] }}">
+              <legend>{{ gg[0] }} <span>{{ gg[1] }}</span></legend>
+              <div class="dzt-chips">
+                <button type="button" class="dzt-chip on" data-dzt-val="Di serie" aria-pressed="true">Di serie</button>
+                {%- for val in valori -%}
+                  <button type="button" class="dzt-chip" data-dzt-val="{{ val }}" aria-pressed="false">{{ val }}</button>
+                {%- endfor -%}
+              </div>
+            </fieldset>
+          {%- endfor -%}
+          <div class="dzt-corpo">
+            <label>Altezza <span class="dzt-in"><input type="number" inputmode="decimal" min="140" max="215" step="0.5" placeholder="178" data-dzt-altezza><i>cm</i></span></label>
+            <label>Cavallo <span class="dzt-in"><input type="number" inputmode="decimal" min="60" max="105" step="0.5" placeholder="84" data-dzt-cavallo><i>cm</i></span></label>
+            <p class="dzt-sella" data-dzt-sella hidden></p>
+          </div>
+        </div>
+        <div class="dzt-insieme" data-dzt-insieme hidden>
+          <p>Ti chiamiamo o ci vediamo in negozio: prendiamo le misure e scegliamo insieme manubrio, attacco e pedivelle. La bici esce dall'officina già regolata su di te.</p>
+        </div>
+        <label class="dzt-note">Note per l'officina <textarea rows="2" maxlength="400" placeholder="Es. nastro manubrio nero, pedali già montati…" data-dzt-note></textarea></label>
+      </div>
+
+      {%- comment -%} 4. riepilogo {%- endcomment -%}
+      <div class="dzt-passo dzt-riep" data-dzt-passo="4" id="dzt-riepilogo">
+        <p class="dzt-num">4</p>
+        <h2>La tua bici.</h2>
+        <div class="dzt-conto">
+          <div class="dzt-riga"><span><b>Telaio</b><i data-dzt-r-telaio>{{ sel.title }}</i></span><b data-dzt-r-telaio-p>{{ sel.price | money }}</b></div>
+          <div class="dzt-riga"><span><b>Montaggio</b><i data-dzt-r-kit>Solo telaio</i></span><b data-dzt-r-kit-p>Incluso</b></div>
+          <div class="dzt-riga"><span><b>Misure</b><i data-dzt-r-misure>Di serie</i></span><b></b></div>
+          <div class="dzt-tot"><span>Totale</span><b data-dzt-tot>{{ sel.price | money }}</b></div>
+          <button type="submit" class="dzt-add" data-dzt-add{% unless sel.available %} disabled{% endunless %}>{% if sel.available %}Aggiungi al carrello{% else %}Non disponibile{% endif %}</button>
+          <p class="dzt-err" data-dzt-err role="alert" hidden></p>
+          <a class="dzt-wa" data-dzt-wa target="_blank" rel="noopener" href="https://wa.me/{{ wa }}">Preferisci parlarne? Scrivici su WhatsApp ›</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  {%- comment -%} barra in basso su telefono: totale e aggiungi, sempre a portata {%- endcomment -%}
+  <div class="dzt-barra" data-dzt-barra>
+    <span><i>Totale</i><b data-dzt-tot2>{{ sel.price | money }}</b></span>
+    <a class="dzt-add" href="#dzt-riepilogo">Riepilogo</a>
+  </div>
+
+  {%- if p.description != blank -%}
+  <div class="dzt-desc">
+    <h2>Il telaio.</h2>
+    <div class="dzt-desc-testo">{{ p.description }}</div>
+  </div>
+  {%- endif -%}
+
+  <script type="application/json" data-dzt-dati>
+    {
+      "titolo": {{ p.title | json }},
+      "moneta": {{ shop.money_format | json }},
+      "aggiungi": {{ routes.cart_add_url | append: '.js' | json }},
+      "carrello": {{ routes.cart_url | json }},
+      "wa": {{ wa | json }},
+      "varianti": [
+        {%- for v in p.variants -%}
+        {"id": {{ v.id }}, "o": {{ v.options | json }}, "t": {{ v.title | json }}, "prezzo": {{ v.price }}, "disp": {{ v.available | json }},
+         "img": {% if v.featured_media %}{{ v.featured_media | image_url: width: 1400 | json }}{% else %}null{% endif %}}{% unless forloop.last %},{% endunless %}
+        {%- endfor -%}
+      ],
+      "kit": [
+        {%- if n_kit > 0 -%}
+          {%- assign primo = true -%}
+          {%- for k in kit_coll.products limit: 24 -%}
+            {%- assign chiave = ',' | append: k.handle | append: ',' -%}
+            {%- if kit_ok contains chiave -%}
+              {%- unless primo -%},{%- endunless -%}{%- assign primo = false -%}
+              {"i": {{ forloop.index0 }}, "titolo": {{ k.title | json }},
+               "varianti": [{%- for v in k.variants -%}{"id": {{ v.id }}, "t": {{ v.title | json }}, "prezzo": {{ v.price }}, "disp": {{ v.available | json }}}{% unless forloop.last %},{% endunless %}{%- endfor -%}],
+               "scelta": {{ k.selected_or_first_available_variant.id }}}
+            {%- endif -%}
+          {%- endfor -%}
+        {%- endif -%}
+      ]
+    }
+  </script>
+</section>
+
+{{ 'dz-telaio.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'dz-telaio.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "DZ · Scheda telaio",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "kit_collezione", "label": "Collezione dei kit di montaggio (handle)", "default": "kit-montaggio",
+      "info": "Ogni prodotto della collezione e' un kit: prezzo, foto e componenti in elenco puntato nella descrizione." },
+    { "type": "text", "id": "whatsapp", "label": "Numero WhatsApp", "default": "393457815102" }
+  ]
+}
+{% endschema %}
