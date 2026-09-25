@@ -102,6 +102,17 @@
 .dzt-vis-kit img{position:absolute;inset:8px;width:calc(100% - 16px);height:calc(100% - 16px);object-fit:contain;mix-blend-mode:multiply}
 @keyframes dztpezzo{from{opacity:0;transform:translateY(8px)}}
 
+/* scelta di pagamento: tutto ora o acconto (nel riepilogo) */
+.dzt-pag{margin:0 0 16px}
+.dzt-pag[hidden]{display:none}
+.dzt-seg{display:flex;padding:3px;border-radius:12px;background:#e8e8ed;gap:2px}
+.dzt-seg button{flex:1;border:0;background:transparent;font:inherit;font-size:14px;font-weight:500;color:var(--ink);padding:10px 8px;border-radius:9px;cursor:pointer;line-height:1.2}
+.dzt-seg button.on{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.06)}
+.dzt-seg button[disabled]{color:var(--sub2);cursor:not-allowed}
+.dzt-seg button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.dzt-pag-info{margin:10px 2px 0;font-size:14px;line-height:1.45;color:var(--sub)}
+.dzt-pag-info b{color:var(--ink);font-size:16px}
+
 /* note per l'officina (nel riepilogo) */
 .dzt-note{display:flex;flex-direction:column;gap:8px;margin:14px 0 18px;font-size:15px;font-weight:600}
 .dzt-note > span{font-weight:400;color:var(--sub);font-size:13px;margin-top:-6px}

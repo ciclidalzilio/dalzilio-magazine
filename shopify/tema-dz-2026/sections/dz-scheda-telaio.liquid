@@ -31,6 +31,12 @@
   390/420 x 130, sella 145/155) diventa una scelta nel passo "Le tue misure".
   Il preventivo personalizzato c'e' sempre, come ultima scelta.
 
+  ACCONTO: se il telaio (e ogni pezzo del kit scelto) ha un piano di acquisto
+  con pagamento parziale in percentuale (lo crea un'app di preordini, es.
+  "10% ora, saldo alla spedizione"), nel riepilogo compare "Riserva con
+  acconto": si vede quanto si paga oggi e quanto al saldo, e al carrello va
+  il piano di ogni pezzo. Senza piani la scelta non compare.
+
   Si usa assegnando al prodotto il modello "telaio" (templates/product.telaio.json).
   I dati strutturati per Google restano quelli di dz-schema.liquid nell'head.
 {%- endcomment -%}
@@ -72,6 +78,22 @@
   elsif p.tags contains 'strada' or p.tags contains 'gravel'
     assign mtb = false
   endif
+
+  comment
+    Piano d'acconto del telaio: il primo con pagamento parziale in percentuale.
+  endcomment
+  assign acc_ok = false
+  assign acc_id = 0
+  assign acc_perc = 0
+  for g in p.selling_plan_groups
+    for sp in g.selling_plans
+      if acc_ok == false and sp.checkout_charge.value_type == 'percentage' and sp.checkout_charge.value < 100
+        assign acc_ok = true
+        assign acc_id = sp.id
+        assign acc_perc = sp.checkout_charge.value
+      endif
+    endfor
+  endfor
 
   comment
     Kit compatibili con questo telaio (vedi i tag nel commento in alto).
@@ -278,7 +300,13 @@
               {%- unless vv.available -%}{%- assign kc_disp = false -%}{%- endunless -%}
               {%- assign kc_ids = kc_ids | append: ',' | append: vv.id -%}
               {%- assign kc_pos = kc_pos | plus: 1 -%}
-              {%- capture kc_c -%}{"id": {{ vv.id }}, "prezzo": {{ vv.price }}}{%- endcapture -%}
+              {%- assign pz_piano = 'null' -%}
+              {%- for g in prod.selling_plan_groups -%}{%- for sp in g.selling_plans -%}
+                {%- if pz_piano == 'null' and sp.checkout_charge.value_type == 'percentage' and sp.checkout_charge.value < 100 -%}
+                  {%- capture pz_piano -%}{"id": {{ sp.id }}, "perc": {{ sp.checkout_charge.value }}}{%- endcapture -%}
+                {%- endif -%}
+              {%- endfor -%}{%- endfor -%}
+              {%- capture kc_c -%}{"id": {{ vv.id }}, "prezzo": {{ vv.price }}, "piano": {{ pz_piano }}}{%- endcapture -%}
               {%- assign kc_comp = kc_comp | append: ',' | append: kc_c -%}
               {%- comment -%} pezzo con piu' misure e nessuna variante fissata: diventa una scelta {%- endcomment -%}
               {%- if vk == blank and prod.variants.size > 1 -%}
@@ -352,6 +380,15 @@
           <div class="dzt-riga" data-dzt-r-misure-riga hidden><span><b>Misure</b><i data-dzt-r-misure></i></span><b></b></div>
           <div class="dzt-tot"><span>Totale</span><b data-dzt-tot>{{ sel.price | money }}</b></div>
           <p class="dzt-tot-nota" data-dzt-tot-nota hidden>+ montaggio su preventivo</p>
+          {%- if acc_ok -%}
+          <div class="dzt-pag" data-dzt-pag>
+            <div class="dzt-seg" role="radiogroup" aria-label="Pagamento">
+              <button type="button" class="on" data-dzt-pag-modo="tutto" aria-pressed="true">Paga tutto ora</button>
+              <button type="button" data-dzt-pag-modo="acconto" aria-pressed="false">Riserva con acconto {{ acc_perc }}%</button>
+            </div>
+            <p class="dzt-pag-info" data-dzt-pag-info hidden></p>
+          </div>
+          {%- endif -%}
           <button type="submit" class="dzt-add" data-dzt-add{% unless sel.available %} disabled{% endunless %}>{% if sel.available %}Aggiungi al carrello{% else %}Non disponibile{% endif %}</button>
           <p class="dzt-err" data-dzt-err role="alert" hidden></p>
           <a class="dzt-prev" data-dzt-wa target="_blank" rel="noopener" href="https://wa.me/{{ wa }}">Chiedici un preventivo personalizzato</a>
@@ -381,6 +418,7 @@
       "aggiungi": {{ routes.cart_add_url | append: '.js' | json }},
       "carrello": {{ routes.cart_url | json }},
       "wa": {{ wa | json }},
+      "acconto": {% if acc_ok %}{"id": {{ acc_id }}, "perc": {{ acc_perc }}}{% else %}null{% endif %},
       "varianti": [
         {%- for v in p.variants -%}
         {"id": {{ v.id }}, "o": {{ v.options | json }}, "t": {{ v.title | json }}, "prezzo": {{ v.price }}, "disp": {{ v.available | json }},
@@ -397,7 +435,14 @@
               {"i": {{ forloop.index0 }}, "titolo": {{ k.title | json }},
                "varianti": [{%- for v in k.variants -%}{"id": {{ v.id }}, "t": {{ v.title | json }}, "prezzo": {{ v.price }}, "disp": {{ v.available | json }}}{% unless forloop.last %},{% endunless %}{%- endfor -%}],
                "scelta": {{ k.selected_or_first_available_variant.id }},
-               "imgs": [{% if k.featured_image %}{{ k.featured_image | image_url: width: 400 | json }}{% endif %}]}
+               "imgs": [{% if k.featured_image %}{{ k.featured_image | image_url: width: 400 | json }}{% endif %}],
+               {%- assign k_piano = 'null' -%}
+               {%- for g in k.selling_plan_groups -%}{%- for sp in g.selling_plans -%}
+                 {%- if k_piano == 'null' and sp.checkout_charge.value_type == 'percentage' and sp.checkout_charge.value < 100 -%}
+                   {%- capture k_piano -%}{"id": {{ sp.id }}, "perc": {{ sp.checkout_charge.value }}}{%- endcapture -%}
+                 {%- endif -%}
+               {%- endfor -%}{%- endfor -%}
+               "piano": {{ k_piano }}}
             {%- endif -%}
           {%- endfor -%}
         {%- endif -%}

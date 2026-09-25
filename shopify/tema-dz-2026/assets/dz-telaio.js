@@ -35,6 +35,7 @@
   if (iniziale) scelte = iniziale.o.slice();
   var kit = null;          // oggetto kit scelto, null = solo telaio, "su-misura" = preventivo
   var kitVar = null;       // variante del kit
+  var pagModo = "tutto";   // "tutto" | "acconto" (solo se esistono i piani d'acconto)
   var misScelte = {};      // kit composto: posizione del pezzo -> variante scelta (es. piega 400/420 x 110)
 
   /* taglie in ordine naturale: XXS..XXL oppure numeri crescenti */
@@ -142,6 +143,29 @@
     $("[data-dzt-prev-nota]").hidden = false;
     $("[data-dzt-tot2]").textContent = soldi(tot);
 
+    // acconto: solo se telaio e ogni pezzo del montaggio hanno il loro piano
+    var pag = $("[data-dzt-pag]"), accOk = false, oggi = tot;
+    if (pag) {
+      var pz = kit && kit !== "su-misura" ? (kit.componenti ? pezzi() : [{ prezzo: cKit, piano: kit.piano }]) : [];
+      accOk = !!(D.acconto && v && kit !== "su-misura" && pz.every(function (x) { return x.piano; }));
+      if (!accOk && pagModo === "acconto") pagModo = "tutto";
+      pag.hidden = kit === "su-misura";
+      var bAcc = $('[data-dzt-pag-modo="acconto"]', pag);
+      bAcc.disabled = !accOk;
+      bAcc.title = accOk ? "" : "Per questo montaggio l'acconto non e' disponibile";
+      $$("[data-dzt-pag-modo]", pag).forEach(function (x) {
+        var on = x.getAttribute("data-dzt-pag-modo") === pagModo; x.classList.toggle("on", on); x.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+      var info = $("[data-dzt-pag-info]", pag);
+      if (pagModo === "acconto" && accOk) {
+        oggi = Math.round(v.prezzo * D.acconto.perc / 100);
+        pz.forEach(function (x) { oggi += Math.round(x.prezzo * x.piano.perc / 100); });
+        info.innerHTML = "Oggi paghi <b>" + soldi(oggi) + "</b>. Il saldo di " + soldi(tot - oggi) +
+          " ti viene addebitato quando telaio e componenti sono arrivati e la bici è pronta.";
+        info.hidden = false;
+      } else info.hidden = true;
+    }
+
     var add = $("[data-dzt-add]");
     if (kit === "su-misura") {
       // preventivo: il pulsante apre WhatsApp, anche se il telaio in quella taglia va ordinato
@@ -150,7 +174,7 @@
     } else {
       var ok = v && v.disp && !(kit && (!kitVar || !kitVar.disp));
       add.disabled = !ok;
-      add.textContent = ok ? "Aggiungi al carrello" : "Non disponibile";
+      add.textContent = !ok ? "Non disponibile" : (pagModo === "acconto" ? "Riserva con acconto" : "Aggiungi al carrello");
     }
 
     // WhatsApp con la configurazione gia' scritta
@@ -171,7 +195,7 @@
       var m = misureKit().filter(function (x) { return x.pos === i; })[0];
       if (!m) return c;
       var sc = m.scelte.filter(function (x) { return x.id === misScelte[i]; })[0];
-      return sc ? { id: sc.id, prezzo: sc.prezzo } : c;
+      return sc ? { id: sc.id, prezzo: sc.prezzo, piano: c.piano } : c;
     });
   }
   // etichetta di una variante: solo la parte che cambia tra le varianti (via il colore uguale per tutte)
@@ -259,6 +283,9 @@
   });
 
   $("[data-dzt-note]").addEventListener("input", aggiorna);
+  $$("[data-dzt-pag-modo]").forEach(function (b) {
+    b.addEventListener("click", function () { if (b.disabled) return; pagModo = b.getAttribute("data-dzt-pag-modo"); aggiorna(); });
+  });
 
   /* ---- 3. carrello: telaio con le note per l'officina, e il kit ---- */
   $("[data-dzt-form]").addEventListener("submit", function (e) {
@@ -275,16 +302,19 @@
     var build = "B" + Date.now().toString(36).toUpperCase();
     props["_Montaggio n."] = build;
 
-    var items = [{ id: v.id, quantity: 1, properties: props }];
+    var acc = pagModo === "acconto";
+    if (acc) props["Pagamento"] = "Acconto " + D.acconto.perc + "%, saldo quando la bici è pronta";
+    function conPiano(it, piano) { if (acc && piano) it.selling_plan = piano.id; return it; }
+    var items = [conPiano({ id: v.id, quantity: 1, properties: props }, D.acconto)];
     if (kit && kitVar) {
       var suDi = { "Montato su": D.titolo + " · " + v.t, "_Montaggio n.": build };
       if (kit.componenti && kit.componenti.length) {
         // kit composto dal catalogo: nel carrello vanno i componenti veri, segnati col nome del kit
         pezzi().forEach(function (c) {
-          items.push({ id: c.id, quantity: 1, properties: { "Kit": kit.titolo, "Montato su": suDi["Montato su"], "_Montaggio n.": build } });
+          items.push(conPiano({ id: c.id, quantity: 1, properties: { "Kit": kit.titolo, "Montato su": suDi["Montato su"], "_Montaggio n.": build } }, c.piano));
         });
       } else {
-        items.push({ id: kitVar.id, quantity: 1, properties: suDi });
+        items.push(conPiano({ id: kitVar.id, quantity: 1, properties: suDi }, kit.piano));
       }
     }
 
