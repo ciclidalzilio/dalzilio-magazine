@@ -10,22 +10,23 @@
 .dzt *{box-sizing:border-box}
 
 /* ---- apertura ---- */
-.dzt-hero{text-align:center;padding:clamp(40px,6vw,88px) 20px 0;overflow:hidden}
-.dzt-k{margin:0 0 10px;font-size:15px;font-weight:600;color:#bf4800;letter-spacing:0}
-.dzt-h1{margin:0 auto;max-width:16ch;font-size:clamp(40px,7vw,96px);font-weight:600;letter-spacing:-.05em;line-height:.98;text-wrap:balance}
-.dzt-claim{margin:18px auto 0;max-width:34ch;font-size:clamp(18px,2vw,26px);font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink);text-wrap:balance}
-.dzt-hero-cta{display:flex;justify-content:center;align-items:baseline;gap:22px;flex-wrap:wrap;margin-top:22px;font-size:17px}
+/* nome, subito il telaio grande, poi frase e prezzo: il telaio si vede appena si apre la pagina */
+.dzt-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:clamp(24px,3vw,44px) 20px 0;overflow:hidden}
+.dzt-k{order:1;margin:0 0 8px;font-size:15px;font-weight:600;color:#bf4800;letter-spacing:0}
+.dzt-h1{order:2;margin:0 auto;max-width:18ch;font-size:clamp(40px,5vw,72px);font-weight:600;letter-spacing:-.05em;line-height:.98;text-wrap:balance}
+.dzt-claim{order:4;margin:4px auto 0;max-width:34ch;font-size:clamp(18px,2vw,26px);font-weight:500;letter-spacing:-.02em;line-height:1.25;color:var(--ink);text-wrap:balance}
+.dzt-hero-cta{order:5;display:flex;justify-content:center;align-items:baseline;gap:22px;flex-wrap:wrap;margin-top:22px;font-size:17px}
 .dzt-da{color:var(--sub)}
 .dzt-da b{color:var(--ink);font-weight:600}
 .dzt-link{color:var(--blue);text-decoration:none}
 .dzt-link:hover{text-decoration:underline}
 /* telaio grande su un fondale che sfuma nel bianco: nessuno stacco */
-.dzt-hero-stage{position:relative;margin:clamp(20px,3vw,40px) auto 0;max-width:1200px;padding:0 0 clamp(30px,4vw,56px)}
+.dzt-hero-stage{order:3;position:relative;width:100%;margin:clamp(6px,1.5vw,20px) auto 0;max-width:1200px;padding:0 0 clamp(18px,2.5vw,36px)}
 .dzt-hero-stage::before{content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
   background:radial-gradient(55% 60% at 50% 80%,#e4e5ea 0%,#f0f0f3 45%,#fff 100%);
   -webkit-mask-image:linear-gradient(180deg,transparent 0,#000 30%,#000 72%,transparent 100%);
   mask-image:linear-gradient(180deg,transparent 0,#000 30%,#000 72%,transparent 100%)}
-.dzt-hero-stage img{position:relative;z-index:1;display:block;width:100%;height:auto;max-height:70vh;object-fit:contain;mix-blend-mode:multiply}
+.dzt-hero-stage img{position:relative;z-index:1;display:block;width:100%;height:auto;max-height:62vh;margin:0 auto;object-fit:contain;mix-blend-mode:multiply}
 
 /* ---- configuratore ---- */
 .dzt-conf{max-width:1200px;margin:0 auto;padding:clamp(40px,6vw,96px) 24px 40px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:start}
@@ -160,13 +161,11 @@
   .dzt-vis-lista{display:none}
   /* telefono: il telaio subito sotto il nome, frase e prezzo sotto la foto;
      la foto del configuratore non si ripete (quella dell'apertura cambia col colore) */
-  .dzt-hero{display:flex;flex-direction:column;padding-top:28px;padding-bottom:4px}
-  .dzt-k{order:1}
-  .dzt-h1{order:2}
-  .dzt-hero-stage{order:3;margin-top:14px;padding-bottom:18px}
+  .dzt-hero{padding-top:28px;padding-bottom:4px}
+  .dzt-hero-stage{margin-top:14px;padding-bottom:18px}
   .dzt-hero-stage img{max-height:none}
-  .dzt-claim{order:4;margin-top:6px;font-size:18px}
-  .dzt-hero-cta{order:5;margin-top:14px}
+  .dzt-claim{margin-top:6px;font-size:18px}
+  .dzt-hero-cta{margin-top:14px}
   .dzt-vis-foto{display:none}
   .dzt-vis-kit{margin-top:0}
   .dzt-barra{display:flex;position:fixed;left:12px;right:12px;bottom:76px;z-index:60;align-items:center;justify-content:space-between;gap:14px;
