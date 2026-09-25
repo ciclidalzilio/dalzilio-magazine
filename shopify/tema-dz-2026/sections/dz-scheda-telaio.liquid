@@ -36,6 +36,8 @@
   "10% ora, saldo alla spedizione"), nel riepilogo compare "Riserva con
   acconto": si vede quanto si paga oggi e quanto al saldo, e al carrello va
   il piano di ogni pezzo. Senza piani la scelta non compare.
+  ANTEPRIMA ACCONTO (impostazione della sezione, 0 = spenta): per vedere la
+  scelta prima che esistano i piani. Mostra gli importi ma non ordina nulla.
 
   Si usa assegnando al prodotto il modello "telaio" (templates/product.telaio.json).
   I dati strutturati per Google restano quelli di dz-schema.liquid nell'head.
@@ -94,6 +96,17 @@
       endif
     endfor
   endfor
+
+  comment
+    Anteprima: senza piani veri, l'impostazione "Anteprima acconto" mostra la
+    scelta con quella percentuale, senza poter ordinare.
+  endcomment
+  assign acc_prova = false
+  if acc_ok == false and section.settings.acconto_anteprima > 0
+    assign acc_ok = true
+    assign acc_prova = true
+    assign acc_perc = section.settings.acconto_anteprima
+  endif
 
   comment
     Kit compatibili con questo telaio (vedi i tag nel commento in alto).
@@ -306,6 +319,7 @@
                   {%- capture pz_piano -%}{"id": {{ sp.id }}, "perc": {{ sp.checkout_charge.value }}}{%- endcapture -%}
                 {%- endif -%}
               {%- endfor -%}{%- endfor -%}
+              {%- if pz_piano == 'null' and acc_prova -%}{%- capture pz_piano -%}{"id": 0, "perc": {{ acc_perc }}}{%- endcapture -%}{%- endif -%}
               {%- capture kc_c -%}{"id": {{ vv.id }}, "prezzo": {{ vv.price }}, "piano": {{ pz_piano }}}{%- endcapture -%}
               {%- assign kc_comp = kc_comp | append: ',' | append: kc_c -%}
               {%- comment -%} pezzo con piu' misure e nessuna variante fissata: diventa una scelta {%- endcomment -%}
@@ -387,6 +401,7 @@
               <button type="button" data-dzt-pag-modo="acconto" aria-pressed="false">Riserva con acconto {{ acc_perc }}%</button>
             </div>
             <p class="dzt-pag-info" data-dzt-pag-info hidden></p>
+            {%- if acc_prova -%}<p class="dzt-pag-prova">Anteprima: l'acconto si attiva quando l'app di preordini avrà creato il piano.</p>{%- endif -%}
           </div>
           {%- endif -%}
           <button type="submit" class="dzt-add" data-dzt-add{% unless sel.available %} disabled{% endunless %}>{% if sel.available %}Aggiungi al carrello{% else %}Non disponibile{% endif %}</button>
@@ -418,7 +433,7 @@
       "aggiungi": {{ routes.cart_add_url | append: '.js' | json }},
       "carrello": {{ routes.cart_url | json }},
       "wa": {{ wa | json }},
-      "acconto": {% if acc_ok %}{"id": {{ acc_id }}, "perc": {{ acc_perc }}}{% else %}null{% endif %},
+      "acconto": {% if acc_ok %}{"id": {{ acc_id }}, "perc": {{ acc_perc }}, "prova": {{ acc_prova | json }}}{% else %}null{% endif %},
       "varianti": [
         {%- for v in p.variants -%}
         {"id": {{ v.id }}, "o": {{ v.options | json }}, "t": {{ v.title | json }}, "prezzo": {{ v.price }}, "disp": {{ v.available | json }},
@@ -442,6 +457,7 @@
                    {%- capture k_piano -%}{"id": {{ sp.id }}, "perc": {{ sp.checkout_charge.value }}}{%- endcapture -%}
                  {%- endif -%}
                {%- endfor -%}{%- endfor -%}
+               {%- if k_piano == 'null' and acc_prova -%}{%- capture k_piano -%}{"id": 0, "perc": {{ acc_perc }}}{%- endcapture -%}{%- endif -%}
                "piano": {{ k_piano }}}
             {%- endif -%}
           {%- endfor -%}
@@ -464,7 +480,9 @@
       "info": "Ogni prodotto della collezione e' un kit: prezzo, foto e componenti in elenco puntato nella descrizione." },
     { "type": "text", "id": "whatsapp", "label": "Numero WhatsApp", "default": "393457815102" },
     { "type": "textarea", "id": "kit_composti", "label": "Kit composti dal catalogo",
-      "info": "Una riga per kit: Nome | maniglia[:variante], maniglia[:variante] | strada o mtb (facoltativo). Prezzo = somma dei componenti." }
+      "info": "Una riga per kit: Nome | maniglia[:variante], maniglia[:variante] | strada o mtb (facoltativo). Prezzo = somma dei componenti." },
+    { "type": "range", "id": "acconto_anteprima", "label": "Anteprima acconto (%)", "min": 0, "max": 50, "step": 5, "default": 0,
+      "info": "Solo per provare la scelta 'Riserva con acconto' prima che un'app di preordini crei i piani: mostra gli importi ma non ordina. 0 = spenta." }
   ]
 }
 {% endschema %}

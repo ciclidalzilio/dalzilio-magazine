@@ -303,6 +303,12 @@
     props["_Montaggio n."] = build;
 
     var acc = pagModo === "acconto";
+    if (acc && D.acconto && D.acconto.prova) {
+      // anteprima: niente ordine, il piano vero ancora non esiste
+      err.textContent = "Questa è un'anteprima: la riserva con acconto sarà attiva quando l'app di preordini avrà creato il piano. Per ora puoi pagare tutto ora o chiederci un preventivo.";
+      err.hidden = false;
+      return;
+    }
     if (acc) props["Pagamento"] = "Acconto " + D.acconto.perc + "%, saldo quando la bici è pronta";
     function conPiano(it, piano) { if (acc && piano) it.selling_plan = piano.id; return it; }
     var items = [conPiano({ id: v.id, quantity: 1, properties: props }, D.acconto)];

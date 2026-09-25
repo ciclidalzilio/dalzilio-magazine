@@ -112,6 +112,7 @@
 .dzt-seg button:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
 .dzt-pag-info{margin:10px 2px 0;font-size:14px;line-height:1.45;color:var(--sub)}
 .dzt-pag-info b{color:var(--ink);font-size:16px}
+.dzt-pag-prova{margin:8px 2px 0;font-size:12.5px;color:#bf4800}
 
 /* note per l'officina (nel riepilogo) */
 .dzt-note{display:flex;flex-direction:column;gap:8px;margin:14px 0 18px;font-size:15px;font-weight:600}
