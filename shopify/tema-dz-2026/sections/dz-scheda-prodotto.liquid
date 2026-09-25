@@ -534,6 +534,157 @@
     </div>
   </div>
   {%- endif -%}
+
+  {%- comment -%}
+    Confronto con le sorelle dello stesso modello (es. Patron 900 / 910 / 920):
+    questa bici in colonna evidenziata accanto alle altre versioni in vendita
+    della stessa marca. Lo riempie lo script qui sotto: cerca nel negozio le
+    bici col nome del modello, legge la tabella tecnica del fornitore nella
+    descrizione (motore, batteria, forcella, cambio, freni, peso...) e mette
+    in tabella solo le righe che hanno dati. Senza sorelle non compare.
+    Nessun dato del catalogo viene modificato.
+  {%- endcomment -%}
+  <div class="dz-chap dz-cmp" id="dz-confronto" data-dz-cmp data-root="{{ routes.root_url }}" data-handle="{{ p.handle }}"
+       data-titolo="{{ p.title | escape }}" data-marca="{{ p.vendor | escape }}" data-prezzo="{{ p.price_min }}" hidden>
+    <div class="dz-chap-head">
+      <h2>Quale <span data-dz-cmp-fam></span> <span class="g">fa per te.</span></h2>
+    </div>
+    <div class="dz-cmpwrap"><table class="dz-cmptab" data-dz-cmp-tab></table></div>
+    <p class="dz-cmp-nota">Dati tecnici dalle schede ufficiali del produttore. Tocca una bici per aprirla.</p>
+  </div>
+  <script>
+    (function(){
+      var box = document.querySelector('[data-dz-cmp]');
+      if (!box || !window.fetch || !window.DOMParser) return;
+      var root = box.getAttribute('data-root') || '/';
+      if (root.slice(-1) !== '/') root += '/';
+      var mioHandle = box.getAttribute('data-handle');
+      var marca = (box.getAttribute('data-marca') || '').toLowerCase().split(/[\s_]/)[0];
+
+      /* nome del modello senza marca e senza "- New 2026": "SCOTT Patron 910 - New 2026" -> "Patron 910" */
+      var MARCHE = /^(trek|scott|cannondale|amflow|pinarello|bmc|specialized|giant|orbea)\s+/i;
+      function nome(t) {
+        var x = String(t || '').replace(/\s*[-–]\s*new\s*(19|20)\d\d.*$/i, '').replace(/\s*[-–]\s*(19|20)\d\d\s*$/, '').trim();
+        while (MARCHE.test(x)) x = x.replace(MARCHE, '');
+        return x.trim();
+      }
+      /* il modello e' il nome fino al primo numero: "Patron 920" -> "Patron",
+         "Patron ST 910" -> "Patron ST", "Madone SL 7 Gen 8" -> "Madone SL" */
+      function famiglia(t) {
+        var w = nome(t).split(/\s+/), k = [];
+        for (var i = 0; i < w.length && !/\d/.test(w[i]); i++) k.push(w[i]);
+        return k.join(' ');
+      }
+      var mio = nome(box.getAttribute('data-titolo'));
+      var fam = famiglia(box.getAttribute('data-titolo'));
+      if (fam.length < 3 || /^(kit|telaio|bike|bicicletta)\b/i.test(fam)) return;
+
+      function euro(cent) { return '€ ' + Math.round(cent / 100).toLocaleString('it-IT'); }
+      function foto(u, w) { if (!u) return ''; u = String(u); if (u.indexOf('//') === 0) u = 'https:' + u; return u + (u.indexOf('?') > -1 ? '&' : '?') + 'width=' + w; }
+
+      /* righe del confronto: etichetta e nomi della riga nella tabella del fornitore */
+      var RIGHE = [
+        ['Motore', ['motor', 'drive unit', 'motore']],
+        ['Batteria', ['battery', 'batteria']],
+        ['Forcella', ['fork', 'forcella']],
+        ['Ammortizzatore', ['rear shock', 'shock', 'ammortizzatore']],
+        ['Cambio', ['derailleur', 'rear derailleur', 'groupset', 'cambio', 'deragliatore posteriore']],
+        ['Rapporti', ['number of gears', 'gears', 'rapporti']],
+        ['Freni', ['brake front', 'brakes', 'brake', 'freni', 'freno anteriore']],
+        ['Ruote', ['wheelset', 'wheels', 'wheel front', 'rims', 'ruote']],
+        ['Pneumatici', ['tire front', 'tires', 'tyres', 'tire', 'pneumatici']],
+        ['Reggisella', ['seat post', 'seatpost', 'reggisella']],
+        ['Peso', ['weight', 'peso']]
+      ];
+      function tabella(html) {
+        var out = {};
+        try {
+          var doc = new DOMParser().parseFromString(html || '', 'text/html');
+          doc.querySelectorAll('tr').forEach(function(tr){
+            var td = tr.querySelectorAll('td,th');
+            if (td.length < 2) return;
+            var k = td[0].textContent.replace(/:\s*$/, '').trim().toLowerCase();
+            var v = td[1].textContent.replace(/\s+/g, ' ').trim();
+            if (k && v && !(k in out)) out[k] = v;
+          });
+        } catch (e) {}
+        return out;
+      }
+      function valore(spec, label, chiavi) {
+        for (var i = 0; i < chiavi.length; i++) {
+          var v = spec[chiavi[i]];
+          if (!v) continue;
+          if (label === 'Peso') { var n = parseFloat(v.replace(',', '.')); return isNaN(n) ? v : String(n).replace('.', ',') + ' kg'; }
+          v = v.split(',')[0].trim();
+          return v.length > 60 ? v.slice(0, 58) + '…' : v;
+        }
+        return '';
+      }
+
+      var q = root + 'search/suggest.json?q=' + encodeURIComponent(fam) +
+        '&resources[type]=product&resources[limit]=10&resources[options][fields]=title,vendor&resources[options][unavailable_products]=last';
+      fetch(q, { headers: { 'Accept': 'application/json' } }).then(function(r){ return r.json(); }).then(function(j){
+        var lista = (((j || {}).resources || {}).results || {}).products || [];
+        var candidate = lista.filter(function(p){
+          if (!p || p.handle === mioHandle) return false;
+          if (famiglia(p.title).toLowerCase() !== fam.toLowerCase()) return false;
+          if (nome(p.title).toLowerCase() === mio.toLowerCase()) return false;   /* questa stessa bici caricata due volte */
+          if (marca && String(p.vendor || '').toLowerCase().indexOf(marca) !== 0) return false;
+          if (String(p.type || '').toUpperCase() === 'USATO' || /kit telaio|telaio|frameset/i.test(p.title)) return false;
+          return true;
+        }).slice(0, 8);
+        if (!candidate.length) return;
+        var handles = [mioHandle].concat(candidate.map(function(p){ return p.handle; }));
+        return Promise.all(handles.map(function(h){
+          return fetch(root + 'products/' + h + '.js').then(function(r){ return r.ok ? r.json() : null; }).catch(function(){ return null; });
+        }));
+      }).then(function(prodotti){
+        if (!prodotti || !prodotti[0]) return;
+        var mioPrezzo = parseFloat(box.getAttribute('data-prezzo')) || 0;
+        function colonna(p) {
+          var spec = tabella(p.description);
+          return { h: p.handle, url: p.url || (root + 'products/' + p.handle), nome: nome(p.title), prezzo: p.price_min || p.price,
+                   img: p.featured_image, spec: spec, nSpec: Object.keys(spec).length,
+                   disp: (p.variants || []).some(function(v){ return v.available; }), me: p.handle === mioHandle };
+        }
+        var me = colonna(prodotti[0]);
+        /* stesso modello caricato piu' volte: tiene quello con la scheda tecnica, poi quello disponibile */
+        var gruppi = {};
+        prodotti.slice(1).filter(Boolean).map(colonna).forEach(function(c){
+          var k = c.nome.toLowerCase(), g = gruppi[k];
+          if (!g || (c.nSpec > 0) - (g.nSpec > 0) > 0 || ((c.nSpec > 0) === (g.nSpec > 0) && c.disp && !g.disp)) gruppi[k] = c;
+        });
+        /* le tre piu' vicine di prezzo a questa bici */
+        var sorelle = Object.keys(gruppi).map(function(k){ return gruppi[k]; })
+          .sort(function(a, b){ return Math.abs(a.prezzo - mioPrezzo) - Math.abs(b.prezzo - mioPrezzo); }).slice(0, 3);
+        var col = [me].concat(sorelle);
+        if (col.length < 2) return;
+        col.sort(function(a, b){ return a.prezzo - b.prezzo; });
+
+        var tab = box.querySelector('[data-dz-cmp-tab]');
+        function td(c, html, tag) { return '<' + (tag || 'td') + (c.me ? ' class="me"' : '') + '>' + html + '</' + (tag || 'td') + '>'; }
+        function esc(t) { var d = document.createElement('div'); d.textContent = t; return d.innerHTML; }
+        var testa = '<thead><tr><th></th>' + col.map(function(c){
+          var dentro = (c.img ? '<img src="' + esc(foto(c.img, 480)) + '" alt="" loading="lazy" width="240" height="160">' : '') +
+            (c.me ? '<span class="dz-cmp-tu">Questa bici</span>' : '') +
+            '<span class="mod">' + esc(c.nome) + '</span><span class="pr">Da ' + euro(c.prezzo) + '</span>';
+          return td(c, c.me ? '<span class="dz-cmp-bici">' + dentro + '</span>' : '<a class="dz-cmp-bici" href="' + esc(c.url) + '">' + dentro + '</a>', 'th');
+        }).join('') + '</tr></thead>';
+        var corpo = '';
+        RIGHE.forEach(function(r){
+          var vals = col.map(function(c){ return valore(c.spec, r[0], r[1]); });
+          if (vals.filter(Boolean).length < 2) return;
+          corpo += '<tr><td>' + r[0] + '</td>' + col.map(function(c, i){ return td(c, vals[i] ? esc(vals[i]) : '—'); }).join('') + '</tr>';
+        });
+        corpo += '<tr><td>Disponibilità</td>' + col.map(function(c){
+          return td(c, '<span class="dot' + (c.disp ? '' : ' no') + '"></span>' + (c.disp ? 'Disponibile' : 'Su ordinazione'));
+        }).join('') + '</tr>';
+        tab.innerHTML = testa + '<tbody>' + corpo + '</tbody>';
+        box.querySelector('[data-dz-cmp-fam]').textContent = fam;
+        box.hidden = false;
+      }).catch(function(){});
+    })();
+  </script>
   {%- endif -%}
 
   {%- comment -%}
