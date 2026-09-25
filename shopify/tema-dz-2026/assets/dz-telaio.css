@@ -164,11 +164,12 @@
 .dzt-bar-tot i:empty{display:none}
 /* il pulsante a vetro fumé della scheda prodotto, col riflesso che scorre */
 .dzt-add{position:relative;overflow:hidden;isolation:isolate;flex:none;display:inline-flex;align-items:center;justify-content:center;height:52px;padding:0 30px;
-  border:1px solid rgba(255,255,255,.2);border-radius:16px;background:rgba(28,28,31,.9);color:#fff;font-size:15.5px;font-weight:500;cursor:pointer;
-  box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 16px 32px -18px rgba(0,0,0,.7);transition:transform .25s cubic-bezier(.2,.8,.2,1),background .2s}
+  border:1px solid rgba(150,185,255,.3);border-radius:16px;background:linear-gradient(180deg,rgba(22,54,140,.97) 0%,rgba(7,24,74,.98) 100%);color:#fff;font-size:15.5px;font-weight:500;cursor:pointer;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.34),inset 0 -1px 0 rgba(0,10,40,.35),0 16px 32px -16px rgba(10,34,98,.8);transition:transform .25s cubic-bezier(.2,.8,.2,1),background .2s}
 .dzt-add::before{content:"";position:absolute;top:-60%;bottom:-60%;left:-70%;width:38%;z-index:-1;pointer-events:none;
   background:linear-gradient(105deg,rgba(255,255,255,0),rgba(255,255,255,.42) 50%,rgba(255,255,255,0));transform:skewX(-22deg);transition:left .9s ease-in-out}
-.dzt-add:hover{background:rgba(40,40,44,.92);transform:translateY(-1px)}
+.dzt-add::after{content:"";position:absolute;inset:0;border-radius:inherit;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.24),rgba(255,255,255,.04) 48%,rgba(255,255,255,0) 52%)}
+.dzt-add:hover{background:linear-gradient(180deg,rgba(32,72,170,.97) 0%,rgba(10,34,98,.98) 100%);transform:translateY(-1px)}
 .dzt-add:hover::before{left:140%}
 .dzt-add:disabled{opacity:.45;transform:none;cursor:not-allowed}
 .dzt-err{position:absolute;right:32px;bottom:calc(100% + 10px);max-width:440px;margin:0;padding:12px 16px;border-radius:14px;background:#fff;
@@ -285,8 +286,6 @@
 .dzt-carte .dzt-bar{order:9;position:sticky;bottom:18px;align-self:center;width:min(820px,calc(100% - 24px));min-height:0;margin:24px auto 18px;padding:10px 10px 10px 22px;
   border:0;border-radius:22px;background:rgba(22,22,24,.9);color:#fff;box-shadow:0 18px 44px -18px rgba(0,0,0,.55)}
 .dzt-carte .dzt-bar-k,.dzt-carte .dzt-bar-tot span,.dzt-carte .dzt-bar-tot i{color:rgba(255,255,255,.62)}
-.dzt-carte .dzt-add{border:0;background:var(--grad);box-shadow:0 12px 26px -12px rgba(255,46,99,.7)}
-.dzt-carte .dzt-add:hover{background:var(--grad);filter:brightness(1.06)}
 .dzt-carte .dzt-add:disabled{background:#4a4a4f;box-shadow:none}
 .dzt-carte .dzt-desc{border-top:1px solid var(--hair)}
 @media (max-width:960px){
