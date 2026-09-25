@@ -615,6 +615,8 @@
       var testi = hero ? Array.prototype.slice.call(hero.querySelectorAll('.dz-ph-title,.dz-ph-claim,.dz-ph-claim2,.dz-ph-cta')) : [];
       var scena = hero ? hero.querySelector('.dz-ph-stage') : null;
       var heroPronto = false;
+      var testa = document.querySelector('.dz header'), padScena = null;
+      window.addEventListener('resize', function(){ padScena = null; });
       if (hero) {
         /* finita l'entrata (animazione CSS), lo scroll prende il comando */
         var ultimo = scena || testi[testi.length - 1];
@@ -640,8 +642,16 @@
             testi[k].style.transform = 'translateY(' + (-f * 48).toFixed(1) + 'px)';
           }
           if (scena) {
-            scena.style.transform = 'translateY(' + (y * 0.16).toFixed(1) + 'px) scale(' + (1 + f * 0.05).toFixed(4) + ')';
-            scena.style.opacity = (1 - f * 0.45).toFixed(3);
+            var sposta = y * 0.16;
+            scena.style.transform = 'translateY(' + sposta.toFixed(1) + 'px) scale(' + (1 + f * 0.05).toFixed(4) + ')';
+            /* la bici resta piena finche' e' tutta sullo schermo: sfuma solo quando
+               comincia a passare sotto il menu in alto */
+            if (padScena === null) padScena = parseFloat(getComputedStyle(scena).paddingTop) || 0;
+            var lim = testa ? Math.max(0, testa.getBoundingClientRect().bottom) : 0;
+            var base = scena.offsetParent;
+            var cima = (base ? base.getBoundingClientRect().top : 0) + scena.offsetTop + sposta + padScena;
+            var fuori = clamp((lim - cima) / ((scena.offsetHeight || 1) * 0.6));
+            scena.style.opacity = fuori > 0 ? (1 - fuori * 0.6).toFixed(3) : '';
           }
         }
       }
