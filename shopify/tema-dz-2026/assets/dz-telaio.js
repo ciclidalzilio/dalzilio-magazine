@@ -1,7 +1,7 @@
 /* DZ 2026 — scheda telaio: il configuratore.
-   Tiene lo stato delle scelte (variante del telaio, kit, misure), aggiorna foto,
+   Tiene lo stato delle scelte (variante del telaio, kit), aggiorna foto,
    riepilogo e totale, e aggiunge al carrello telaio e kit in un colpo solo.
-   Le misure vanno come note della riga del telaio; il kit porta la nota
+   Le note per l'officina vanno sulla riga del telaio; il kit porta la nota
    "Montato su". Nessun dato del negozio viene modificato. */
 (function () {
   "use strict";
@@ -35,8 +35,6 @@
   if (iniziale) scelte = iniziale.o.slice();
   var kit = null;          // oggetto kit scelto, null = solo telaio, "su-misura" = preventivo
   var kitVar = null;       // variante del kit
-  var modo = "io";         // "io" | "insieme"
-  var misure = {};         // { Manubrio: "40 cm", ... }
 
   /* taglie in ordine naturale: XXS..XXL oppure numeri crescenti */
   var ORD = ["XXS", "XS", "S", "SM", "M", "ML", "L", "XL", "XXL"];
@@ -117,40 +115,41 @@
     // testi del riepilogo
     var tTelaio = v ? v.t : "—";
     var tKit = "Solo telaio", pKit = "Incluso", cKit = 0;
-    if (kit === "su-misura") { tKit = "Montaggio su misura"; pKit = "Preventivo"; }
+    if (kit === "su-misura") { tKit = "Preventivo personalizzato"; pKit = "Su richiesta"; }
     else if (kit && kitVar) {
       tKit = kit.titolo + (kit.varianti.length > 1 ? " · " + kitVar.t : "");
       cKit = kitVar.prezzo; pKit = soldi(cKit);
-    }
-    var tMis;
-    if (modo === "insieme") tMis = "Le decidiamo insieme";
-    else {
-      var parti = [];
-      Object.keys(misure).forEach(function (k) { if (misure[k] && misure[k] !== "Di serie") parti.push(k.replace(" manubrio", "") + " " + misure[k]); });
-      var sella = sellaCm();
-      if (sella) parti.push("sella ≈ " + sella + " cm");
-      tMis = parti.length ? parti.join(" · ") : "Di serie";
     }
     var tot = (v ? v.prezzo : 0) + cKit;
 
     $("[data-dzt-v-telaio]").textContent = tTelaio;
     $("[data-dzt-v-kit]").textContent = tKit;
-    $("[data-dzt-v-misure]").textContent = tMis;
     $("[data-dzt-r-telaio]").textContent = tTelaio;
     $("[data-dzt-r-telaio-p]").textContent = v ? soldi(v.prezzo) : "—";
     $("[data-dzt-r-kit]").textContent = tKit;
     $("[data-dzt-r-kit-p]").textContent = pKit;
-    $("[data-dzt-r-misure]").textContent = tMis;
-    $("[data-dzt-tot]").textContent = soldi(tot) + (kit === "su-misura" ? " + montaggio" : "");
+    $("[data-dzt-tot]").textContent = soldi(tot);
+    $("[data-dzt-tot-nota]").hidden = kit !== "su-misura";
+    // col preventivo gia' scelto il pulsante principale fa la stessa cosa: il secondo sparisce
+    $("[data-dzt-wa]").hidden = kit === "su-misura";
+    $("[data-dzt-prev-nota]").hidden = false;
     $("[data-dzt-tot2]").textContent = soldi(tot);
 
     var add = $("[data-dzt-add]");
-    var ok = v && v.disp && !(kit && kit !== "su-misura" && (!kitVar || !kitVar.disp));
-    add.disabled = !ok;
-    add.textContent = ok ? "Aggiungi al carrello" : "Non disponibile";
+    if (kit === "su-misura") {
+      // preventivo: il pulsante apre WhatsApp, anche se il telaio in quella taglia va ordinato
+      add.disabled = !v;
+      add.textContent = "Chiedi il preventivo";
+    } else {
+      var ok = v && v.disp && !(kit && (!kitVar || !kitVar.disp));
+      add.disabled = !ok;
+      add.textContent = ok ? "Aggiungi al carrello" : "Non disponibile";
+    }
 
     // WhatsApp con la configurazione gia' scritta
-    var msg = "Ciao! Vorrei costruire una bici partendo dal " + D.titolo + " (" + tTelaio + ").\nMontaggio: " + tKit + "\nMisure: " + tMis;
+    var msg = kit === "su-misura"
+      ? "Ciao! Vorrei un preventivo personalizzato per montare il " + D.titolo + " (" + tTelaio + ")."
+      : "Ciao! Vorrei un preventivo personalizzato partendo dal " + D.titolo + " (" + tTelaio + ").\nPer ora ho scelto: " + tKit + ".";
     var note = $("[data-dzt-note]").value.trim();
     if (note) msg += "\nNote: " + note;
     $("[data-dzt-wa]").href = "https://wa.me/" + D.wa + "?text=" + encodeURIComponent(msg);
@@ -200,70 +199,24 @@
     });
   });
 
-  /* ---- 3. misure ---- */
-  $$("[data-dzt-modo]").forEach(function (b) {
-    b.addEventListener("click", function () {
-      modo = b.getAttribute("data-dzt-modo");
-      $$("[data-dzt-modo]").forEach(function (x) {
-        var on = x === b; x.classList.toggle("on", on); x.setAttribute("aria-pressed", on ? "true" : "false");
-      });
-      $("[data-dzt-misure]").hidden = modo !== "io";
-      $("[data-dzt-insieme]").hidden = modo === "io";
-      aggiorna();
-    });
-  });
-  $$("[data-dzt-mis]").forEach(function (g) {
-    var k = g.getAttribute("data-dzt-mis");
-    misure[k] = "Di serie";
-    g.addEventListener("click", function (e) {
-      var c = e.target.closest(".dzt-chip"); if (!c) return;
-      misure[k] = c.getAttribute("data-dzt-val");
-      $$(".dzt-chip", g).forEach(function (x) {
-        var on = x === c; x.classList.toggle("on", on); x.setAttribute("aria-pressed", on ? "true" : "false");
-      });
-      aggiorna();
-    });
-  });
-  /* altezza sella indicativa dal cavallo (formula LeMond: cavallo x 0,883,
-     dal centro del movimento centrale al piano della sella) */
-  function num(el) { var n = parseFloat(String(el.value).replace(",", ".")); return isNaN(n) ? 0 : n; }
-  function sellaCm() {
-    var c = num($("[data-dzt-cavallo]"));
-    if (c < 60 || c > 105) return "";
-    return (Math.round(c * 0.883 * 2) / 2).toFixed(1).replace(".", ",");
-  }
-  function aggiornaSella() {
-    var s = sellaCm(), p = $("[data-dzt-sella]");
-    if (s) { p.hidden = false; p.innerHTML = "Altezza sella indicativa <b>" + s + " cm</b><br>dal centro del movimento centrale. La verifichiamo al montaggio."; }
-    else p.hidden = true;
-    aggiorna();
-  }
-  $("[data-dzt-cavallo]").addEventListener("input", aggiornaSella);
-  $("[data-dzt-altezza]").addEventListener("input", aggiorna);
   $("[data-dzt-note]").addEventListener("input", aggiorna);
 
-  /* ---- 4. carrello: telaio con le misure come note, e il kit ---- */
+  /* ---- 3. carrello: telaio con le note per l'officina, e il kit ---- */
   $("[data-dzt-form]").addEventListener("submit", function (e) {
     e.preventDefault();
-    var v = variante(); if (!v || !v.disp) return;
+    var v = variante();
+    if (kit === "su-misura") { if (v) window.open($("[data-dzt-wa]").href, "_blank", "noopener"); return; }
+    if (!v || !v.disp) return;
     var add = $("[data-dzt-add]"), err = $("[data-dzt-err]");
     var props = {};
-    props["Montaggio"] = kit === "su-misura" ? "Su misura (preventivo)" : (kit ? kit.titolo + (kit.varianti.length > 1 ? " · " + kitVar.t : "") : "Solo telaio");
-    if (modo === "insieme") props["Misure"] = "Da decidere insieme in negozio";
-    else {
-      Object.keys(misure).forEach(function (k) { props[k] = misure[k]; });
-      var h = num($("[data-dzt-altezza]")), c = num($("[data-dzt-cavallo]"));
-      if (h) props["Altezza ciclista"] = String(h).replace(".", ",") + " cm";
-      if (c) props["Cavallo"] = String(c).replace(".", ",") + " cm";
-      if (sellaCm()) props["Altezza sella indicativa"] = sellaCm() + " cm";
-    }
+    props["Montaggio"] = kit ? kit.titolo + (kit.varianti.length > 1 ? " · " + kitVar.t : "") : "Solo telaio";
     var note = $("[data-dzt-note]").value.trim();
     if (note) props["Note per l'officina"] = note;
     var build = "B" + Date.now().toString(36).toUpperCase();
     props["_Montaggio n."] = build;
 
     var items = [{ id: v.id, quantity: 1, properties: props }];
-    if (kit && kit !== "su-misura" && kitVar) {
+    if (kit && kitVar) {
       var suDi = { "Montato su": D.titolo + " · " + v.t, "_Montaggio n.": build };
       if (kit.componenti && kit.componenti.length) {
         // kit composto dal catalogo: nel carrello vanno i componenti veri, segnati col nome del kit

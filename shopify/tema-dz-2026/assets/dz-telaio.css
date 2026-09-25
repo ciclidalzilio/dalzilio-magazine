@@ -57,12 +57,12 @@
 .dzt-chip.on{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
 .dzt-chip.no{color:var(--sub2)}
 .dzt-chip.no::after{content:"esaurita";display:block;font-size:11px;font-weight:400;color:var(--sub2);margin-top:2px}
-.dzt-chip:focus-visible,.dzt-seg button:focus-visible,.dzt-add:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.dzt-chip:focus-visible,.dzt-add:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
 .dzt-nota{margin:12px 0 0;font-size:14px;color:var(--sub);min-height:1.2em}
 .dzt-nota.ko{color:#bf4800}
 .dzt-aiuto{margin:8px 0 0;font-size:14px;color:var(--sub)}
-.dzt-aiuto a,.dzt-wa{color:var(--blue);text-decoration:none}
-.dzt-aiuto a:hover,.dzt-wa:hover{text-decoration:underline}
+.dzt-aiuto a{color:var(--blue);text-decoration:none}
+.dzt-aiuto a:hover{text-decoration:underline}
 
 /* kit di montaggio */
 .dzt-kits{display:flex;flex-direction:column;gap:12px}
@@ -98,21 +98,9 @@
 .dzt-vis-kit img{position:absolute;inset:8px;width:calc(100% - 16px);height:calc(100% - 16px);object-fit:contain;mix-blend-mode:multiply}
 @keyframes dztpezzo{from{opacity:0;transform:translateY(8px)}}
 
-/* misure */
-.dzt-seg{display:inline-flex;padding:3px;border-radius:12px;background:var(--panel);gap:2px}
-.dzt-seg button{border:0;background:transparent;font:inherit;font-size:14px;font-weight:500;color:var(--ink);padding:9px 16px;border-radius:9px;cursor:pointer}
-.dzt-seg button.on{background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.12),0 0 0 .5px rgba(0,0,0,.06)}
-.dzt-corpo{display:flex;flex-wrap:wrap;gap:14px 20px;align-items:flex-end;margin-top:22px;padding:18px 20px;border-radius:18px;background:var(--panel)}
-.dzt-corpo label{display:flex;flex-direction:column;gap:6px;font-size:14px;font-weight:600}
-.dzt-in{display:flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--hair2);border-radius:10px;padding:0 10px}
-.dzt-in input{width:72px;border:0;background:transparent;font:inherit;font-size:16px;font-weight:500;padding:9px 0;color:var(--ink);outline:none}
-.dzt-in i{font-style:normal;color:var(--sub);font-weight:400}
-.dzt-in:focus-within{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
-.dzt-sella{flex:1 1 220px;margin:0;font-size:14px;color:var(--sub);line-height:1.45}
-.dzt-sella b{color:var(--ink);font-size:17px}
-.dzt-insieme{margin-top:18px;padding:18px 20px;border-radius:18px;background:var(--panel);font-size:15px;line-height:1.5}
-.dzt-insieme p{margin:0}
-.dzt-note{display:flex;flex-direction:column;gap:8px;margin-top:22px;font-size:15px;font-weight:600}
+/* note per l'officina (nel riepilogo) */
+.dzt-note{display:flex;flex-direction:column;gap:8px;margin:14px 0 18px;font-size:15px;font-weight:600}
+.dzt-note > span{font-weight:400;color:var(--sub);font-size:13px;margin-top:-6px}
 .dzt-note textarea{font:inherit;font-size:15px;font-weight:400;padding:12px 14px;border-radius:14px;border:1px solid var(--hair2);resize:vertical;color:var(--ink)}
 .dzt-note textarea:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
 
@@ -130,7 +118,16 @@
 .dzt-add:hover{background:var(--blue-h)}
 .dzt-add[disabled]{background:#d2d2d7;color:#86868b;cursor:not-allowed}
 .dzt-err{margin:10px 0 0;font-size:14px;color:#bf4800}
-.dzt-wa{display:block;margin-top:14px;text-align:center;font-size:15px}
+.dzt-tot-nota{margin:-8px 0 14px;text-align:right;font-size:14px;color:var(--sub)}
+.dzt-tot-nota[hidden],.dzt-prev[hidden]{display:none}
+.dzt-prev{display:flex;align-items:center;justify-content:center;width:100%;min-height:50px;margin-top:10px;padding:8px 18px;border-radius:980px;text-align:center;line-height:1.25;
+  border:1px solid var(--blue);color:var(--blue);background:#fff;font-size:17px;font-weight:500;text-decoration:none;transition:background .2s}
+.dzt-prev:hover{background:rgba(0,113,227,.06)}
+.dzt-prev:focus-visible{outline:2px solid var(--blue);outline-offset:3px}
+.dzt-prev-nota{margin:8px 0 0;text-align:center;font-size:13px;color:var(--sub)}
+/* la scelta "preventivo personalizzato" tra i montaggi */
+.dzt-kit-prev{border-style:dashed}
+.dzt-kit-prev.on{border-style:solid}
 
 /* barra in basso su telefono */
 .dzt-barra{display:none}
@@ -167,10 +164,9 @@
   .dzt-kit-prezzo{grid-column:2}
   .dzt-kit-foto{width:60px;height:60px}
   .dzt-kit.kc{grid-template-columns:minmax(0,1fr)}
+  .dzt-prev{font-size:16px}
   .dzt-kit.kc .dzt-kit-prezzo{grid-column:1}
   .dzt-kit-collage{height:120px}
   .dzt-vis-kit span{height:60px}
-  .dzt-seg{display:flex}
-  .dzt-seg button{flex:1;padding:9px 8px}
 }
 @media (prefers-reduced-motion:reduce){.dzt *{transition:none!important}}

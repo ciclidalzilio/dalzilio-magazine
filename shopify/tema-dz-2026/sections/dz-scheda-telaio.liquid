@@ -2,13 +2,13 @@
   dz-scheda-telaio.liquid — Cicli Dal Zilio
 
   Scheda dei telai, stile configuratore Apple: si parte dal telaio e si
-  costruisce la bici in quattro passi.
+  costruisce la bici in tre passi.
     1. Taglia e colore del telaio (le varianti del prodotto).
-    2. Montaggio: solo telaio oppure uno dei kit preparati dal negozio.
-    3. Misure: manubrio, attacco, pedivelle, altezza sella indicativa,
-       oppure "le decidiamo insieme".
-    4. Riepilogo con il totale: nel carrello vanno il telaio (con le misure
-       come note della riga) e il kit scelto.
+    2. Montaggio: solo telaio, uno dei kit preparati dal negozio oppure il
+       preventivo personalizzato.
+    3. Riepilogo con il totale e le note per l'officina: nel carrello vanno
+       il telaio (con le note sulla riga) e il kit scelto. Col preventivo
+       personalizzato il pulsante apre WhatsApp con la configurazione scritta.
 
   I KIT sono prodotti normali dentro la collezione indicata nelle impostazioni
   della sezione (di base "kit-montaggio"): prezzo, foto e varianti del
@@ -25,7 +25,7 @@
   ":rear" per le due ruote); l'ultimo campo e' facoltativo. Prezzo = somma dei
   componenti, foto = composizione delle loro immagini, nel carrello vanno i
   componenti veri.
-  Se non c'e' nessun kit, al posto dei kit c'e' il montaggio su misura via WhatsApp.
+  Il preventivo personalizzato c'e' sempre, come ultima scelta.
 
   Si usa assegnando al prodotto il modello "telaio" (templates/product.telaio.json).
   I dati strutturati per Google restano quelli di dz-schema.liquid nell'head.
@@ -53,7 +53,7 @@
   endif
 
   comment
-    Tipo di telaio, per proporre le misure giuste (manubrio drop o piatto).
+    Tipo di telaio, per proporre solo i kit adatti (strada o mtb).
     Il tag "mtb" o "strada" sul telaio vince sul riconoscimento dal nome.
   endcomment
   assign mtb = false
@@ -67,16 +67,6 @@
     assign mtb = true
   elsif p.tags contains 'strada' or p.tags contains 'gravel'
     assign mtb = false
-  endif
-
-  if mtb
-    assign m_manubrio = '720 mm|740 mm|760 mm|780 mm|800 mm' | split: '|'
-    assign m_attacco = '35 mm|40 mm|45 mm|50 mm|60 mm' | split: '|'
-    assign m_pedivelle = '165 mm|170 mm|175 mm' | split: '|'
-  else
-    assign m_manubrio = '36 cm|38 cm|40 cm|42 cm|44 cm' | split: '|'
-    assign m_attacco = '80 mm|90 mm|100 mm|110 mm|120 mm|130 mm' | split: '|'
-    assign m_pedivelle = '165 mm|167,5 mm|170 mm|172,5 mm|175 mm' | split: '|'
   endif
 
   comment
@@ -151,7 +141,7 @@
   <div class="dzt-hero">
     <p class="dzt-k">{% if marca != blank %}{{ marca }} · {% endif %}Telaio</p>
     <h1 class="dzt-h1">{{ p.title }}</h1>
-    <p class="dzt-claim">Parti dal telaio. Scegli il montaggio e le tue misure: la bici la costruiamo noi, in officina.</p>
+    <p class="dzt-claim">Parti dal telaio. Scegli come montarlo: la bici la costruiamo noi, in officina.</p>
     <div class="dzt-hero-cta">
       <span class="dzt-da">Telaio da <b>{{ p.price_min | money }}</b></span>
       <a class="dzt-link" href="#dzt-configura">Configura la tua bici ›</a>
@@ -174,7 +164,6 @@
       <ul class="dzt-vis-lista" data-dzt-vis-lista aria-live="polite">
         <li><span>Telaio</span><b data-dzt-v-telaio>{{ sel.title }}</b></li>
         <li><span>Montaggio</span><b data-dzt-v-kit>Solo telaio</b></li>
-        <li><span>Misure</span><b data-dzt-v-misure>Di serie</b></li>
       </ul>
     </aside>
 
@@ -310,68 +299,28 @@
             {%- endcapture -%}
             {%- assign kc_json = kc_json | append: ',' | append: kc_pezzo -%}
           {%- endfor -%}
-          {%- if n_kit == 0 and n_kc == 0 -%}
-            <label class="dzt-kit">
-              <input type="radio" name="dzt-kit" value="su-misura">
-              <span class="dzt-kit-testo"><b>Montaggio su misura</b><span>Scegli con noi gruppo, ruote e componenti: ti prepariamo il preventivo e la montiamo in officina.</span></span>
-              <span class="dzt-kit-prezzo">Preventivo</span>
-            </label>
-          {%- endif -%}
+          <label class="dzt-kit dzt-kit-prev">
+            <input type="radio" name="dzt-kit" value="su-misura">
+            <span class="dzt-kit-testo"><b>Preventivo personalizzato</b><span>Vuoi altri componenti? Scegli con noi gruppo, ruote e cockpit: ti prepariamo un preventivo su misura e la montiamo in officina.</span></span>
+            <span class="dzt-kit-prezzo">Su richiesta</span>
+          </label>
         </div>
       </div>
 
-      {%- comment -%} 3. misure {%- endcomment -%}
-      <div class="dzt-passo" data-dzt-passo="3">
+      {%- comment -%} 3. riepilogo {%- endcomment -%}
+      <div class="dzt-passo dzt-riep" data-dzt-passo="3" id="dzt-riepilogo">
         <p class="dzt-num">3</p>
-        <h2>Le tue misure.</h2>
-        <p class="dzt-sub">Le montiamo così come le scegli. "Di serie" vuol dire le misure previste per la tua taglia. Se non le conosci, le decidiamo insieme.</p>
-        <div class="dzt-seg" role="radiogroup" aria-label="Misure">
-          <button type="button" class="on" data-dzt-modo="io" aria-pressed="true">Le scelgo io</button>
-          <button type="button" data-dzt-modo="insieme" aria-pressed="false">Le decidiamo insieme</button>
-        </div>
-        <div class="dzt-misure" data-dzt-misure>
-          {%- assign gruppi = 'Manubrio|Larghezza,Attacco manubrio|Lunghezza,Pedivelle|Lunghezza' | split: ',' -%}
-          {%- for g in gruppi -%}
-            {%- assign gg = g | split: '|' -%}
-            {%- case forloop.index -%}
-              {%- when 1 -%}{%- assign valori = m_manubrio -%}
-              {%- when 2 -%}{%- assign valori = m_attacco -%}
-              {%- else -%}{%- assign valori = m_pedivelle -%}
-            {%- endcase -%}
-            <fieldset class="dzt-gruppo" data-dzt-mis="{{ gg[0] }}">
-              <legend>{{ gg[0] }} <span>{{ gg[1] }}</span></legend>
-              <div class="dzt-chips">
-                <button type="button" class="dzt-chip on" data-dzt-val="Di serie" aria-pressed="true">Di serie</button>
-                {%- for val in valori -%}
-                  <button type="button" class="dzt-chip" data-dzt-val="{{ val }}" aria-pressed="false">{{ val }}</button>
-                {%- endfor -%}
-              </div>
-            </fieldset>
-          {%- endfor -%}
-          <div class="dzt-corpo">
-            <label>Altezza <span class="dzt-in"><input type="number" inputmode="decimal" min="140" max="215" step="0.5" placeholder="178" data-dzt-altezza><i>cm</i></span></label>
-            <label>Cavallo <span class="dzt-in"><input type="number" inputmode="decimal" min="60" max="105" step="0.5" placeholder="84" data-dzt-cavallo><i>cm</i></span></label>
-            <p class="dzt-sella" data-dzt-sella hidden></p>
-          </div>
-        </div>
-        <div class="dzt-insieme" data-dzt-insieme hidden>
-          <p>Ti chiamiamo o ci vediamo in negozio: prendiamo le misure e scegliamo insieme manubrio, attacco e pedivelle. La bici esce dall'officina già regolata su di te.</p>
-        </div>
-        <label class="dzt-note">Note per l'officina <textarea rows="2" maxlength="400" placeholder="Es. nastro manubrio nero, pedali già montati…" data-dzt-note></textarea></label>
-      </div>
-
-      {%- comment -%} 4. riepilogo {%- endcomment -%}
-      <div class="dzt-passo dzt-riep" data-dzt-passo="4" id="dzt-riepilogo">
-        <p class="dzt-num">4</p>
         <h2>La tua bici.</h2>
+        <label class="dzt-note">Note per l'officina <span>facoltative</span><textarea rows="2" maxlength="400" placeholder="Es. nastro manubrio nero, pedali già montati…" data-dzt-note></textarea></label>
         <div class="dzt-conto">
           <div class="dzt-riga"><span><b>Telaio</b><i data-dzt-r-telaio>{{ sel.title }}</i></span><b data-dzt-r-telaio-p>{{ sel.price | money }}</b></div>
           <div class="dzt-riga"><span><b>Montaggio</b><i data-dzt-r-kit>Solo telaio</i></span><b data-dzt-r-kit-p>Incluso</b></div>
-          <div class="dzt-riga"><span><b>Misure</b><i data-dzt-r-misure>Di serie</i></span><b></b></div>
           <div class="dzt-tot"><span>Totale</span><b data-dzt-tot>{{ sel.price | money }}</b></div>
+          <p class="dzt-tot-nota" data-dzt-tot-nota hidden>+ montaggio su preventivo</p>
           <button type="submit" class="dzt-add" data-dzt-add{% unless sel.available %} disabled{% endunless %}>{% if sel.available %}Aggiungi al carrello{% else %}Non disponibile{% endif %}</button>
           <p class="dzt-err" data-dzt-err role="alert" hidden></p>
-          <a class="dzt-wa" data-dzt-wa target="_blank" rel="noopener" href="https://wa.me/{{ wa }}">Preferisci parlarne? Scrivici su WhatsApp ›</a>
+          <a class="dzt-prev" data-dzt-wa target="_blank" rel="noopener" href="https://wa.me/{{ wa }}">Chiedici un preventivo personalizzato</a>
+          <p class="dzt-prev-nota" data-dzt-prev-nota>Ti rispondiamo su WhatsApp con la tua configurazione già scritta.</p>
         </div>
       </div>
     </form>
