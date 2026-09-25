@@ -224,14 +224,15 @@
 .dz-cmptab th{text-align:left;font-weight:600;padding:0 16px 20px 0;vertical-align:top}
 .dz-cmptab thead th:first-child{width:16%}
 .dz-cmp-bici{display:block;color:inherit;text-decoration:none}
-.dz-cmp-bici img{display:block;width:100%;max-width:240px;aspect-ratio:3/2;height:auto;object-fit:contain;margin-bottom:12px;mix-blend-mode:multiply;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.dz-cmp-bici img{display:block;width:100%;max-width:none;aspect-ratio:3/2;height:auto;object-fit:cover;object-position:50% 55%;margin-bottom:12px;mix-blend-mode:multiply;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
 a.dz-cmp-bici:hover img{transform:translateY(-3px)}
 .dz-cmptab .mod{display:block;font-size:clamp(18px,1.8vw,24px);letter-spacing:-.03em;line-height:1.15}
 a.dz-cmp-bici:hover .mod{text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:1px}
 .dz-cmptab .pr{display:block;margin-top:4px;font-size:14px;font-weight:600;color:var(--red);font-variant-numeric:tabular-nums}
 .dz-cmptab th.me .mod{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
-.dz-cmp-tu{position:absolute;top:0;left:0;padding:3px 9px;border-radius:980px;background:var(--ink);color:#fff;font-size:11px;font-weight:600;letter-spacing:.02em}
-.dz-cmp-bici{position:relative;padding-top:30px}
+.dz-cmp-tu{position:absolute;top:0;left:0;z-index:1;padding:3px 9px;border-radius:980px;background:var(--ink);color:#fff;font-size:11px;font-weight:600;letter-spacing:.02em}
+.dz-cmp-bici{position:relative}
+.dz-cmptab .dz-cmp-bici{padding-top:30px}
 .dz-cmptab th.me .pr{font-size:15px}
 .dz-cmptab td{padding:14px 16px 14px 0;border-top:1px solid var(--hair);vertical-align:top}
 .dz-cmptab td:first-child{padding-top:17px;font-size:12.5px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--sub)}
@@ -389,13 +390,15 @@ html.dz-js body:has(.dz.dz-premium) [data-dz-rev]{will-change:opacity,transform}
   /* telefono: al posto della tabella una scheda per bici, da scorrere col dito */
   .dz-cmpwrap{display:none}
   .dz-cmp-nav{display:flex;gap:8px}
-  .dz-cmp-rail{display:flex;gap:12px;margin:0 -16px;padding:4px 16px 18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 16px;
+  .dz-cmp-rail{display:flex;gap:22px;margin:0 -16px;padding:4px 16px 18px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding:0 16px;
     -webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;scrollbar-width:none}
   .dz-cmp-rail::-webkit-scrollbar{display:none}
-  .dz-cmp-card{flex:0 0 82%;scroll-snap-align:start;box-sizing:border-box;padding:16px 16px 6px;border-radius:22px;background:#fff;box-shadow:inset 0 0 0 1px var(--hair2)}
-  .dz-cmp-card.me{box-shadow:inset 0 0 0 2px var(--ink)}
-  .dz-cmp-card .dz-cmp-bici img{max-width:none;width:100%}
-  .dz-cmp-card .mod{display:block;font-size:20px;font-weight:600;letter-spacing:-.03em}
+  .dz-cmp-card{flex:0 0 86%;scroll-snap-align:start;box-sizing:border-box}
+  .dz-cmp-card .dz-cmp-bici{overflow:hidden}
+  .dz-cmp-card .dz-cmp-bici img{width:100%;aspect-ratio:3/2;object-position:50% 58%;margin-bottom:6px;transform:scale(1.06);transform-origin:50% 58%}
+  .dz-cmp-card a.dz-cmp-bici:hover img{transform:scale(1.06)}
+  .dz-cmp-card .dz-cmp-tu{top:6px}
+  .dz-cmp-card .mod{display:block;font-size:24px;font-weight:600;letter-spacing:-.03em}
   .dz-cmp-card.me .mod{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
   .dz-cmp-card .pr{display:block;margin-top:2px;font-size:15px;font-weight:600;color:var(--red)}
   .dz-cmp-card .dot{display:inline-block;width:8px;height:8px;margin-right:7px;border-radius:50%;background:#12b981}
