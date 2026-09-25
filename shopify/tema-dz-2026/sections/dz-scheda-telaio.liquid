@@ -9,6 +9,9 @@
     3. Riepilogo con il totale e le note per l'officina: nel carrello vanno
        il telaio (con le note sulla riga) e il kit scelto. Col preventivo
        personalizzato il pulsante apre WhatsApp con la configurazione scritta.
+  Tra 2 e 3, solo se il kit scelto ha pezzi con misure (manubrio, sella...):
+  "Le tue misure", con le sole varianti che esistono davvero; quelle esaurite
+  nel magazzino (per Trek arriva dal B2B della casa) non si possono scegliere.
 
   I KIT sono prodotti normali dentro la collezione indicata nelle impostazioni
   della sezione (di base "kit-montaggio"): prezzo, foto e varianti del
@@ -24,7 +27,8 @@
   ":variante" sceglie la variante che contiene quella parola (es. ":front",
   ":rear" per le due ruote); l'ultimo campo e' facoltativo. Prezzo = somma dei
   componenti, foto = composizione delle loro immagini, nel carrello vanno i
-  componenti veri.
+  componenti veri. Un pezzo senza ":variante" che ha piu' varianti (es. piega
+  390/420 x 130, sella 145/155) diventa una scelta nel passo "Le tue misure".
   Il preventivo personalizzato c'e' sempre, come ultima scelta.
 
   Si usa assegnando al prodotto il modello "telaio" (templates/product.telaio.json).
@@ -148,7 +152,7 @@
     </div>
     {%- if p.featured_media -%}
     <div class="dzt-hero-stage">
-      <img src="{{ p.featured_media | image_url: width: 1800 }}" alt="{{ p.featured_media.alt | default: p.title | escape }}"
+      <img data-dzt-foto-hero src="{{ p.featured_media | image_url: width: 1800 }}" alt="{{ p.featured_media.alt | default: p.title | escape }}"
            width="1800" height="{{ 1800 | divided_by: p.featured_media.aspect_ratio | round }}" fetchpriority="high">
     </div>
     {%- endif -%}
@@ -164,6 +168,7 @@
       <ul class="dzt-vis-lista" data-dzt-vis-lista aria-live="polite">
         <li><span>Telaio</span><b data-dzt-v-telaio>{{ sel.title }}</b></li>
         <li><span>Montaggio</span><b data-dzt-v-kit>Solo telaio</b></li>
+        <li data-dzt-v-misure-riga hidden><span>Misure</span><b data-dzt-v-misure></b></li>
       </ul>
     </aside>
 
@@ -253,6 +258,9 @@
             {%- assign kc_imgs = '' -%}
             {%- assign kc_hs = ',' -%}
             {%- assign kc_nomi = '' -%}
+            {%- assign kc_comp = '' -%}
+            {%- assign kc_mis = '' -%}
+            {%- assign kc_pos = -1 -%}
             {%- for pz in kc_pezzi -%}
               {%- assign pp = pz | split: ':' -%}
               {%- assign h = pp[0] | strip -%}
@@ -269,6 +277,23 @@
               {%- assign kc_tot = kc_tot | plus: vv.price -%}
               {%- unless vv.available -%}{%- assign kc_disp = false -%}{%- endunless -%}
               {%- assign kc_ids = kc_ids | append: ',' | append: vv.id -%}
+              {%- assign kc_pos = kc_pos | plus: 1 -%}
+              {%- capture kc_c -%}{"id": {{ vv.id }}, "prezzo": {{ vv.price }}}{%- endcapture -%}
+              {%- assign kc_comp = kc_comp | append: ',' | append: kc_c -%}
+              {%- comment -%} pezzo con piu' misure e nessuna variante fissata: diventa una scelta {%- endcomment -%}
+              {%- if vk == blank and prod.variants.size > 1 -%}
+                {%- assign pt = prod.title | append: ' ' | append: prod.type | downcase -%}
+                {%- assign mis_nome = prod.title -%}
+                {%- if pt contains 'sella' or pt contains 'saddle' -%}{%- assign mis_nome = 'Sella' -%}
+                {%- elsif pt contains 'piega' or pt contains 'manubrio' or pt contains 'handlebar' -%}{%- assign mis_nome = 'Manubrio' -%}
+                {%- elsif pt contains 'attacco' or pt contains 'stem' -%}{%- assign mis_nome = 'Attacco' -%}
+                {%- elsif pt contains 'pedivell' or pt contains 'crank' -%}{%- assign mis_nome = 'Pedivelle' -%}
+                {%- elsif pt contains 'reggisella' or pt contains 'seatpost' -%}{%- assign mis_nome = 'Reggisella' -%}
+                {%- endif -%}
+                {%- capture kc_m -%}{"pos": {{ kc_pos }}, "nome": {{ mis_nome | json }}, "pezzo": {{ prod.title | json }}, "scelta": {{ vv.id }},
+                  "scelte": [{%- for v in prod.variants -%}{"id": {{ v.id }}, "t": {{ v.title | json }}, "disp": {{ v.available | json }}, "prezzo": {{ v.price }}}{% unless forloop.last %},{% endunless %}{%- endfor -%}]}{%- endcapture -%}
+                {%- assign kc_mis = kc_mis | append: ',' | append: kc_m -%}
+              {%- endif -%}
               {%- assign chiave_h = ',' | append: h | append: ',' -%}
               {%- unless kc_hs contains chiave_h -%}
                 {%- assign kc_hs = kc_hs | append: h | append: ',' -%}
@@ -294,7 +319,8 @@
             {%- capture kc_pezzo -%}
               {"i": {{ kc_id | json }}, "titolo": {{ kc_nome | json }}, "scelta": {{ kc_id | json }},
                "varianti": [{"id": {{ kc_id | json }}, "t": "", "prezzo": {{ kc_tot }}, "disp": {{ kc_disp | json }}}],
-               "componenti": [{{ kc_ids | remove_first: ',' }}],
+               "componenti": [{{ kc_comp | remove_first: ',' }}],
+               "misure": [{{ kc_mis | remove_first: ',' }}],
                "imgs": {{ kc_img_l | json }}}
             {%- endcapture -%}
             {%- assign kc_json = kc_json | append: ',' | append: kc_pezzo -%}
@@ -307,14 +333,23 @@
         </div>
       </div>
 
-      {%- comment -%} 3. riepilogo {%- endcomment -%}
-      <div class="dzt-passo dzt-riep" data-dzt-passo="3" id="dzt-riepilogo">
+      {%- comment -%} 3. misure: compare solo se il kit scelto ha pezzi con misure; lo riempie lo script {%- endcomment -%}
+      <div class="dzt-passo" data-dzt-passo="misure" data-dzt-mis-passo hidden>
         <p class="dzt-num">3</p>
+        <h2>Le tue misure.</h2>
+        <p class="dzt-sub">Solo le misure che esistono per questo montaggio. Quelle esaurite nel magazzino {% if marca != blank %}{{ marca }}{% else %}del marchio{% endif %} non si possono scegliere.</p>
+        <div data-dzt-mis-box></div>
+      </div>
+
+      {%- comment -%} riepilogo (3, oppure 4 se ci sono le misure) {%- endcomment -%}
+      <div class="dzt-passo dzt-riep" data-dzt-passo="riepilogo" id="dzt-riepilogo">
+        <p class="dzt-num" data-dzt-num-riep>3</p>
         <h2>La tua bici.</h2>
         <label class="dzt-note">Note per l'officina <span>facoltative</span><textarea rows="2" maxlength="400" placeholder="Es. nastro manubrio nero, pedali già montati…" data-dzt-note></textarea></label>
         <div class="dzt-conto">
           <div class="dzt-riga"><span><b>Telaio</b><i data-dzt-r-telaio>{{ sel.title }}</i></span><b data-dzt-r-telaio-p>{{ sel.price | money }}</b></div>
           <div class="dzt-riga"><span><b>Montaggio</b><i data-dzt-r-kit>Solo telaio</i></span><b data-dzt-r-kit-p>Incluso</b></div>
+          <div class="dzt-riga" data-dzt-r-misure-riga hidden><span><b>Misure</b><i data-dzt-r-misure></i></span><b></b></div>
           <div class="dzt-tot"><span>Totale</span><b data-dzt-tot>{{ sel.price | money }}</b></div>
           <p class="dzt-tot-nota" data-dzt-tot-nota hidden>+ montaggio su preventivo</p>
           <button type="submit" class="dzt-add" data-dzt-add{% unless sel.available %} disabled{% endunless %}>{% if sel.available %}Aggiungi al carrello{% else %}Non disponibile{% endif %}</button>

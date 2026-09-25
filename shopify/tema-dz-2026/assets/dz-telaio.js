@@ -35,6 +35,7 @@
   if (iniziale) scelte = iniziale.o.slice();
   var kit = null;          // oggetto kit scelto, null = solo telaio, "su-misura" = preventivo
   var kitVar = null;       // variante del kit
+  var misScelte = {};      // kit composto: posizione del pezzo -> variante scelta (es. piega 400/420 x 110)
 
   /* taglie in ordine naturale: XXS..XXL oppure numeri crescenti */
   var ORD = ["XXS", "XS", "S", "SM", "M", "ML", "L", "XL", "XXL"];
@@ -60,7 +61,7 @@
   }
 
   /* ---- aggiornamento di tutto cio' che si vede ---- */
-  var fotoEl = $("[data-dzt-foto]");
+  var fotoEl = $("[data-dzt-foto]"), fotoHero = $("[data-dzt-foto-hero]");
   function aggiorna() {
     var v = variante();
 
@@ -90,7 +91,7 @@
       if (v.img && fotoEl && fotoEl.getAttribute("src") !== v.img) {
         fotoEl.classList.add("cambia");
         var pre = new Image();
-        pre.onload = pre.onerror = function () { fotoEl.src = v.img; fotoEl.classList.remove("cambia"); };
+        pre.onload = pre.onerror = function () { fotoEl.src = v.img; fotoEl.classList.remove("cambia"); if (fotoHero) fotoHero.src = v.img; };
         pre.src = v.img;
       }
     }
@@ -115,15 +116,21 @@
     // testi del riepilogo
     var tTelaio = v ? v.t : "—";
     var tKit = "Solo telaio", pKit = "Incluso", cKit = 0;
+    var tMis = testoMisure();
     if (kit === "su-misura") { tKit = "Preventivo personalizzato"; pKit = "Su richiesta"; }
     else if (kit && kitVar) {
       tKit = kit.titolo + (kit.varianti.length > 1 ? " · " + kitVar.t : "");
-      cKit = kitVar.prezzo; pKit = soldi(cKit);
+      cKit = kit.componenti ? pezzi().reduce(function (a, x) { return a + x.prezzo; }, 0) : kitVar.prezzo;
+      pKit = soldi(cKit);
     }
     var tot = (v ? v.prezzo : 0) + cKit;
 
     $("[data-dzt-v-telaio]").textContent = tTelaio;
     $("[data-dzt-v-kit]").textContent = tKit;
+    $("[data-dzt-v-misure]").textContent = tMis;
+    $("[data-dzt-v-misure-riga]").hidden = !tMis;
+    $("[data-dzt-r-misure]").textContent = tMis;
+    $("[data-dzt-r-misure-riga]").hidden = !tMis;
     $("[data-dzt-r-telaio]").textContent = tTelaio;
     $("[data-dzt-r-telaio-p]").textContent = v ? soldi(v.prezzo) : "—";
     $("[data-dzt-r-kit]").textContent = tKit;
@@ -149,10 +156,60 @@
     // WhatsApp con la configurazione gia' scritta
     var msg = kit === "su-misura"
       ? "Ciao! Vorrei un preventivo personalizzato per montare il " + D.titolo + " (" + tTelaio + ")."
-      : "Ciao! Vorrei un preventivo personalizzato partendo dal " + D.titolo + " (" + tTelaio + ").\nPer ora ho scelto: " + tKit + ".";
+      : "Ciao! Vorrei un preventivo personalizzato partendo dal " + D.titolo + " (" + tTelaio + ").\nPer ora ho scelto: " + tKit + "." + (tMis ? "\nMisure: " + tMis : "");
     var note = $("[data-dzt-note]").value.trim();
     if (note) msg += "\nNote: " + note;
     $("[data-dzt-wa]").href = "https://wa.me/" + D.wa + "?text=" + encodeURIComponent(msg);
+  }
+
+  /* ---- misure dei pezzi del kit composto ----
+     Solo le varianti che esistono; quelle esaurite si vedono ma non si scelgono. */
+  function misureKit() { return kit && kit !== "su-misura" && kit.misure ? kit.misure : []; }
+  // i pezzi del kit con le misure scelte al posto di quelle di partenza
+  function pezzi() {
+    return kit.componenti.map(function (c, i) {
+      var m = misureKit().filter(function (x) { return x.pos === i; })[0];
+      if (!m) return c;
+      var sc = m.scelte.filter(function (x) { return x.id === misScelte[i]; })[0];
+      return sc ? { id: sc.id, prezzo: sc.prezzo } : c;
+    });
+  }
+  // etichetta di una variante: solo la parte che cambia tra le varianti (via il colore uguale per tutte)
+  function etichetta(m, sc) {
+    var parti = sc.t.split(" / ");
+    var tenute = parti.filter(function (p, j) {
+      return !m.scelte.every(function (x) { return (x.t.split(" / ")[j] || "") === p; });
+    });
+    var t = (tenute.length ? tenute : parti).join(" · ");
+    return t.replace(/(\d+)mm\/(\d+)mm/g, "$1/$2 mm").replace(/(\d)mm/g, "$1 mm").replace(/ x /g, " × ");
+  }
+  function testoMisure() {
+    return misureKit().map(function (m) {
+      var sc = m.scelte.filter(function (x) { return x.id === misScelte[m.pos]; })[0];
+      return sc ? m.nome + " " + etichetta(m, sc) : "";
+    }).filter(Boolean).join(" · ");
+  }
+  var passoMis = $("[data-dzt-mis-passo]"), boxMis = $("[data-dzt-mis-box]");
+  function disegnaMisure() {
+    var ms = misureKit();
+    boxMis.innerHTML = "";
+    ms.forEach(function (m) {
+      if (!(m.pos in misScelte)) misScelte[m.pos] = m.scelta;
+      var fs = document.createElement("fieldset"); fs.className = "dzt-gruppo";
+      var lg = document.createElement("legend"); lg.textContent = m.nome + " "; var sp = document.createElement("span"); sp.textContent = m.pezzo; lg.appendChild(sp); fs.appendChild(lg);
+      var box = document.createElement("div"); box.className = "dzt-chips dzt-chips-mis";
+      m.scelte.forEach(function (sc) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "dzt-chip";
+        b.textContent = etichetta(m, sc);
+        if (!sc.disp) { b.classList.add("no"); b.disabled = true; b.title = "Esaurita"; }
+        var on = misScelte[m.pos] === sc.id; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on ? "true" : "false");
+        b.addEventListener("click", function () { misScelte[m.pos] = sc.id; disegnaMisure(); aggiorna(); });
+        box.appendChild(b);
+      });
+      fs.appendChild(box); boxMis.appendChild(fs);
+    });
+    passoMis.hidden = !ms.length;
+    $("[data-dzt-num-riep]").textContent = ms.length ? "4" : "3";
   }
 
   /* ---- 1. taglia e colore ---- */
@@ -187,6 +244,8 @@
         kitVar = kit.varianti.filter(function (x) { return x.id === id; })[0] || kit.varianti[0];
       }
     }
+    misScelte = {};
+    disegnaMisure();
     aggiorna();
   }
   kitInputs.forEach(function (x) { x.addEventListener("change", leggiKit); });
@@ -210,6 +269,7 @@
     var add = $("[data-dzt-add]"), err = $("[data-dzt-err]");
     var props = {};
     props["Montaggio"] = kit ? kit.titolo + (kit.varianti.length > 1 ? " · " + kitVar.t : "") : "Solo telaio";
+    if (testoMisure()) props["Misure"] = testoMisure();
     var note = $("[data-dzt-note]").value.trim();
     if (note) props["Note per l'officina"] = note;
     var build = "B" + Date.now().toString(36).toUpperCase();
@@ -220,8 +280,8 @@
       var suDi = { "Montato su": D.titolo + " · " + v.t, "_Montaggio n.": build };
       if (kit.componenti && kit.componenti.length) {
         // kit composto dal catalogo: nel carrello vanno i componenti veri, segnati col nome del kit
-        kit.componenti.forEach(function (cid) {
-          items.push({ id: cid, quantity: 1, properties: { "Kit": kit.titolo, "Montato su": suDi["Montato su"], "_Montaggio n.": build } });
+        pezzi().forEach(function (c) {
+          items.push({ id: c.id, quantity: 1, properties: { "Kit": kit.titolo, "Montato su": suDi["Montato su"], "_Montaggio n.": build } });
         });
       } else {
         items.push({ id: kitVar.id, quantity: 1, properties: suDi });
@@ -245,9 +305,13 @@
   });
 
   /* barra in basso su telefono: sparisce quando il riepilogo e' sullo schermo */
-  var barra = $("[data-dzt-barra]"), riep = $("#dzt-riepilogo");
-  if (barra && riep && "IntersectionObserver" in window) {
-    new IntersectionObserver(function (v) { barra.classList.toggle("via", v[0].isIntersecting); }, { threshold: 0.15 }).observe(riep);
+  var barra = $("[data-dzt-barra]"), riep = $("#dzt-riepilogo"), conf = $("#dzt-configura");
+  if (barra && riep && conf && "IntersectionObserver" in window) {
+    var inConf = false, inRiep = false;
+    function barraVia() { barra.classList.toggle("via", !inConf || inRiep); }
+    barraVia();
+    new IntersectionObserver(function (v) { inRiep = v[0].isIntersecting; barraVia(); }, { threshold: 0.15 }).observe(riep);
+    new IntersectionObserver(function (v) { inConf = v[0].isIntersecting; barraVia(); }, { rootMargin: "0px 0px -35% 0px" }).observe(conf);
   }
 
   aggiorna();
