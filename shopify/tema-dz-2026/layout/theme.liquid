@@ -124,7 +124,15 @@
       <div class="fcol brandcol">
         <b class="fbrand">Cicli Dal Zilio</b>
         <p>{{ 'foot.tagline' | t }}</p>
-        <span class="dealer"><i></i>{{ 'foot.dealer' | t }}</span>
+        {%- comment -%} i marchi: gli stessi loghi della fascia in home, piccoli e in bianco tenue {%- endcomment -%}
+        <p class="fmarchi-k">{{ 'home.loghi' | t }}</p>
+        <div class="fmarchi">
+          {%- assign f_marchi = 'trek|TREK|trek.png|1,scott|SCOTT|scott.png|1,cannondale|Cannondale|cnd.png|1,amflow|Amflow|amflow.png|1.6' | split: ',' -%}
+          {%- for riga in f_marchi -%}
+            {%- assign c = riga | split: '|' -%}
+            <a href="/pages/{{ c[0] }}" style="--s:{{ c[3] }}"><img src="{{ c[2] | file_url }}" alt="{{ c[1] }}" loading="lazy" height="18"></a>
+          {%- endfor -%}
+        </div>
       </div>
       <div class="fcol"><h5>{{ 'foot.catalogo' | t }}</h5><a href="/collections/bici-da-strada">{{ 'foot.corsa' | t }}</a><a href="/collections/ebikes">{{ 'nav.ebike' | t }}</a><a href="/collections/gravel">{{ 'nav.gravel' | t }}</a><a href="/collections/mountain-bike">{{ 'nav.mtb_full' | t }}</a><a href="/collections/usato-1">{{ 'nav.usato' | t }}</a></div>
       <div class="fcol"><h5>{{ 'foot.servizi' | t }}</h5><a href="/pages/service">{{ 'foot.service' | t }}</a><a href="/pages/permuta-il-tuo-usato">{{ 'nav.permuta' | t }}</a><a href="/pages/finanziamenti-agevolati">{{ 'foot.fin' | t }}</a></div>

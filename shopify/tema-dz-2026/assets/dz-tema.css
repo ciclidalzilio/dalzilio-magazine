@@ -406,6 +406,14 @@ section.block.after-dark{padding-top:clamp(80px,10vw,140px)}
 .brandcol p{font-size:13.5px;line-height:1.6;color:#8b8fa2;max-width:34ch}
 .dealer{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#c9cbd6;border:1px solid rgba(255,255,255,.16);padding:7px 11px;border-radius:999px;margin-top:12px}
 .dealer i{width:6px;height:6px;border-radius:50%;background:var(--grad)}
+/* footer: i loghi dei marchi, piccoli e sobri */
+.fmarchi-k{margin:20px 0 10px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#6f7385}
+.fmarchi{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px}
+/* i PNG sono 600x200 con il marchio alto un terzo: foto piu' alta, aria sopra e sotto ritagliata */
+.fmarchi a{display:flex;align-items:center;justify-content:center;height:14px;overflow:hidden}
+.fmarchi img{display:block;height:calc(32px * var(--s,1));width:auto;max-width:none;object-fit:contain;
+  filter:invert(1) brightness(1.35) contrast(1.15);mix-blend-mode:screen;opacity:.55;transition:opacity .25s ease}
+.fmarchi a:hover img{opacity:.9}
 .fbottom{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 0 26px;border-top:1px solid rgba(255,255,255,.1);font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;color:#8b8fa2;flex-wrap:wrap}
 .pay{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
 .pay li{display:block;line-height:0}
