@@ -407,7 +407,7 @@ section.block.after-dark{padding-top:clamp(80px,10vw,140px)}
 .dealer{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#c9cbd6;border:1px solid rgba(255,255,255,.16);padding:7px 11px;border-radius:999px;margin-top:12px}
 .dealer i{width:6px;height:6px;border-radius:50%;background:var(--grad)}
 /* footer: i loghi dei marchi, piccoli e sobri */
-.fmarchi-k{margin:20px 0 10px;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:#6f7385}
+.brandcol .fmarchi-k{margin:18px 0 8px;max-width:none;line-height:1.4;font-family:var(--font-mono);font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#6f7385}
 .fmarchi{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px}
 /* i PNG sono 600x200 con il marchio alto un terzo: foto piu' alta, aria sopra e sotto ritagliata */
 .fmarchi a{display:flex;align-items:center;justify-content:center;height:14px;overflow:hidden}
