@@ -133,18 +133,16 @@
     <div class="fbottom">
       <small>© {{ 'now' | date: '%Y' }} {{ shop.name | upcase }}</small>
       {%- comment -%}
-        Icone ufficiali dei pagamenti (le stesse del checkout Shopify): i metodi
-        attivi nel negozio, piu' PayPal e Klarna sempre in vista.
+        Icone ufficiali dei pagamenti (le stesse del checkout Shopify), solo le
+        principali: Visa, Mastercard e Apple Pay se attivi nel negozio, PayPal e
+        Klarna sempre.
       {%- endcomment -%}
-      {%- assign pay_tipi = shop.enabled_payment_types -%}
-      {%- if pay_tipi.size == 0 -%}{%- assign pay_tipi = 'visa,master,american_express,apple_pay,google_pay' | split: ',' -%}{%- endif -%}
-      {%- assign pay_lista = pay_tipi | join: ',' | append: ',' -%}
+      {%- assign pay_attivi = shop.enabled_payment_types | join: ',' | prepend: ',' | append: ',' -%}
       <ul class="pay" aria-label="Metodi di pagamento">
-        {%- for t in pay_tipi -%}<li>{{ t | payment_type_svg_tag: class: 'pay-ic' }}</li>{%- endfor -%}
-        {%- assign pay_extra = 'paypal,klarna' | split: ',' -%}
-        {%- for t in pay_extra -%}
-          {%- assign chiave_p = t | append: ',' -%}
-          {%- unless pay_lista contains chiave_p -%}<li>{{ t | payment_type_svg_tag: class: 'pay-ic' }}</li>{%- endunless -%}
+        {%- assign pay_principali = 'visa,master,apple_pay,paypal,klarna' | split: ',' -%}
+        {%- for t in pay_principali -%}
+          {%- assign chiave_p = ',' | append: t | append: ',' -%}
+          {%- if t == 'paypal' or t == 'klarna' or pay_attivi contains chiave_p or shop.enabled_payment_types.size == 0 -%}<li>{{ t | payment_type_svg_tag: class: 'pay-ic' }}</li>{%- endif -%}
         {%- endfor -%}
       </ul>
     </div>
