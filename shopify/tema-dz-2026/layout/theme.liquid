@@ -132,7 +132,21 @@
     </div>
     <div class="fbottom">
       <small>© {{ 'now' | date: '%Y' }} {{ shop.name | upcase }}</small>
-      <div class="pay"><span>VISA</span><span>MC</span><span>PP</span><span>AMEX</span><span>KLARNA</span></div>
+      {%- comment -%}
+        Icone ufficiali dei pagamenti (le stesse del checkout Shopify): i metodi
+        attivi nel negozio, piu' PayPal e Klarna sempre in vista.
+      {%- endcomment -%}
+      {%- assign pay_tipi = shop.enabled_payment_types -%}
+      {%- if pay_tipi.size == 0 -%}{%- assign pay_tipi = 'visa,master,american_express,apple_pay,google_pay' | split: ',' -%}{%- endif -%}
+      {%- assign pay_lista = pay_tipi | join: ',' | append: ',' -%}
+      <ul class="pay" aria-label="Metodi di pagamento">
+        {%- for t in pay_tipi -%}<li>{{ t | payment_type_svg_tag: class: 'pay-ic' }}</li>{%- endfor -%}
+        {%- assign pay_extra = 'paypal,klarna' | split: ',' -%}
+        {%- for t in pay_extra -%}
+          {%- assign chiave_p = t | append: ',' -%}
+          {%- unless pay_lista contains chiave_p -%}<li>{{ t | payment_type_svg_tag: class: 'pay-ic' }}</li>{%- endunless -%}
+        {%- endfor -%}
+      </ul>
     </div>
   </div>
 </footer>

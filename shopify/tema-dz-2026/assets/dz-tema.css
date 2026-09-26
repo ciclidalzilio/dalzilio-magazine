@@ -407,8 +407,9 @@ section.block.after-dark{padding-top:clamp(80px,10vw,140px)}
 .dealer{display:inline-flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#c9cbd6;border:1px solid rgba(255,255,255,.16);padding:7px 11px;border-radius:999px;margin-top:12px}
 .dealer i{width:6px;height:6px;border-radius:50%;background:var(--grad)}
 .fbottom{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:18px 0 26px;border-top:1px solid rgba(255,255,255,.1);font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;color:#8b8fa2;flex-wrap:wrap}
-.pay{display:flex;gap:6px}
-.pay span{border:1px solid rgba(255,255,255,.2);border-radius:6px;padding:3px 7px;font-size:9px}
+.pay{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.pay li{display:block;line-height:0}
+.pay-ic{display:block;width:40px;height:25px;border-radius:5px}
 @media (max-width:960px){.fgrid{grid-template-columns:1fr 1fr}}
 @media (max-width:560px){.fgrid{grid-template-columns:1fr}}
 
