@@ -1,5 +1,3 @@
-import type { Ref } from "react";
-
 import type { BikeConfig, Wheelset } from "@/lib/bike-visualizer";
 
 // Scala del disegno: pixel SVG per millimetro reale.
@@ -114,11 +112,9 @@ function TubeSet({ tubes, finish }: { tubes: Tube[]; finish: "matt" | "gloss" })
 export default function BikeCanvas({
   config,
   background = "light",
-  svgRef,
 }: {
   config: BikeConfig;
   background?: "light" | "dark";
-  svgRef?: Ref<SVGSVGElement>;
 }) {
   const { frame, color, wheels, tyre, tape, saddle } = config;
   const bg = background === "dark" ? "#16181d" : "#f4f5f7";
@@ -137,7 +133,6 @@ export default function BikeCanvas({
 
   return (
     <svg
-      ref={svgRef}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 40 1040 620"
       className="h-auto w-full"

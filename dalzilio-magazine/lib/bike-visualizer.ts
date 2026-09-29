@@ -1,5 +1,14 @@
 // Catalogo e logica del configuratore bici (/visualize).
 // Per aggiungere telai, colorazioni o ruote basta aggiungere voci qui sotto.
+//
+// Foto vere: quando un telaio (colorazione) e una ruota hanno entrambi `image`,
+// la bici viene composta con le foto invece che disegnata.
+// - Telaio: PNG trasparente di profilo (lato catena) SENZA ruote, in
+//   public/visualizer/frames/. `photo` va sul modello: tutte le colorazioni
+//   devono avere la stessa inquadratura.
+// - Ruota: PNG trasparente di una ruota intera con gomma nera, in
+//   public/visualizer/wheels/.
+// I numeri di `photo` si ottengono con la pagina /visualize/calibra.
 
 export type Finish = "matt" | "gloss";
 
@@ -10,6 +19,25 @@ export type FrameColor = {
   secondary: string; // forcella / carro posteriore
   logo: string; // colore scritte
   finish: Finish;
+  image?: string;
+};
+
+export type Point = { x: number; y: number };
+
+// Coordinate in pixel sulla foto del telaio.
+export type FramePhoto = {
+  width: number;
+  height: number;
+  rearAxle: Point;
+  frontAxle: Point;
+  wheelRadius: number; // raggio esterno della gomma
+};
+
+// Coordinate in pixel sulla foto della ruota.
+export type WheelPhoto = {
+  hub: Point;
+  tyreRadius: number; // bordo esterno della gomma
+  rimRadius: number; // dove la gomma incontra il cerchio
 };
 
 export type FrameModel = {
@@ -18,6 +46,7 @@ export type FrameModel = {
   model: string;
   type: "road" | "gravel";
   tyreWidth: number; // mm
+  photo?: FramePhoto;
   colors: FrameColor[];
 };
 
@@ -31,6 +60,8 @@ export type Wheelset = {
   decalColor: string;
   spokes: number;
   hubColor: string;
+  image?: string;
+  photo?: WheelPhoto;
 };
 
 export type Swatch = { id: string; name: string; color: string };
@@ -158,3 +189,6 @@ export function configToQuery(config: BikeConfig) {
     saddle: config.saddle.id,
   }).toString();
 }
+
+export const hasPhotos = (config: BikeConfig) =>
+  Boolean(config.frame.photo && config.color.image && config.wheels.photo && config.wheels.image);

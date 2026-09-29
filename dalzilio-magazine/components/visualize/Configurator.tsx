@@ -3,10 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 
 import BikeCanvas from "@/components/visualize/BikeCanvas";
+import PhotoCanvas from "@/components/visualize/PhotoCanvas";
 import {
   accessoryColors,
   configToQuery,
   frames,
+  hasPhotos,
   parseConfig,
   tyreColors,
   wheelsets,
@@ -84,7 +86,7 @@ export default function Configurator({ initialQuery }: { initialQuery: string })
   const [tab, setTab] = useState<Tab>("frame");
   const [background, setBackground] = useState<"light" | "dark">("light");
   const [copied, setCopied] = useState(false);
-  const svgRef = useRef<SVGSVGElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
 
   // Tiene l'URL sincronizzato così la configurazione è condivisibile.
   useEffect(() => {
@@ -103,23 +105,33 @@ export default function Configurator({ initialQuery }: { initialQuery: string })
     }
   };
 
+  const savePng = (href: string) => {
+    const link = document.createElement("a");
+    link.download = `${config.frame.id}_${config.color.id}.png`;
+    link.href = href;
+    link.click();
+  };
+
   const download = () => {
-    const svg = svgRef.current;
+    const canvas = stageRef.current?.querySelector("canvas");
+    if (canvas) {
+      savePng(canvas.toDataURL("image/png"));
+      return;
+    }
+
+    const svg = stageRef.current?.querySelector("svg");
     if (!svg) return;
 
     const source = new XMLSerializer().serializeToString(svg);
     const url = URL.createObjectURL(new Blob([source], { type: "image/svg+xml;charset=utf-8" }));
     const image = new Image();
     image.onload = () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = 2080;
-      canvas.height = 1240;
-      canvas.getContext("2d")?.drawImage(image, 0, 0, canvas.width, canvas.height);
+      const out = document.createElement("canvas");
+      out.width = 2080;
+      out.height = 1240;
+      out.getContext("2d")?.drawImage(image, 0, 0, out.width, out.height);
       URL.revokeObjectURL(url);
-      const link = document.createElement("a");
-      link.download = `${config.frame.id}_${config.color.id}.png`;
-      link.href = canvas.toDataURL("image/png");
-      link.click();
+      savePng(out.toDataURL("image/png"));
     };
     image.src = url;
   };
@@ -139,8 +151,12 @@ export default function Configurator({ initialQuery }: { initialQuery: string })
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
       <section className="rounded-3xl bg-white p-4 shadow-2xl shadow-slate-200/70 sm:p-6">
-        <div className="overflow-hidden rounded-2xl">
-          <BikeCanvas config={config} background={background} svgRef={svgRef} />
+        <div ref={stageRef} className="overflow-hidden rounded-2xl">
+          {hasPhotos(config) ? (
+            <PhotoCanvas config={config} background={background} />
+          ) : (
+            <BikeCanvas config={config} background={background} />
+          )}
         </div>
 
         <div className="mt-5 flex flex-wrap items-end justify-between gap-4">
